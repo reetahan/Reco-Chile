@@ -1,0 +1,12 @@
+{
+  "student": "Your details",
+  "list": "Build your list",
+  "result": "Review your results",
+  "improve": "Improve your list",
+  "back": "Back",
+  "continue": "Continue",
+  "progress": "Step {current} of {total}",
+  "locked": "Complete the previous steps to continue.",
+  "navLabel": "Wizard steps",
+  "pending": "Working…"
+}

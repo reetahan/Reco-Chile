@@ -1,0 +1,13 @@
+{
+  "name": "identifier_03_invalid_check_digit",
+  "kind": "identifier",
+  "description": "A RUN whose check digit does not match the modulo-11 rule.",
+  "inputs": {
+    "raw_identifier": "12345678-0"
+  },
+  "expected": {
+    "normalized": null,
+    "error_class": "InvalidStudentIdentifier",
+    "message_key": "The RUN check digit is invalid."
+  }
+}

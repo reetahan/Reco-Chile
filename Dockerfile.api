@@ -1,0 +1,39 @@
+# FastAPI service (api.py + sae_app/ engine).
+#
+#   docker build -f Dockerfile.api -t reco-chile-api .
+#   docker run --rm -p 8000:8000 reco-chile-api
+#
+FROM python:3.12-slim
+
+# Same major.minor as the interpreter the engine is developed and tested on.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Dependencies first: this layer is only rebuilt when requirements.txt changes,
+# not on every edit of api.py.
+COPY requirements.txt ./
+RUN python -m pip install --no-cache-dir -r requirements.txt
+
+# Only what the service actually reads at runtime. tests/, scripts/ and web/ are
+# excluded here as well as in .dockerignore.
+COPY api.py ./
+COPY sae_app/ ./sae_app/
+COPY data/ ./data/
+
+# Calibration CSVs are read-only; nothing is written to disk at runtime.
+RUN useradd --create-home --uid 10001 app \
+    && chown -R app:app /app
+USER app
+
+EXPOSE 8000
+
+# ONE worker on purpose. geo.py throttles Nominatim to 1 request/second *per
+# process*, and api.py's per-IP geocode rate limiter is in-process too, so a
+# second worker would double the outbound rate and halve the effectiveness of
+# the limiter. Scaling out needs shared throttling (Redis) first — do not add
+# --workers here.
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

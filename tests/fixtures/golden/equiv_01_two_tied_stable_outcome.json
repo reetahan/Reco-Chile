@@ -1,0 +1,153 @@
+{
+  "name": "equiv_01_two_tied_stable_outcome",
+  "kind": "equivalence",
+  "description": "Two tied long shots followed by one near-certain fixed program (2 orders). This is the 'stable' sensitivity case: the predicted outcome is the fixed program under both orders and its final chance is identical, because the fixed program sits behind the whole tied group. The unmatched risk is a real number strictly between 0 and the hard attention threshold, unlike the tied lists below where it collapses to 0. Note that the risk is invariant across the orders of one equivalence class by construction — it is the product of (1 - availability) over the same set of wishes, up to floating-point reassociation — so no fixture can show it moving meaningfully; what the sensitivity block is about is the predicted outcome and its final chance.",
+  "inputs": {
+    "student_id": "12345678-5",
+    "use_equivalence_classes": true,
+    "wishes": [
+      {
+        "wish_rank": 1,
+        "preference_group": 1,
+        "program_id": "14870:131000000133",
+        "program_label": "Colegio Entre Valles",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 2,
+        "preference_group": 1,
+        "program_id": "13503:131000000133",
+        "program_label": "Colegio Valentin Letelier",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 3,
+        "preference_group": 2,
+        "program_id": "8813:131000000131",
+        "program_label": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      }
+    ]
+  },
+  "expected": {
+    "mode": "equivalence",
+    "total_orders": 2,
+    "max_exact_equiv_permutations": 10000,
+    "rejected_over_cap": false,
+    "reference_choices": [
+      {
+        "wish_rank": 1,
+        "program": "Colegio Entre Valles",
+        "lottery_number": 14,
+        "priority_tier": "no_priority",
+        "capacity": 7,
+        "true_applicants_last_year": 29,
+        "lottery_population_used": 53,
+        "raw_lottery_rank": 14,
+        "lottery_percentile_used": 0.25,
+        "priority_effective_percentile": 0.32075471695,
+        "priority_effective_rank": 17,
+        "availability_probability": 0.10117809520423539,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 1.0,
+        "choice_assignment_probability": 0.10117809520423539,
+        "cumulative_unavailable_after_choice": 0.8988219047957646,
+        "program_id": "14870:131000000133"
+      },
+      {
+        "wish_rank": 2,
+        "program": "Colegio Valentin Letelier",
+        "lottery_number": 53,
+        "priority_tier": "no_priority",
+        "capacity": 29,
+        "true_applicants_last_year": 51,
+        "lottery_population_used": 87,
+        "raw_lottery_rank": 53,
+        "lottery_percentile_used": 0.6046511627906976,
+        "priority_effective_percentile": 0.6273723603441861,
+        "priority_effective_rank": 55,
+        "availability_probability": 0.09463951778895735,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.8988219047957646,
+        "choice_assignment_probability": 0.08506407164802329,
+        "cumulative_unavailable_after_choice": 0.8137578331477413,
+        "program_id": "13503:131000000133"
+      },
+      {
+        "wish_rank": 3,
+        "program": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "lottery_number": 408,
+        "priority_tier": "no_priority",
+        "capacity": 195,
+        "true_applicants_last_year": 209,
+        "lottery_population_used": 460,
+        "raw_lottery_rank": 408,
+        "lottery_percentile_used": 0.8867102396514162,
+        "priority_effective_percentile": 0.8985317798631809,
+        "priority_effective_rank": 414,
+        "availability_probability": 0.9900056308153562,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.8137578331477413,
+        "choice_assignment_probability": 0.805624836936367,
+        "cumulative_unavailable_after_choice": 0.0081329962113743,
+        "program_id": "8813:131000000131"
+      }
+    ],
+    "variants": [
+      {
+        "strict_order_number": 1,
+        "order_program_ids": [
+          "14870:131000000133",
+          "13503:131000000133",
+          "8813:131000000131"
+        ],
+        "order_program_labels": [
+          "Colegio Entre Valles",
+          "Colegio Valentin Letelier",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.805624836936367,
+        "unmatched_risk": 0.0081329962113743,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 2,
+        "order_program_ids": [
+          "13503:131000000133",
+          "14870:131000000133",
+          "8813:131000000131"
+        ],
+        "order_program_labels": [
+          "Colegio Valentin Letelier",
+          "Colegio Entre Valles",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.805624836936367,
+        "unmatched_risk": 0.0081329962113743,
+        "flagged_at_risk": false
+      }
+    ],
+    "distinct_outcomes": [
+      "Liceo Bicentenario Técnico Profesional Ignacio Domeyko"
+    ]
+  }
+}

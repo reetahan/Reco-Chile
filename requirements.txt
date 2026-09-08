@@ -1,4 +1,12 @@
-streamlit>=1.50
+# Runtime dependencies of the FastAPI service (api.py + the sae_app/ engine).
+#
+#   python -m venv .venv && .venv/bin/python -m pip install -r requirements.txt
+#   .venv/bin/python -m pip install -r requirements-dev.txt   # tests
+#
+# Lower bounds only, deliberately: no lockfile and no project-manager config, so
+# collaborators are not pushed onto any one tool. The tradeoff is that installs
+# are not reproducible — see CLAUDE.md for the versions the engine was last
+# smoke-tested against.
 pandas>=2.0
 numpy>=1.24
 scipy>=1.10

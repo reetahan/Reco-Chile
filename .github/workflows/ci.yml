@@ -1,0 +1,170 @@
+# Continuous integration for the two halves of the stack.
+#
+#   python  — engine + API: pytest, plus an import-isolation check on the engine.
+#   web     — Next.js: lint, formatting, types, unit tests, production build.
+#   e2e     — Playwright against the real pair (uvicorn + next dev).
+#
+# Every job is reproducible locally with the same commands; nothing here is a
+# CI-only code path.
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  # A new push to the same branch/PR supersedes the run in flight.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # No analytics; Next.js telemetry included.
+  NEXT_TELEMETRY_DISABLED: "1"
+  # 3.12 is the version the engine is developed against (3.10+ is required);
+  # 22 is the Node LTS line (package.json requires >=20).
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+
+jobs:
+  python:
+    name: python (engine + API)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Tests
+        run: python -m pytest -q
+
+      # Import-isolation guard: the engine and API must import with no UI
+      # framework present. Setting the module to None makes `import streamlit`
+      # raise rather than succeed if a future dependency pulls it in
+      # transitively.
+      - name: Engine import isolation
+        run: python -c "import sys; sys.modules['streamlit'] = None; import api"
+
+  web:
+    name: web (lint, types, unit, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      # Before setup-node: its `cache: pnpm` needs the pnpm binary to resolve
+      # the store directory. The version comes from web/package.json's
+      # `packageManager` field, so it can never drift from local installs.
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      # `next build` writes the generated route types (the PageProps and
+      # LayoutProps globals) into .next/types, which tsconfig.json includes.
+      # This step runs before Build, so it has to generate them itself or tsc
+      # fails on a clean checkout with "Cannot find name 'PageProps'".
+      - name: Generate route types
+        run: pnpm exec next typegen
+
+      - name: Types
+        run: pnpm exec tsc --noEmit
+
+      # No `--` before the flag: pnpm 11 swallows everything after it
+      # instead of forwarding it to the script (verified against this repo).
+      - name: Unit tests
+        run: pnpm test --run
+
+      - name: Build
+        run: pnpm build
+
+  e2e:
+    name: e2e (Playwright)
+    runs-on: ubuntu-latest
+    # Only worth the browser download once both halves pass on their own.
+    needs: [python, web]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      # playwright.config.ts starts the backend with `.venv/bin/python -m
+      # uvicorn api:app` from the repository root (never a bare `python3`), so
+      # the venv has to exist at exactly that path.
+      - name: Create the backend venv at .venv
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install -r requirements.txt
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: web
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        working-directory: web
+        run: pnpm exec playwright install --with-deps chromium
+
+      # CI=1 also flips playwright.config.ts to forbidOnly, retries and
+      # reuseExistingServer:false — a stale server is never trusted. The html
+      # reporter is added on top of the config's `github` one so a failure
+      # leaves an artifact worth downloading.
+      - name: End-to-end tests
+        working-directory: web
+        env:
+          CI: "1"
+          PLAYWRIGHT_HTML_OPEN: never
+        run: pnpm e2e --reporter=github,html
+
+      - name: Upload the Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            web/playwright-report
+            web/test-results
+          retention-days: 7
+          if-no-files-found: ignore

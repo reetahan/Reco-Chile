@@ -1,0 +1,86 @@
+{
+  "track": {
+    "General": "General",
+    "Specialized": "Técnico-profesional"
+  },
+  "specialty": {
+    "Agriculture": "Agricultura",
+    "Metalworking and mechanics": "Metalmecánica y mecánica",
+    "Electricity": "Electricidad",
+    "Food services": "Servicios de alimentación",
+    "Construction": "Construcción",
+    "Technology and communications": "Tecnología y comunicaciones"
+  },
+  "gender": {
+    "Mixed": "Mixto",
+    "Boys": "Hombres",
+    "Girls": "Mujeres"
+  },
+  "schoolDay": {
+    "Full day": "Jornada completa",
+    "Morning": "Mañana",
+    "Afternoon": "Tarde"
+  },
+  "rurality": {
+    "Urban": "Urbano",
+    "Rural": "Rural"
+  },
+  "pie": {
+    "With PIE": "Con PIE",
+    "Without PIE": "Sin PIE"
+  },
+  "pace": {
+    "With PACE": "Con PACE",
+    "Without PACE": "Sin PACE"
+  },
+  "payment": {
+    "Free": "Gratuito",
+    "$1,000–$10,000": "$1.000–$10.000",
+    "$10,001–$25,000": "$10.001–$25.000",
+    "$25,001–$50,000": "$25.001–$50.000",
+    "$50,001–$100,000": "$50.001–$100.000",
+    "More than $100,000": "Más de $100.000",
+    "No information": "Sin información"
+  },
+  "religious": {
+    "Secular": "Laico",
+    "Catholic": "Católico",
+    "Evangelical": "Evangélico",
+    "Other": "Otro",
+    "No information": "Sin información"
+  },
+  "priorityTier": {
+    "priority_sibling": "Prioridad por hermano/a",
+    "priority_student": "Estudiante prioritario",
+    "priority_parent_civil_servant": "Hijo/a de funcionario/a",
+    "priority_ex_student": "Exalumno/a",
+    "no_priority": "Sin prioridad"
+  },
+  "priorityFlag": {
+    "priority_sibling": "Hermano/a",
+    "priority_student": "Estudiante prioritario",
+    "priority_parent_civil_servant": "Funcionario/a",
+    "priority_ex_student": "Exalumno/a",
+    "priority_already_registered": "Ya matriculado/a"
+  },
+  "outcome": {
+    "Unmatched": "Sin cupo"
+  },
+  "attentionLevel": {
+    "low": "Atención baja",
+    "moderate": "Atención moderada",
+    "high": "Atención alta"
+  },
+  "riskLevel": {
+    "green": "Riesgo bajo",
+    "orange": "Riesgo moderado",
+    "red": "Riesgo alto",
+    "gray": "Sin estimación"
+  },
+  "fallback": {
+    "Unknown": "Desconocido",
+    "Unknown region": "Región desconocida",
+    "School name unavailable": "Nombre del establecimiento no disponible",
+    "Program details unavailable": "Detalles del programa no disponibles"
+  }
+}

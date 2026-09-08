@@ -1,0 +1,112 @@
+{
+  "name": "recommend_02_home_address_precision",
+  "kind": "recommendation",
+  "description": "Same list with a fixed Rapa Nui home at address precision: the 100 km hard distance filter applies and drops every mainland candidate, leaving only the schools on the island.",
+  "inputs": {
+    "student_id": "12345678-5",
+    "use_equivalence_classes": false,
+    "wishes": [
+      {
+        "wish_rank": 1,
+        "preference_group": 1,
+        "program_id": "1886:131000000133",
+        "program_label": "Colegio Manuel Bulnes Prieto",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 2,
+        "preference_group": 2,
+        "program_id": "9033:131000000133",
+        "program_label": "Colegio Sta Maria Reina",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 3,
+        "preference_group": 3,
+        "program_id": "10140:131000000133",
+        "program_label": "Escuela Particular Frings College",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      }
+    ],
+    "max_recommendations": 5,
+    "home_geo_reference": {
+      "lat": -27.1127,
+      "lon": -109.3497,
+      "precision": "address",
+      "display_name": "Fixed test coordinates (never geocoded)"
+    }
+  },
+  "expected": {
+    "current_unmatched_risk": 0.03237484918221267,
+    "home_supports_hard_distance_filter": true,
+    "recommendation_count": 2,
+    "recommendations": [
+      {
+        "program": "Colegio San Sebastian de Akivi",
+        "School": "Colegio San Sebastian de Akivi",
+        "Commune": "Isla De Pascua",
+        "Region": "Región de Atacama",
+        "Program details": "General H-C · Mixed · Full day",
+        "Chance if considered": "100.0%",
+        "Marginal unmatched-risk reduction": "3.2%",
+        "Projected unmatched risk after append": "0.0%",
+        "Estimated MTB rank": 1,
+        "Recommendation score": 94.8,
+        "Straight-line distance from home (km)": 9.0,
+        "Straight-line distance from current list (km)": "",
+        "Capacity": 8,
+        "Applicants / seat": 0.12,
+        "_recommendation_score_raw": 0.9479937751268757,
+        "_similarity_score_raw": 0.6566119823525973,
+        "_chance_if_considered_raw": 1.0,
+        "_proximity_score_raw": 0.8471508242065405,
+        "_projected_unmatched_risk_raw": 0.0,
+        "_risk_color": "green",
+        "_similarity_fallback_mode": false,
+        "program_id": "14675:131000000133",
+        "program_label": "Colegio San Sebastian de Akivi"
+      },
+      {
+        "program": "Colegio Hermano Eugenio Eyraud",
+        "School": "Colegio Hermano Eugenio Eyraud",
+        "Commune": "Isla De Pascua",
+        "Region": "Región de Atacama",
+        "Program details": "General H-C · Mixed · Full day",
+        "Chance if considered": "100.0%",
+        "Marginal unmatched-risk reduction": "3.2%",
+        "Projected unmatched risk after append": "0.0%",
+        "Estimated MTB rank": 1,
+        "Recommendation score": 94.2,
+        "Straight-line distance from home (km)": 8.3,
+        "Straight-line distance from current list (km)": "",
+        "Capacity": 4,
+        "Applicants / seat": 0.0,
+        "_recommendation_score_raw": 0.9421890500504124,
+        "_similarity_score_raw": 0.6256379661716538,
+        "_chance_if_considered_raw": 1.0,
+        "_proximity_score_raw": 0.8574909787066611,
+        "_projected_unmatched_risk_raw": 0.0,
+        "_risk_color": "green",
+        "_similarity_fallback_mode": false,
+        "program_id": "14860:131000000133",
+        "program_label": "Colegio Hermano Eugenio Eyraud"
+      }
+    ],
+    "diagnostics": {
+      "failed_candidates": 0,
+      "failed_candidate_examples": []
+    }
+  }
+}

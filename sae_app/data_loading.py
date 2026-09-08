@@ -2,7 +2,7 @@
 
 This module owns "how to interpret the raw CSV files on disk" — encoding
 quirks, column-name variants, and source-language value translation. It does
-not know anything about Streamlit widgets or the recommendation engine.
+not know anything about the recommendation engine.
 """
 
 from __future__ import annotations
@@ -11,8 +11,8 @@ import io
 import re
 import numpy as np
 import pandas as pd
-import streamlit as st
 
+from sae_app.cache import memoize_bytes
 from sae_app.constants import (
     CHILE_COORDINATE_ZONES,
     PROGRAM_DISPLAY_NAME,
@@ -199,7 +199,7 @@ def load_rbd_region_map(file_bytes: bytes | None = None) -> pd.DataFrame:
     return _load_rbd_region_map(file_bytes)
 
 
-@st.cache_data(show_spinner=False)
+@memoize_bytes
 def _load_rbd_region_map(file_bytes: bytes) -> pd.DataFrame:
     df = read_csv(file_bytes, sep=",")
 
@@ -264,7 +264,7 @@ def load_program_filters(file_bytes: bytes | None = None) -> pd.DataFrame:
     return _load_program_filters(file_bytes)
 
 
-@st.cache_data(show_spinner=False)
+@memoize_bytes
 def _load_program_filters(file_bytes: bytes) -> pd.DataFrame:
     df = read_csv(file_bytes, sep=",")
 
@@ -689,7 +689,7 @@ def _rbd_coordinate_spread_km(
     return spread
 
 
-@st.cache_data(show_spinner=False)
+@memoize_bytes
 def load_program_names(file_bytes: bytes) -> pd.DataFrame:
     df = read_csv(file_bytes, sep="auto")
     df.columns = [str(c).lstrip("﻿").strip() for c in df.columns]
@@ -849,7 +849,7 @@ def load_calibration(file_bytes: bytes) -> pd.DataFrame:
     )
 
 
-@st.cache_data(show_spinner=False)
+@memoize_bytes
 def _load_calibration(
     file_bytes: bytes,
     region_file_bytes: bytes,
@@ -923,7 +923,7 @@ def validate_cumulative_share_columns(
         through_col = f"cum_share_through_{tier}_2024"
         needed = [share_col, before_col, through_col]
         if any(col not in calib.columns for col in needed):
-            # Missing columns are reported by required_cols() in app.py.
+            # Missing columns are reported separately by required_cols().
             continue
 
         share = pd.to_numeric(calib[share_col], errors="coerce")

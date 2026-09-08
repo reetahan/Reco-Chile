@@ -1,0 +1,59 @@
+{
+  "rank": {
+    "label": "Ranking de preferencia",
+    "short": "Preferencia",
+    "badge": "#{n}",
+    "position": "Preferencia {n} de {total}"
+  },
+  "group": {
+    "label": "Grupo de preferencia",
+    "short": "Grupo",
+    "forProgram": "Grupo de preferencia de {program}",
+    "hint": "Asigna el mismo número de grupo de preferencia a los programas considerados equivalentes. El grupo 1 se prefiere al grupo 2, etc.",
+    "longHint": "Usa el mismo número de grupo de preferencia para los programas que consideras empatados. Los números más bajos son preferidos. La app probará todos los órdenes posibles dentro de cada grupo empatado, para que veas si el orden interno exacto cambia el resultado previsto."
+  },
+  "card": {
+    "moveUp": "Subir",
+    "moveDown": "Bajar",
+    "remove": "Eliminar",
+    "moveUpProgram": "Subir {program}",
+    "moveDownProgram": "Bajar {program}",
+    "removeProgram": "Eliminar {program}",
+    "detailsTrigger": "Ver detalles del programa",
+    "detailsTitle": "Detalles del programa",
+    "detailsFor": "Características de {program} según los datos de calibración cargados.",
+    "locationUnknown": "Comuna y región sin información",
+    "loading": "Cargando el programa…",
+    "unavailable": "Este programa ya no está disponible en los datos cargados."
+  },
+  "dnd": {
+    "handle": "Reordenar {program}",
+    "instructions": "Presiona la barra espaciadora para tomar el programa. Usa las flechas para moverlo, la barra espaciadora para soltarlo y Escape para cancelar.",
+    "onDragStart": "Tomaste {program}. Está en la preferencia {position} de {total}.",
+    "onDragOver": "{program} se movió a la preferencia {position} de {total}.",
+    "onDragEnd": "{program} quedó en la preferencia {position} de {total}.",
+    "onDragCancel": "Se canceló el reordenamiento. {program} volvió a la preferencia {position} de {total}."
+  },
+  "priorities": {
+    "title": "¿Tienes prioridad en este establecimiento?",
+    "forProgram": "Prioridades en {program}",
+    "hint": "Marca únicamente las situaciones que correspondan a este establecimiento. El SAE reconoce los cuatro criterios de prioridad que aparecen a continuación.",
+    "labels": {
+      "sibling": "Prioridad por hermano/a",
+      "student": "Cupo para estudiantes prioritarios",
+      "parentCivilServant": "Prioridad por hijo/a de funcionario/a",
+      "exStudent": "Prioridad por exalumno/a",
+      "alreadyRegistered": "Ya matriculado/a"
+    },
+    "descriptions": {
+      "sibling": "Tienes un hermano o hermana matriculado/a en el establecimiento",
+      "student": "Tienes la condición de estudiante prioritario para este establecimiento",
+      "parentCivilServant": "Eres hijo/a de un funcionario/a del establecimiento",
+      "exStudent": "Fuiste estudiante del establecimiento y no fuiste expulsado/a",
+      "alreadyRegistered": "Ya estás matriculado/a en este establecimiento"
+    },
+    "alreadyRegisteredNote": "La matrícula actual se muestra por separado porque no es uno de los cuatro criterios de prioridad SAE.",
+    "none": "Sin prioridad declarada para este programa",
+    "declared": "Prioridades declaradas: {priorities}"
+  }
+}

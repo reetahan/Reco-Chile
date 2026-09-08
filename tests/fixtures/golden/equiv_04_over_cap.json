@@ -1,0 +1,108 @@
+{
+  "name": "equiv_04_over_cap",
+  "kind": "equivalence",
+  "description": "Eight tied programs: 8! = 40,320 compatible strict orders, above MAX_EXACT_EQUIV_PERMUTATIONS, so the app refuses to evaluate them.",
+  "inputs": {
+    "student_id": "12345678-5",
+    "use_equivalence_classes": true,
+    "wishes": [
+      {
+        "wish_rank": 1,
+        "preference_group": 1,
+        "program_id": "4871:131000000133",
+        "program_label": "Liceo Copiulemu",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 2,
+        "preference_group": 1,
+        "program_id": "12741:131000000133",
+        "program_label": "Colegio Lationoamericano las Parinas",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 3,
+        "preference_group": 1,
+        "program_id": "15600:131000000133",
+        "program_label": "Alberto Hurtado Cruchaga",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 4,
+        "preference_group": 1,
+        "program_id": "22641:131000000133",
+        "program_label": "Colegio Sagrada Familia (Hualaihué)",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 5,
+        "preference_group": 1,
+        "program_id": "25395:131000000133",
+        "program_label": "Colegio Betterland School",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 6,
+        "preference_group": 1,
+        "program_id": "31253:131000000133",
+        "program_label": "Colegio Alto del Maipo",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 7,
+        "preference_group": 1,
+        "program_id": "20167:131000000133",
+        "program_label": "Colegio Liahona (Pucón) — General H-C · Mixed · Full day",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 8,
+        "preference_group": 1,
+        "program_id": "9063:151052013133",
+        "program_label": "Liceo Industrial Bicentenario Chileno Aleman (Ñuñoa) — Technical-vocational: Mecánica Industrial (con mención) · Mixed · Full day",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      }
+    ]
+  },
+  "expected": {
+    "mode": "equivalence",
+    "total_orders": 40320,
+    "max_exact_equiv_permutations": 10000,
+    "rejected_over_cap": true,
+    "reference_choices": null,
+    "variants": [],
+    "distinct_outcomes": []
+  }
+}

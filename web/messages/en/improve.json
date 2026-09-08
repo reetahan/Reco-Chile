@@ -1,0 +1,46 @@
+{
+  "title": "Improve your list",
+  "subtitle": "Suggested programs",
+  "methodBody": "Suggestions combine similarity to the current list, approximate proximity, historical demand, estimated admission access and diversity between recommendations.",
+  "submit": "Add selected programs and review my list",
+  "address": {
+    "sectionTitle": "Improve distance estimates — optional",
+    "label": "Your home address",
+    "help": "Optional. Without it, distance is measured from your current list.",
+    "use": "Use this address for distance",
+    "clear": "Clear address",
+    "changed": "Address changed. Click the button to update the coordinates.",
+    "confirmed": "Distances will be computed from the confirmed address: {address}",
+    "usedLocation": "{warning} Location used: {address}",
+    "privacyTitle": "Address privacy and precision",
+    "privacyBody": "The address is sent to OpenStreetMap/Nominatim only after you click the geocoding button. Distances remain approximate and do not represent travel time."
+  },
+  "precision": {
+    "approximate": "The geocoded location is approximate. Distances should be interpreted carefully.",
+    "city": "The geocoder could only identify the city or municipality. Distances are approximate."
+  },
+  "distance": {
+    "approx": "Approximate straight-line distance: {distance} km",
+    "noHardFilter": "Because the home location is only city-level or approximate, no hard distance cutoff is applied. Straight-line distance only affects the recommendation score.",
+    "hardLimit": "The {maxDistance} km straight-line limit is applied only when the program has reliable school-level coordinates. Commune and regional approximations are never used for hard exclusion."
+  },
+  "count": {
+    "question": "How many recommendations do you want?"
+  },
+  "card": {
+    "add": "Add this program to the end of my list",
+    "chanceAppended": "Chance of getting in as your preference #{rank}",
+    "chanceNote": "If you add this one to the end of your current list.",
+    "noInformation": "No information"
+  },
+  "empty": {
+    "needWishes": "Enter at least one valid program in the wish list to get recommendations.",
+    "noSimilar": "No similar program was found under the current proximity/scoring rules.",
+    "noneMatched": "No recommended program matched the current scoring and reliable straight-line distance rules. You can still add programs manually.",
+    "allAlreadyAdded": "All selected recommendations are already in the wish list."
+  },
+  "warning": {
+    "similarityFallback": "The current list does not contain enough usable information to infer clear similar-program preferences. The suggestions below are therefore based mainly on distance and estimated admission safety.",
+    "failedCandidates": "Some programs could not be evaluated because of invalid source data, and no recommendation was produced."
+  }
+}

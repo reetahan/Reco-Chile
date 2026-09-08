@@ -1,0 +1,191 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Theme tokens.
+ *
+ * The palette is carried over 1:1 from the Streamlit prototype's
+ * `.streamlit/config.toml` (see MIGRATION.md §4.4): near-monochrome surfaces,
+ * a single restrained accent, hairline borders, medium radius, pill buttons.
+ * Hex values from that file, converted to oklch:
+ *
+ *   primaryColor            #1F6FEB  -> --primary / --ring
+ *   backgroundColor         #FFFFFF  -> --background / --card / --popover
+ *   secondaryBackgroundColor#F6F7F9  -> --secondary / --muted / --accent
+ *   textColor               #16191D  -> --foreground
+ *   borderColor             #E4E7EB  -> --border / --input
+ *   chartCategoricalColors           -> --chart-1..5
+ *
+ * Note on --accent: in shadcn's token vocabulary `--accent` is the neutral
+ * hover/active *surface*, not the brand accent. The brand accent is
+ * `--primary`. Keep it that way — mapping --accent to #1F6FEB would turn
+ * every hover state bright blue.
+ *
+ * Light is the default and the only mode required for parity. Dark tokens are
+ * defined so `.dark` on <html> works, but nothing switches to it yet.
+ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* baseFontSize = 15 in config.toml. Overriding --text-base (rather than the
+     root font size) keeps Tailwind's spacing scale on a 16px rem, so component
+     metrics and --radius stay at their intended pixel values. */
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.5rem;
+}
+
+:root {
+  /* font = "sans-serif" / codeFont = "monospace" in config.toml: no webfont is
+     downloaded, so nothing is fetched at build time and text renders in the
+     reader's own system UI face. */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+
+  /* baseRadius = "medium" */
+  --radius: 0.5rem;
+
+  --background: oklch(1 0 0); /* #FFFFFF */
+  --foreground: oklch(0.212 0.0092 255.61); /* #16191D */
+  --card: oklch(1 0 0); /* #FFFFFF */
+  --card-foreground: oklch(0.212 0.0092 255.61);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.212 0.0092 255.61);
+  --primary: oklch(0.5686 0.2023 259.67); /* #1F6FEB */
+  --primary-foreground: oklch(1 0 0); /* #FFFFFF */
+  /*
+   * Hover surface for solid primary buttons — *darker* than --primary, not the
+   * lighter `bg-primary/80` shadcn ships. White on #1F6FEB is 4.63:1, which
+   * clears AA by a hair; white on that colour lightened 20 % toward the page is
+   * 3.33:1, which does not, and a hovered button is text a family is reading.
+   * #0E63DE is the same hue and chroma at oklch lightness 0.53 → 5.47:1.
+   */
+  --primary-hover: oklch(0.53 0.2023 259.67); /* #0E63DE */
+  --secondary: oklch(0.9759 0.0029 264.54); /* #F6F7F9 */
+  --secondary-foreground: oklch(0.212 0.0092 255.61);
+  --muted: oklch(0.9759 0.0029 264.54); /* #F6F7F9 */
+  --muted-foreground: oklch(0.4998 0.0256 256.79); /* #5A6472 */
+  --accent: oklch(0.9759 0.0029 264.54); /* #F6F7F9 — hover surface */
+  --accent-foreground: oklch(0.212 0.0092 255.61);
+  --destructive: oklch(0.584 0.1473 32.92); /* #C3543E */
+  --border: oklch(0.9268 0.0063 255.48); /* #E4E7EB */
+  --input: oklch(0.9268 0.0063 255.48); /* #E4E7EB */
+  --ring: oklch(0.5686 0.2023 259.67); /* #1F6FEB */
+
+  /* chartCategoricalColors */
+  --chart-1: oklch(0.5686 0.2023 259.67); /* #1F6FEB */
+  --chart-2: oklch(0.6545 0.1562 262.5); /* #5B8DEF */
+  --chart-3: oklch(0.6218 0.1655 292.77); /* #8C6FE0 */
+  --chart-4: oklch(0.6636 0.0986 180.42); /* #3FA796 */
+  --chart-5: oklch(0.6746 0.1353 72.19); /* #C9871F */
+
+  /* [theme.sidebar] */
+  --sidebar: oklch(0.9876 0.0017 247.84); /* #FAFBFC */
+  --sidebar-foreground: oklch(0.212 0.0092 255.61);
+  --sidebar-primary: oklch(0.5686 0.2023 259.67);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(1 0 0); /* #FFFFFF */
+  --sidebar-accent-foreground: oklch(0.212 0.0092 255.61);
+  --sidebar-border: oklch(0.9268 0.0063 255.48);
+  --sidebar-ring: oklch(0.5686 0.2023 259.67);
+}
+
+.dark {
+  --background: oklch(0.1768 0.007 258.37); /* #0F1114 */
+  --foreground: oklch(0.9364 0.0046 258.33); /* #E8EAED */
+  --card: oklch(0.212 0.0092 255.61); /* #16191D */
+  --card-foreground: oklch(0.9364 0.0046 258.33);
+  --popover: oklch(0.212 0.0092 255.61);
+  --popover-foreground: oklch(0.9364 0.0046 258.33);
+  --primary: oklch(0.6545 0.1562 262.5); /* #5B8DEF */
+  --primary-foreground: oklch(0.1768 0.007 258.37);
+  /* Dark mode reads the other way round: the foreground is near-black, so the
+     hover surface brightens instead of darkening. */
+  --primary-hover: oklch(0.71 0.1562 262.5);
+  --secondary: oklch(0.2421 0.0129 258.37); /* #1C2026 */
+  --secondary-foreground: oklch(0.9364 0.0046 258.33);
+  --muted: oklch(0.2421 0.0129 258.37);
+  --muted-foreground: oklch(0.7121 0.0203 255.57); /* #9AA3AF */
+  --accent: oklch(0.2821 0.0155 252.37); /* #242A31 — hover surface */
+  --accent-foreground: oklch(0.9364 0.0046 258.33);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.6545 0.1562 262.5);
+
+  --chart-1: oklch(0.6545 0.1562 262.5);
+  --chart-2: oklch(0.5686 0.2023 259.67);
+  --chart-3: oklch(0.6218 0.1655 292.77);
+  --chart-4: oklch(0.6636 0.0986 180.42);
+  --chart-5: oklch(0.6746 0.1353 72.19);
+
+  --sidebar: oklch(0.212 0.0092 255.61);
+  --sidebar-foreground: oklch(0.9364 0.0046 258.33);
+  --sidebar-primary: oklch(0.6545 0.1562 262.5);
+  --sidebar-primary-foreground: oklch(0.1768 0.007 258.37);
+  --sidebar-accent: oklch(0.2821 0.0155 252.37);
+  --sidebar-accent-foreground: oklch(0.9364 0.0046 258.33);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.6545 0.1562 262.5);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-base text-foreground;
+  }
+}

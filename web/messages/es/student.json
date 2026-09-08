@@ -1,0 +1,13 @@
+{
+  "title": "Tus datos",
+  "lead": "Necesitamos tu RUN o IPE para calcular tus posibilidades.",
+  "idLabel": "Tu RUN o IPE",
+  "idPlaceholder": "12.345.678-5 / 111222333-4",
+  "idValid": "Formato de {kind} válido.",
+  "privacyNote": "El cálculo se realiza en el servidor de esta aplicación. Tu RUN/IPE no queda guardado en el navegador ni aparece en la dirección web.",
+  "why": {
+    "title": "¿Por qué te pedimos este dato?",
+    "body": "Necesitamos tu RUN o IPE para calcular tus posibilidades.",
+    "privacy": "El número no sale de esta herramienta: no se envía a ninguna parte y no modifica tu postulación oficial."
+  }
+}

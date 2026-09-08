@@ -1,0 +1,29 @@
+# Build context for Dockerfile.api. Keep it to api.py, sae_app/, data/ and
+# requirements.txt — everything else only slows the build down or would leak
+# host state (a macOS .venv is unusable in a linux image anyway).
+.git
+.github
+.gitignore
+.venv
+.venv-api
+venv
+__pycache__
+**/__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.DS_Store
+__MACOSX
+
+# Frontend: built by web/Dockerfile from its own context.
+web
+node_modules
+
+# Not used by the service.
+tests
+scripts
+docs
+requirements-dev.txt
+*.md
+docker-compose.yml

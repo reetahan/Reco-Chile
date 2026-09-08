@@ -1,0 +1,200 @@
+{
+  "purpose": "Provenance of the committed golden fixtures. Not compared by the tests: files whose name starts with '_' are skipped.",
+  "student_run": "12345678-5",
+  "student_ipe": "100200300-4",
+  "home_geo_reference": {
+    "lat": -27.1127,
+    "lon": -109.3497
+  },
+  "max_recommendations": 5,
+  "library_versions": {
+    "python": "3.12.13",
+    "pandas": "3.0.5",
+    "numpy": "2.5.2",
+    "scipy": "1.18.0"
+  },
+  "selected_programs": {
+    "priority_tiers": {
+      "priority_sibling": {
+        "program_id": "15610:131000000133",
+        "program_label": "Colegio Partic, San Jose de la Montana"
+      },
+      "priority_student": {
+        "program_id": "22597:131000000133",
+        "program_label": "Liceo Tecnico Profesional San Jose"
+      },
+      "priority_parent_civil_servant": {
+        "program_id": "14642:131000000133",
+        "program_label": "Colegio Cristiano Embajadores del Rey"
+      },
+      "priority_ex_student": {
+        "program_id": "40319:131000000133",
+        "program_label": "Colegio Part. Sub. Cumbres del Choapa"
+      }
+    },
+    "long_shot_pool_head": [
+      {
+        "program_id": "14870:131000000133",
+        "program_label": "Colegio Entre Valles"
+      },
+      {
+        "program_id": "13503:131000000133",
+        "program_label": "Colegio Valentin Letelier"
+      }
+    ],
+    "near_certain_pool_head": [
+      {
+        "program_id": "8813:131000000131",
+        "program_label": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko"
+      }
+    ],
+    "balanced_pool_head": [
+      {
+        "program_id": "4871:131000000133",
+        "program_label": "Liceo Copiulemu"
+      },
+      {
+        "program_id": "12741:131000000133",
+        "program_label": "Colegio Lationoamericano las Parinas"
+      },
+      {
+        "program_id": "15600:131000000133",
+        "program_label": "Alberto Hurtado Cruchaga"
+      },
+      {
+        "program_id": "22641:131000000133",
+        "program_label": "Colegio Sagrada Familia (Hualaihué)"
+      },
+      {
+        "program_id": "25395:131000000133",
+        "program_label": "Colegio Betterland School"
+      },
+      {
+        "program_id": "31253:131000000133",
+        "program_label": "Colegio Alto del Maipo"
+      },
+      {
+        "program_id": "20167:131000000133",
+        "program_label": "Colegio Liahona (Pucón) — General H-C · Mixed · Full day"
+      },
+      {
+        "program_id": "9063:151052013133",
+        "program_label": "Liceo Industrial Bicentenario Chileno Aleman (Ñuñoa) — Technical-vocational: Mecánica Industrial (con mención) · Mixed · Full day"
+      },
+      {
+        "program_id": "24898:131000000131",
+        "program_label": "Colegio San Francisco Misionero"
+      },
+      {
+        "program_id": "25418:131000000133",
+        "program_label": "Colegio Poliv. San Bernardo Abad"
+      },
+      {
+        "program_id": "10073:131000000133",
+        "program_label": "Liceo Bicentenario Industrial Vicente Perez Rosales"
+      },
+      {
+        "program_id": "25091:131000000133",
+        "program_label": "Esc. Basica Boston College Maipu"
+      }
+    ],
+    "scarce_pool_head": [
+      {
+        "program_id": "1184:131000000133",
+        "program_label": "Colegio Tecnico Profesional Mercedes Maturana Gallardo"
+      },
+      {
+        "program_id": "1371:131000000233",
+        "program_label": "Colegio Bicentenario Arauco"
+      },
+      {
+        "program_id": "1405:131000000133",
+        "program_label": "Colegio Ingles de Quillota"
+      },
+      {
+        "program_id": "14642:131000000133",
+        "program_label": "Colegio Cristiano Embajadores del Rey"
+      },
+      {
+        "program_id": "14751:131000000133",
+        "program_label": "Colegio El Roble de Santo Domingo"
+      },
+      {
+        "program_id": "18112:131000000133",
+        "program_label": "Colegio Bicentenario Ines Enriquez Frodden"
+      },
+      {
+        "program_id": "25718:131000000131",
+        "program_label": "Colegio Part. los Angeles Santiago de San Mig"
+      },
+      {
+        "program_id": "26454:131000000133",
+        "program_label": "Colegio Santiago Emprendedores"
+      },
+      {
+        "program_id": "40319:131000000133",
+        "program_label": "Colegio Part. Sub. Cumbres del Choapa"
+      },
+      {
+        "program_id": "10415:131000000233",
+        "program_label": "Escuela Particular Desiree"
+      },
+      {
+        "program_id": "14818:131000000133",
+        "program_label": "Colegio Numancia"
+      },
+      {
+        "program_id": "9903:131000000133",
+        "program_label": "Colegio los Conquistadores (Cerrillos)"
+      }
+    ],
+    "santiago_pool_head": [
+      {
+        "program_id": "1886:131000000133",
+        "program_label": "Colegio Manuel Bulnes Prieto"
+      },
+      {
+        "program_id": "9033:131000000133",
+        "program_label": "Colegio Sta Maria Reina"
+      },
+      {
+        "program_id": "10140:131000000133",
+        "program_label": "Escuela Particular Frings College"
+      }
+    ],
+    "imputed": {
+      "program_id": "1:131000000133",
+      "program_label": "Liceo Politecnico Arica"
+    },
+    "zero_capacity": {
+      "program_id": "56:131000000133",
+      "program_label": "Colegio San Marcos de Arica"
+    },
+    "large_population": {
+      "program_id": "8926:131000000133",
+      "program_label": "Liceo Nº7 de Providencia Luisa Saavedra",
+      "program_lottery_population_2024": 1465.0
+    }
+  },
+  "program_count": 2617,
+  "fixtures": [
+    "strict_01_single_wish.json",
+    "strict_02_three_wishes.json",
+    "strict_03_four_wishes_priority_tiers.json",
+    "strict_04_eight_wishes_scarce.json",
+    "strict_05_twelve_wishes_already_registered.json",
+    "strict_06_imputed_and_zero_capacity.json",
+    "equiv_01_two_tied_stable_outcome.json",
+    "equiv_02_two_groups_of_three.json",
+    "equiv_03_group_of_four_probability_shift.json",
+    "equiv_04_over_cap.json",
+    "recommend_01_no_home.json",
+    "recommend_02_home_address_precision.json",
+    "recommend_03_home_city_precision.json",
+    "identifier_01_valid_run.json",
+    "identifier_02_dotted_run.json",
+    "identifier_03_invalid_check_digit.json",
+    "identifier_04_valid_ipe.json",
+    "identifier_05_garbage.json"
+  ]
+}

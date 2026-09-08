@@ -1,11 +1,39 @@
 # Reco Chile — SAE admission-risk simulator
 
-Reco Chile is a bilingual Streamlit application that helps families explore school choices in Chile's *Sistema de Admisión Escolar* (SAE).
+Reco Chile is a bilingual web application that helps families explore school choices in Chile's *Sistema de Admisión Escolar* (SAE). A Next.js wizard (`web/`) presents the results; a FastAPI service (`api.py`) over the Python engine in `sae_app/` computes them.
 
 The app estimates the probability of assignment to each program in a student's wish list, measures the risk of remaining unmatched, tests whether ties between preferences are consequential, and recommends additional programs that can improve the portfolio while remaining similar to the family's revealed preferences.
 
 > [!IMPORTANT]
 > This is a research and decision-support tool. It is not an official SAE service, does not reproduce every operational detail of the centralized assignment process, and cannot guarantee an admission outcome.
+
+## Run the app
+
+Two processes: the FastAPI backend and the Next.js frontend. Requires Python 3.10+ and Node 20+ with pnpm.
+
+```bash
+# Terminal 1 — API on http://localhost:8000
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn api:app --reload
+```
+
+```bash
+# Terminal 2 — web app
+cd web
+pnpm install
+pnpm dev
+```
+
+Then open <http://localhost:3000/es/student>.
+
+Alternatively, run both in containers:
+
+```bash
+docker compose up --build
+```
+
+Full details — Python version pinning, Windows, Docker specifics — are under [Installation](#installation).
 
 ## Main features
 
@@ -15,22 +43,21 @@ The app estimates the probability of assignment to each program in a student's w
 - Compute a deterministic MTB lottery percentile for each school from `SHA-256(RUN/IPE + RBD)`.
 - Account for sibling, priority-student, civil-servant, former-student, and already-enrolled priority flags.
 - Estimate each program's availability and final assignment probability.
-- Display the overall unmatched risk and the most likely outcomes.
+- Estimate the overall chance of assignment and the single most likely outcome.
 - Test every strict ordering compatible with the selected equivalence classes, up to a configurable limit.
 - Recommend similar programs using revealed preferences, geographic proximity, competition, estimated admission safety, and diversity.
 - Geocode an optional Chilean home address and restrict suggestions to a realistic radius.
 - Switch between Spanish and English from the interface.
-- Use progressive, family-facing explanations while keeping MTB ranks, calibration details, and recommendation methodology available on demand.
+- Present results in progressive, family-facing language; the risk model and the recommendation methodology are documented below.
 
 ## Application workflow
 
 1. Enter the student's RUN or IPE and indicate whether the wish list already exists.
 2. Add programs in the family's genuine order of preference. An optional planning toggle can compare undecided internal orders.
 3. Mark every applicable priority for each establishment and analyze the list.
-4. Review the unmatched-risk estimate, the outcomes ordered by probability, and the short family-facing wish table.
-5. Open the optional detail panels to inspect MTB ranks, calibration inputs, assumptions, or equivalence-order sensitivity.
-6. Inspect suggested backup programs, compare the projected risk after appending each one, and add only acceptable options.
-7. Verify priorities for newly added programs and rerun the analysis.
+4. Review the estimated chance of assignment and the single most likely program, named with its commune and region.
+5. Inspect suggested backup programs, compare the projected chance after appending each one, and add only acceptable options.
+6. Verify priorities for newly added programs and rerun the analysis.
 
 The guided program search can filter by:
 
@@ -109,18 +136,15 @@ The estimated unmatched risk is:
 P(unmatched) = product(1 - a_i) for i = 1, ..., k
 ```
 
-The interface distinguishes between:
+The model distinguishes between:
 
 - **Chance if considered:** availability conditional on reaching that wish.
 - **Final chance of assignment:** availability after accounting for every higher-ranked wish.
 
-The current attention thresholds are defined in `sae_app/constants.py`:
-
-- `2.7%` or above: high attention;
-- `0.4%` to below `2.7%`: moderate attention;
-- below `0.4%`: low attention.
-
-These are presentation thresholds, not official SAE cutoffs. They control only the alert message. Estimated outcomes are always ordered by their actual modeled probability, so the alert never changes the likelihood ranking.
+`sae_app/constants.py` also defines soft and hard unmatched-risk thresholds
+(`0.4%` and `2.7%`). The API still returns them, but they are presentation
+values, not official SAE cutoffs, and the current interface does not surface
+them. Estimated outcomes are always ordered by their modeled probability.
 
 ## Equivalence classes
 
@@ -182,6 +206,35 @@ If the user explicitly submits a home address, the app queries OpenStreetMap's N
 
 ## Installation
 
+### Python version
+
+The project requires **Python 3.10 or newer**. The FastAPI models use PEP 604
+unions (`int | None`), which older interpreters cannot evaluate at runtime.
+
+The required version is declared in `.python-version`, which is read
+automatically by pyenv, uv, mise, and asdf. If you use none of those, install a
+matching interpreter yourself.
+
+With [pyenv](https://github.com/pyenv/pyenv):
+
+```bash
+brew install pyenv                  # macOS; see the pyenv README for other systems
+pyenv install 3.12
+```
+
+Add pyenv to your shell once, then restart it:
+
+```bash
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"          # use `bash` instead of `zsh` for bash
+```
+
+Inside the project directory, `python` then resolves to the version pinned in
+`.python-version`.
+
+### Project setup
+
 Clone the repository and enter the project directory:
 
 ```bash
@@ -192,7 +245,7 @@ cd Reco-Chile
 Create and activate a virtual environment:
 
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 ```
 
@@ -202,23 +255,86 @@ On Windows PowerShell, activate it with:
 .venv\Scripts\Activate.ps1
 ```
 
-Install the dependencies:
+Verify the interpreter before installing, especially on macOS, where a bare
+`python3` often resolves to the system Python 3.9:
 
 ```bash
-python3 -m pip install -r requirements.txt
+python -V                           # expect 3.12.x
 ```
 
-Run the application:
+Install the dependencies and start the API:
 
 ```bash
-python3 -m streamlit run app.py
+python -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m uvicorn api:app --reload     # http://localhost:8000
 ```
 
-The main dependencies are Streamlit, pandas, NumPy, and SciPy.
+The main dependencies are FastAPI, pandas, NumPy, and SciPy. The API is only
+half the application — start the frontend below as well.
+
+> [!NOTE]
+> `requirements.txt` uses lower-bound (`>=`) pins, so a fresh install resolves to
+> the newest compatible releases and two environments created at different times
+> may differ. Pin exact versions with `pip freeze > requirements.txt` when you
+> need a reproducible environment for analysis.
+
+### Frontend (`web/`)
+
+The Next.js wizard is the application's interface. It computes nothing itself:
+every number comes from the `sae_app/` engine, served by the FastAPI adapter
+`api.py`.
+
+Requirements: **Node ≥ 20 LTS** (the major used for development is in
+`web/.nvmrc`) and **pnpm**, whose version is pinned in `web/package.json`
+(`packageManager`); `corepack enable` installs exactly that one.
+
+Two processes, in two terminals — the API above, and:
+
+```bash
+cd web
+pnpm install
+pnpm dev                                         # http://localhost:3000/es/student
+```
+
+The browser only ever talks to the Next.js origin: `web/app/api/[...path]/`
+proxies to `API_BASE_URL` (default `http://localhost:8000`) server-side, so the
+Python port never has to be published and there is no CORS to configure.
+
+See [`web/README.md`](web/README.md) for the frontend's own commands (tests,
+Playwright, regenerating the typed API client).
+
+## Run with Docker
+
+Two containers — the FastAPI service and the Next.js server — described by
+`docker-compose.yml`:
+
+```bash
+docker compose up --build       # http://localhost:3000/es/student
+docker compose down
+```
+
+- `Dockerfile.api` (`python:3.12-slim`) installs `requirements.txt`, copies
+  `api.py`, `sae_app/` and `data/`, and runs `uvicorn` with **one worker**: the
+  Nominatim throttle and the per-IP geocode limit are per process, so a second
+  worker would double the outbound request rate.
+- `web/Dockerfile` builds the frontend in three stages and ships Next.js'
+  standalone output, started with `node server.js` on port 3000 with
+  `API_BASE_URL=http://api:8000`.
+- Only the web service publishes a port; the API is reachable inside the compose
+  network only.
+- `TRUST_PROXY` (web) and `SAE_TRUSTED_PROXIES` (api) stay unset in this setup,
+  so no `X-Forwarded-For` header is believed and the per-IP geocoding budget
+  becomes one shared bucket. That is stricter than per browser, never looser;
+  set both only behind a reverse proxy that rewrites the header itself.
+
+Continuous integration runs the same checks — `pytest`, an engine
+import-isolation check, `pnpm lint`/`format:check`/`tsc`/`test`/`build`, and
+Playwright — in `.github/workflows/ci.yml`.
 
 ## Data files
 
-The application expects a `data/` directory next to `app.py`.
+The application expects a `data/` directory next to `api.py`.
 
 ### Required files
 
@@ -241,29 +357,38 @@ At startup, the app checks required columns, core numeric fields, positive lotte
 
 ```text
 Reco-Chile/
-├── app.py                         # Streamlit entry point and page orchestration
-├── requirements.txt
+├── api.py                         # FastAPI adapter over the engine — the only backend
+├── requirements.txt               # Runtime dependencies of the API + engine
+├── requirements-dev.txt           # pytest, httpx
+├── Dockerfile.api                 # Container image for the FastAPI service
+├── docker-compose.yml             # api + web
 ├── README.md
+├── CONTRIBUTING.md                # Conventions, including the frontend style guide
+├── .github/workflows/ci.yml       # Python, web, and end-to-end checks
 ├── data/                          # Calibration and program metadata
+├── docs/
+│   └── architecture.md            # Engine / API / frontend design reference
+├── scripts/
+│   └── export_openapi.py          # Writes web/lib/api/openapi.json
+├── tests/                         # pytest: engine goldens and API contract
+│   └── fixtures/golden/           # Frozen engine outputs — the numerical contract
+├── web/                           # Next.js frontend (see web/README.md)
 └── sae_app/
     ├── __init__.py                # Package overview
+    ├── cache.py                   # In-process memoisation for loaders and geocoding
     ├── constants.py               # Columns, thresholds, paths, and configuration
     ├── data_loading.py            # CSV loading, joins, translation, and validation
+    ├── errors.py                  # Typed calculation errors, translated by the caller
     ├── geo.py                     # Coordinates, distance, and Nominatim geocoding
-    ├── i18n.py                    # Spanish/English translations
+    ├── i18n.py                    # Spanish/English strings for API error messages
     ├── mtb_engine.py              # SHA-256 MTB and hypergeometric risk model
-    ├── program_options.py         # Typed program records and dropdown options
+    ├── program_options.py         # Typed program records and program-list options
     ├── recommendations.py         # Similarity and portfolio-risk recommendations
-    ├── session_state.py           # Shared Streamlit state helpers
     ├── text_utils.py              # Text, number, code, and coordinate cleaning
-    ├── ui_common.py               # Shared table formatting
-    ├── ui_recommendations.py      # Recommendation interface
-    ├── ui_simulation.py           # Simulation results and sensitivity display
-    ├── ui_wish_builder.py         # Interactive wish-list editor
     └── wish_list.py               # Wish-list state and equivalence-class handling
 ```
 
-`app.py` intentionally contains only application orchestration. Calculation logic lives in the focused modules under `sae_app/`, with the core MTB engine kept independent from Streamlit.
+`api.py` intentionally contains only HTTP adaptation. Calculation logic lives in the focused modules under `sae_app/`, which has no UI dependency of any kind — the frontend in `web/` formats and explains, and never computes a number.
 
 ## Privacy and external services
 
@@ -287,3 +412,7 @@ If the app is deployed on a remote server, inputs are necessarily processed by t
 - Recommendations optimize the encoded score and should be treated as options to investigate, not automatic choices.
 
 For research, auditing, or policy use, review the current data sources, calibration assumptions, and model code before interpreting the outputs.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).

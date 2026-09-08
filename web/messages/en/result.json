@@ -1,0 +1,24 @@
+{
+  "title": "Review your results",
+  "locationUnknown": "Commune and region not available",
+  "running": "Calculating…",
+  "outcome": {
+    "title": "You're most likely to get into:",
+    "chance": "Estimated chance: {chance}",
+    "disclaimer": "Estimate based on historical data - not an official SAE guarantee."
+  },
+  "headline": {
+    "preferenceRank": "Your preference #{rank}",
+    "unmatchedBody": "The most likely outcome is that you receive none of the programs on your list."
+  },
+  "next": {
+    "title": "What would you like to do now?",
+    "finish": "I'm happy — finish",
+    "finishHint": "You return to the start. Nothing is saved and nothing is submitted.",
+    "improve": "Not happy — help me improve my list",
+    "improveHint": "We suggest additional schools you can add at the end of your list."
+  },
+  "errors": {
+    "title": "We could not calculate the result"
+  }
+}

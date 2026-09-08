@@ -1,0 +1,13 @@
+{
+  "name": "identifier_01_valid_run",
+  "kind": "identifier",
+  "description": "Canonical RUN with a correct modulo-11 check digit.",
+  "inputs": {
+    "raw_identifier": "12345678-5"
+  },
+  "expected": {
+    "normalized": "12345678-5",
+    "error_class": null,
+    "message_key": null
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "title": "Mejora tu lista",
+  "subtitle": "Programas sugeridos",
+  "methodBody": "Las sugerencias combinan similitud con la lista actual, proximidad aproximada, demanda histórica, acceso estimado a la admisión y diversidad entre las recomendaciones.",
+  "submit": "Agregar los programas seleccionados y revisar mi lista",
+  "address": {
+    "sectionTitle": "Mejorar las estimaciones de distancia — opcional",
+    "label": "Dirección de tu hogar",
+    "help": "Opcional. Sin ella, la distancia se mide desde tu lista actual.",
+    "use": "Usar esta dirección para la distancia",
+    "clear": "Borrar dirección",
+    "changed": "La dirección cambió. Haz clic en el botón para actualizar las coordenadas.",
+    "confirmed": "Las distancias se calcularán desde la dirección confirmada: {address}",
+    "usedLocation": "{warning} Ubicación utilizada: {address}",
+    "privacyTitle": "Privacidad y precisión de la dirección",
+    "privacyBody": "La dirección solo se envía a OpenStreetMap/Nominatim después de que pulses el botón de geocodificación. Las distancias siguen siendo aproximadas y no representan tiempos de viaje."
+  },
+  "precision": {
+    "approximate": "La ubicación geocodificada es aproximada. Las distancias deben interpretarse con cuidado.",
+    "city": "El geocodificador solo pudo identificar la ciudad o comuna. Las distancias son aproximadas."
+  },
+  "distance": {
+    "approx": "Distancia aproximada en línea recta: {distance} km",
+    "noHardFilter": "Como la ubicación del hogar solo está identificada a nivel de ciudad o de forma aproximada, no se aplica ningún corte duro por distancia. La distancia en línea recta solo influye en el score de recomendación.",
+    "hardLimit": "El límite de {maxDistance} km en línea recta se aplica solo cuando el programa tiene coordenadas confiables a nivel del establecimiento. Las aproximaciones comunales y regionales nunca se usan para una exclusión dura."
+  },
+  "count": {
+    "question": "¿Cuántas recomendaciones quieres?"
+  },
+  "card": {
+    "add": "Agregar este programa al final de mi lista",
+    "chanceAppended": "Probabilidad de quedar como tu preferencia #{rank}",
+    "chanceNote": "Si agregas este programa al final de tu lista actual.",
+    "noInformation": "Sin información"
+  },
+  "empty": {
+    "needWishes": "Ingresa al menos un programa válido en la lista para obtener recomendaciones.",
+    "noSimilar": "No se encontró ningún programa similar con las reglas actuales de proximidad y score.",
+    "noneMatched": "Ningún programa recomendado cumplió las reglas actuales de puntuación y de distancia en línea recta basadas en coordenadas confiables. Aun así, puedes agregar programas manualmente.",
+    "allAlreadyAdded": "Todas las recomendaciones seleccionadas ya están en la lista."
+  },
+  "warning": {
+    "similarityFallback": "La lista actual no contiene suficiente información utilizable para inferir preferencias claras de programas similares. Por eso, las sugerencias de abajo se basan principalmente en la distancia y la seguridad estimada de admisión.",
+    "failedCandidates": "Algunos programas no se pudieron evaluar debido a datos de origen inválidos y no se produjo ninguna recomendación."
+  }
+}

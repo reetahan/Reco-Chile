@@ -1,0 +1,7 @@
+allowBuilds:
+  # Optional native add-ons of openapi-typescript's Redocly parser (file
+  # watching / a faster transpiler). `pnpm api:types` runs fine without them.
+  "@parcel/watcher": false
+  "@swc/core": false
+  sharp: false
+  unrs-resolver: false

@@ -1,0 +1,12 @@
+{
+  "student": "Tus datos",
+  "list": "Arma tu lista",
+  "result": "Revisa tus resultados",
+  "improve": "Mejora tu lista",
+  "back": "Atrás",
+  "continue": "Continuar",
+  "progress": "Paso {current} de {total}",
+  "locked": "Completa los pasos anteriores para continuar.",
+  "navLabel": "Pasos del asistente",
+  "pending": "Calculando…"
+}

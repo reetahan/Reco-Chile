@@ -1,7 +1,7 @@
 """Static configuration: data columns, thresholds, file paths, and dropdown options.
 
-Nothing in this module reads a file, calls Streamlit, or does any computation.
-It only defines names and values that the rest of the app agrees on.
+Nothing in this module reads a file or does any computation. It only defines
+names and values that the rest of the app agrees on.
 """
 
 from __future__ import annotations
@@ -34,9 +34,29 @@ PRIORITY_STUDENT_SEATS = "priority_student_seats"
 HARD_UNMATCHED_THRESHOLD = 0.027   # 2.7%: strong unmatched-risk alert
 SOFT_UNMATCHED_THRESHOLD = 0.004   # 0.4%: lighter podium warning
 MAX_EXACT_EQUIV_PERMUTATIONS = 10000
+# Upper bound on wishes accepted per request by the API and enforced by the
+# web wizard (exposed via GET /meta as max_wishes). A guard against pathological
+# payloads, chosen well above any realistic SAE list length.
+MAX_WISHES = 30
 # If compatible strict orders keep the same predicted school but change its
 # final chance by at least 0.5 percentage point, show an intermediate warning.
 EQUIV_PROBABILITY_CHANGE_WARNING_THRESHOLD = 0.005
+
+# ---------------------------------------------------------------------------
+# Geocoding budgets
+# ---------------------------------------------------------------------------
+# Per-IP budget the API keeps in front of Nominatim (api.py). geo.py already
+# throttles the outbound call to 1 req/s for the whole process; this stops one
+# caller from consuming that entire budget. Enforced in-process and per worker,
+# so a multi-worker deployment needs shared state.
+GEOCODE_RATE_LIMIT_REQUESTS = 10
+GEOCODE_RATE_LIMIT_WINDOW_SECONDS = 60.0
+
+# Geocoding result cache. One day of reuse keeps repeated wizard steps from
+# re-querying Nominatim, and the size bound keeps a long-lived API process from
+# growing without limit.
+GEOCODING_CACHE_TTL_SECONDS = 24 * 60 * 60
+GEOCODING_CACHE_MAXSIZE = 512
 
 PRIORITIES = [
     "priority_sibling",
@@ -70,9 +90,9 @@ COMMUNE_COORDINATES_PATH = DATA_DIR / "commune_coordinates.csv"
 GEOCODING_TIMEOUT_SECONDS = 8
 GEOCODING_USER_AGENT = "sae-admission-risk-simulator/1.0"
 # Nominatim's usage policy caps free usage at 1 request/second. geo.py enforces
-# this within a single Python process, regardless of how many Streamlit sessions
-# request geocoding concurrently in that process. Multi-worker deployments need
-# shared throttling or a dedicated geocoding service.
+# this within a single Python process, regardless of how many requests ask for
+# geocoding concurrently in that process. Multi-worker deployments need shared
+# throttling or a dedicated geocoding service.
 NOMINATIM_MIN_INTERVAL_SECONDS = 1.0
 
 # Bounding boxes used to accept coordinates from Chilean territory represented

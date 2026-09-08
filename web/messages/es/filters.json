@@ -1,0 +1,101 @@
+{
+  "title": "Filtros de búsqueda de programas",
+  "intro": "Comienza con la región y el tipo de programa. Los filtros adicionales son opcionales.",
+  "emptyHint": "Deja todos los filtros vacíos para incluir todos los programas.",
+  "region": {
+    "label": "Región del programa",
+    "help": "Elige una región para acortar la lista de programas. Los programas ya seleccionados de otras regiones se mantienen en la lista.",
+    "all": "Todas las regiones",
+    "allInline": "todas las regiones"
+  },
+  "track": {
+    "legend": "Tipo de programa",
+    "general": "Programas científico-humanistas generales",
+    "specialized": "Programas técnico-profesionales"
+  },
+  "more": {
+    "trigger": "Más filtros: jornada, PIE, PACE, costos y otras características",
+    "hint": "Deja un filtro vacío cuando esa característica no sea esencial para ti."
+  },
+  "fields": {
+    "specialty": {
+      "label": "Área de especialidad",
+      "help": "Deja vacío para incluir todas las áreas de especialidad."
+    },
+    "gender": {
+      "label": "Composición por género",
+      "help": "Deja vacío para incluir programas mixtos, solo para hombres y solo para mujeres."
+    },
+    "schoolDay": {
+      "label": "Jornada escolar",
+      "help": "Deja vacío para incluir jornada completa, mañana y tarde."
+    },
+    "rurality": {
+      "label": "Ruralidad",
+      "help": "Deja vacío para incluir establecimientos urbanos y rurales."
+    },
+    "pace": {
+      "label": "Programa PACE",
+      "help": "Deja vacío para incluir establecimientos con y sin PACE."
+    },
+    "pie": {
+      "label": "Programa de Integración Escolar (PIE)",
+      "help": "Deja vacío para incluir establecimientos con y sin PIE."
+    },
+    "monthlyFee": {
+      "label": "Mensualidad",
+      "help": "Deja vacío para incluir todas las categorías de mensualidad."
+    },
+    "enrollmentFee": {
+      "label": "Matrícula",
+      "help": "Deja vacío para incluir todas las categorías de matrícula."
+    },
+    "religious": {
+      "label": "Orientación religiosa",
+      "help": "Deja vacío para incluir todas las orientaciones."
+    }
+  },
+  "multi": {
+    "any": "Cualquiera",
+    "search": "Buscar opción…",
+    "empty": "Sin opciones.",
+    "clear": "Limpiar",
+    "selected": "{n} seleccionada(s)"
+  },
+  "matchCount": "Mostrando {n} programa(s) coincidente(s) para {region}.",
+  "keptOutside": "También se mantienen disponibles {n} programa(s) ya seleccionado(s) fuera de los filtros actuales.",
+  "search": {
+    "title": "Buscar y agregar programas",
+    "label": "Buscar un programa",
+    "help": "Busca por nombre del establecimiento, comuna o programa.",
+    "placeholder": "Selecciona un programa",
+    "inputPlaceholder": "Establecimiento, comuna o detalles del programa",
+    "add": "Agregar",
+    "added": "Ya está en la lista",
+    "locationUnknown": "Comuna y región sin información",
+    "loading": "Buscando programas…",
+    "empty": "Ningún programa coincide con la búsqueda.",
+    "error": "No se pudieron cargar los programas.",
+    "truncated": "Se muestran los primeros {n} resultados. Afina la búsqueda o los filtros."
+  },
+  "details": {
+    "title": "Detalles del programa",
+    "trigger": "Ver detalles del programa",
+    "loading": "Cargando los detalles del programa…",
+    "notFound": "Este programa ya no está disponible en los datos cargados.",
+    "error": "No se pudieron cargar los detalles del programa.",
+    "noInformation": "Sin información",
+    "fields": {
+      "programDisplayName": "Detalles del programa",
+      "commune": "Comuna",
+      "region": "Región",
+      "programTrack": "Tipo de programa",
+      "schoolDay": "Jornada escolar",
+      "pie": "PIE",
+      "pace": "PACE",
+      "enrollmentFee": "Matrícula",
+      "monthlyFee": "Mensualidad",
+      "religious": "Orientación religiosa"
+    }
+  }
+}

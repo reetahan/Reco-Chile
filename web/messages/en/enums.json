@@ -1,0 +1,86 @@
+{
+  "track": {
+    "General": "General",
+    "Specialized": "Specialized"
+  },
+  "specialty": {
+    "Agriculture": "Agriculture",
+    "Metalworking and mechanics": "Metalworking and mechanics",
+    "Electricity": "Electricity",
+    "Food services": "Food services",
+    "Construction": "Construction",
+    "Technology and communications": "Technology and communications"
+  },
+  "gender": {
+    "Mixed": "Mixed",
+    "Boys": "Boys",
+    "Girls": "Girls"
+  },
+  "schoolDay": {
+    "Full day": "Full day",
+    "Morning": "Morning",
+    "Afternoon": "Afternoon"
+  },
+  "rurality": {
+    "Urban": "Urban",
+    "Rural": "Rural"
+  },
+  "pie": {
+    "With PIE": "With PIE",
+    "Without PIE": "Without PIE"
+  },
+  "pace": {
+    "With PACE": "With PACE",
+    "Without PACE": "Without PACE"
+  },
+  "payment": {
+    "Free": "Free",
+    "$1,000–$10,000": "$1,000–$10,000",
+    "$10,001–$25,000": "$10,001–$25,000",
+    "$25,001–$50,000": "$25,001–$50,000",
+    "$50,001–$100,000": "$50,001–$100,000",
+    "More than $100,000": "More than $100,000",
+    "No information": "No information"
+  },
+  "religious": {
+    "Secular": "Secular",
+    "Catholic": "Catholic",
+    "Evangelical": "Evangelical",
+    "Other": "Other",
+    "No information": "No information"
+  },
+  "priorityTier": {
+    "priority_sibling": "Sibling priority",
+    "priority_student": "Priority-student quota",
+    "priority_parent_civil_servant": "Civil-servant child priority",
+    "priority_ex_student": "Former-student priority",
+    "no_priority": "No priority"
+  },
+  "priorityFlag": {
+    "priority_sibling": "Sibling",
+    "priority_student": "Priority student",
+    "priority_parent_civil_servant": "Civil servant",
+    "priority_ex_student": "Former student",
+    "priority_already_registered": "Already enrolled"
+  },
+  "outcome": {
+    "Unmatched": "Unmatched"
+  },
+  "attentionLevel": {
+    "low": "Low attention",
+    "moderate": "Moderate attention",
+    "high": "High attention"
+  },
+  "riskLevel": {
+    "green": "Low risk",
+    "orange": "Moderate risk",
+    "red": "High risk",
+    "gray": "No estimate"
+  },
+  "fallback": {
+    "Unknown": "Unknown",
+    "Unknown region": "Unknown region",
+    "School name unavailable": "School name unavailable",
+    "Program details unavailable": "Program details unavailable"
+  }
+}

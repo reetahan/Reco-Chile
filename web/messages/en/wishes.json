@@ -1,0 +1,59 @@
+{
+  "rank": {
+    "label": "Wish rank",
+    "short": "Preference",
+    "badge": "#{n}",
+    "position": "Preference {n} of {total}"
+  },
+  "group": {
+    "label": "Preference group",
+    "short": "Group",
+    "forProgram": "Preference group for {program}",
+    "hint": "Set the same preference-group number for programs considered equivalent. Group 1 is preferred to group 2, etc.",
+    "longHint": "Use the same preference-group number for the programs you consider tied. Lower group numbers are preferred. The app will test every possible order inside each tied group, so you can see whether the exact internal order changes the predicted outcome."
+  },
+  "card": {
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "remove": "Remove",
+    "moveUpProgram": "Move up {program}",
+    "moveDownProgram": "Move down {program}",
+    "removeProgram": "Remove {program}",
+    "detailsTrigger": "View program details",
+    "detailsTitle": "Program details",
+    "detailsFor": "Characteristics of {program} as loaded from the calibration data.",
+    "locationUnknown": "Commune and region not available",
+    "loading": "Loading the program…",
+    "unavailable": "This program is no longer available in the loaded data."
+  },
+  "dnd": {
+    "handle": "Reorder {program}",
+    "instructions": "Press space bar to pick up the program. Use the arrow keys to move it, space bar to drop it, and escape to cancel.",
+    "onDragStart": "Picked up {program}. It is at preference {position} of {total}.",
+    "onDragOver": "{program} moved to preference {position} of {total}.",
+    "onDragEnd": "{program} was dropped at preference {position} of {total}.",
+    "onDragCancel": "Reordering cancelled. {program} is back at preference {position} of {total}."
+  },
+  "priorities": {
+    "title": "Do you have priority at this establishment?",
+    "forProgram": "Priorities at {program}",
+    "hint": "Mark only the situations that apply to this specific establishment. SAE recognizes the four priority criteria below.",
+    "labels": {
+      "sibling": "Sibling priority",
+      "student": "Priority-student quota",
+      "parentCivilServant": "Civil-servant child priority",
+      "exStudent": "Former-student priority",
+      "alreadyRegistered": "Already-enrolled priority"
+    },
+    "descriptions": {
+      "sibling": "You have a sibling enrolled at the establishment",
+      "student": "You have priority-student status for this establishment",
+      "parentCivilServant": "You are the child of an employee of the establishment",
+      "exStudent": "You previously attended the establishment and were not expelled",
+      "alreadyRegistered": "You are already enrolled in this establishment"
+    },
+    "alreadyRegisteredNote": "Current enrollment is shown separately because it is not one of the four SAE priority criteria.",
+    "none": "No priority declared for this program",
+    "declared": "Declared priorities: {priorities}"
+  }
+}

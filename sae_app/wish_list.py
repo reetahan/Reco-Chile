@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 
 from sae_app.constants import EQUIV_GROUP, LOTTERY, PRIORITIES, PROGRAM, SAFETY, WISH_RANK
-from sae_app.i18n import display_outcome_label, t
 from sae_app.text_utils import as_bool
 
 # ---------------------------------------------------------------------------
@@ -63,8 +62,7 @@ def clean_wish_rows(df: pd.DataFrame) -> pd.DataFrame:
     has_program = out[PROGRAM] != ""
 
     # Rows without a selected program cannot be simulated and are dropped.
-    # Keep the first duplicate so Streamlit widget keys remain unique and the
-    # wish list stays valid if state was produced by an older app version.
+    # On a duplicate program, keep the first occurrence.
     out = out[has_program].copy().reset_index(drop=True)
     out = out.drop_duplicates(subset=[PROGRAM], keep="first").reset_index(drop=True)
 
@@ -293,35 +291,3 @@ def predicted_outcome_final_chance(choices: pd.DataFrame, outcome: str) -> float
     if match.empty:
         return np.nan
     return float(match["choice_assignment_probability"].iloc[0])
-
-def compact_order_label(order_df: pd.DataFrame, max_items: int = 5) -> str:
-    """Return a compact label for the complete strict order."""
-    programs = [display_outcome_label(p) for p in order_df[PROGRAM].astype(str).str.strip().tolist()]
-    if len(programs) <= max_items:
-        return " → ".join(programs)
-    return " → ".join(programs[:max_items]) + f" → … (+{len(programs) - max_items})"
-
-
-def compact_tied_order_label(order_df: pd.DataFrame) -> str:
-    """Return only the internal ordering of genuinely tied preference groups.
-
-    Programs whose position is fixed across every compatible strict order are
-    intentionally omitted. Multiple tied groups are separated with `` | `` so
-    the UI can render each group independently.
-    """
-    if order_df.empty or EQUIV_GROUP not in order_df.columns:
-        return compact_order_label(order_df)
-
-    tied_groups: list[str] = []
-    for _, group in order_df.groupby(EQUIV_GROUP, sort=True):
-        if len(group) <= 1:
-            continue
-        programs = [
-            display_outcome_label(program)
-            for program in group[PROGRAM].astype(str).str.strip().tolist()
-            if str(program).strip()
-        ]
-        if programs:
-            tied_groups.append(" → ".join(programs))
-
-    return " | ".join(tied_groups) if tied_groups else compact_order_label(order_df)

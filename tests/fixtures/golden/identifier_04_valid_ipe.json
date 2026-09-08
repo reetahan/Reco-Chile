@@ -1,0 +1,13 @@
+{
+  "name": "identifier_04_valid_ipe",
+  "kind": "identifier",
+  "description": "Nine-digit IPE plus its numeric verifier digit.",
+  "inputs": {
+    "raw_identifier": "100200300-4"
+  },
+  "expected": {
+    "normalized": "100200300-4",
+    "error_class": null,
+    "message_key": null
+  }
+}

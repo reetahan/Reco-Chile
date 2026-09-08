@@ -1,0 +1,54 @@
+{
+  "name": "strict_01_single_wish",
+  "kind": "strict",
+  "description": "One wish, no priority flags; identified by IPE instead of RUN.",
+  "inputs": {
+    "student_id": "100200300-4",
+    "use_equivalence_classes": false,
+    "wishes": [
+      {
+        "wish_rank": 1,
+        "preference_group": 1,
+        "program_id": "4871:131000000133",
+        "program_label": "Liceo Copiulemu",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      }
+    ]
+  },
+  "expected": {
+    "mode": "strict",
+    "hard_threshold": 0.027,
+    "soft_threshold": 0.004,
+    "choices": [
+      {
+        "wish_rank": 1,
+        "program": "Liceo Copiulemu",
+        "lottery_number": 17,
+        "priority_tier": "no_priority",
+        "capacity": 5,
+        "true_applicants_last_year": 10,
+        "lottery_population_used": 21,
+        "raw_lottery_rank": 17,
+        "lottery_percentile_used": 0.8,
+        "priority_effective_percentile": 0.8,
+        "priority_effective_rank": 17,
+        "availability_probability": 0.0,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 1.0,
+        "choice_assignment_probability": 0.0,
+        "cumulative_unavailable_after_choice": 1.0,
+        "program_id": "4871:131000000133"
+      }
+    ],
+    "unmatched_risk": 1.0,
+    "predicted_outcome": "Unmatched",
+    "predicted_outcome_program_id": null,
+    "predicted_outcome_final_chance": 1.0,
+    "flagged_at_risk": true
+  }
+}

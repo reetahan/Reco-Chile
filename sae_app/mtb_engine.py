@@ -2,8 +2,8 @@
 
 This is the pure calculation core of the app: given a wish list and a
 student RUN/IPE, it computes the deterministic lottery rank for each school
-and the resulting availability/assignment probabilities. Nothing here touches
-Streamlit widgets, so this module can be unit-tested on its own.
+and the resulting availability/assignment probabilities. It has no I/O and no
+UI dependency, so it can be unit-tested on its own.
 """
 
 from __future__ import annotations
@@ -70,7 +70,11 @@ def normalize_run(student_id: str) -> str:
     """
     raw = _clean_identifier_input(student_id)
     match = re.fullmatch(
-        r"(?:(?P<plain>\d{1,8})|(?P<dotted>\d{1,2}(?:\.\d{3}){1,2}))"
+        # [0-9] rather than \d: Python's \d also matches non-ASCII decimal
+        # digits (٤, ４), which int() then happily parses. The TypeScript
+        # mirror in web/lib/validation/student-id.ts is ASCII-only, so the two
+        # would otherwise disagree on what is a valid RUN.
+        r"(?:(?P<plain>[0-9]{1,8})|(?P<dotted>[0-9]{1,2}(?:\.[0-9]{3}){1,2}))"
         r"-?(?P<check>[0-9K])",
         raw,
     )
@@ -104,8 +108,9 @@ def normalize_ipe(student_id: str) -> str:
     """
     raw = _clean_identifier_input(student_id)
     match = re.fullmatch(
-        r"(?:(?P<plain>\d{9})|(?P<dotted>\d{3}(?:\.\d{3}){2}))"
-        r"-?(?P<check>\d)",
+        # ASCII-only, for the same reason as normalize_run above.
+        r"(?:(?P<plain>[0-9]{9})|(?P<dotted>[0-9]{3}(?:\.[0-9]{3}){2}))"
+        r"-?(?P<check>[0-9])",
         raw,
     )
     if match is None:
@@ -119,7 +124,13 @@ def normalize_ipe(student_id: str) -> str:
 
 
 def normalize_student_identifier(student_id: str) -> str:
-    """Dispatch to the strict RUN or IPE parser and return a canonical value."""
+    """Dispatch to the strict RUN or IPE parser and return a canonical value.
+
+    The dispatch is on character count, not on digit-ness, so it is already
+    ASCII-agnostic; both parsers then reject anything outside ``[0-9]``, which
+    is what keeps this in step with the TypeScript mirror (whose ``\\d`` is
+    ASCII-only by definition).
+    """
     raw = _clean_identifier_input(student_id)
     compact = raw.replace(".", "").replace("-", "")
     if len(compact) == 10:

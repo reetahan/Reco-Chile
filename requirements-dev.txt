@@ -1,0 +1,10 @@
+# Development/test dependencies.
+# Install into the project venv, on top of requirements.txt:
+#   .venv/bin/python -m pip install -r requirements-dev.txt
+#
+# Lower bounds only, matching the deliberate policy of requirements.txt.
+# httpx and pytest-asyncio drive the API contract tests (httpx.AsyncClient
+# against the FastAPI app).
+pytest>=8.0
+httpx>=0.27
+pytest-asyncio>=0.23

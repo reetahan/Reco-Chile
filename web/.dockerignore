@@ -1,0 +1,33 @@
+# Build context for web/Dockerfile.
+#
+# node_modules is rebuilt inside the image from the lockfile (a macOS install
+# would not run on linux); .next would otherwise shadow the image's own build.
+node_modules
+.next
+out
+build
+
+# Test and report artifacts.
+playwright-report
+test-results
+blob-report
+playwright/.cache
+coverage
+.vitest
+*.tsbuildinfo
+
+# Local environment and editor state. .env.example stays: it is documentation.
+.env
+.env.*
+!.env.example
+.DS_Store
+__MACOSX
+.git
+.gitignore
+.vercel
+
+# Not needed to build or run the server.
+Dockerfile
+.dockerignore
+e2e
+playwright.config.ts

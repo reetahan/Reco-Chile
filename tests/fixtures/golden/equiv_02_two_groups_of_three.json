@@ -1,0 +1,1076 @@
+{
+  "name": "equiv_02_two_groups_of_three",
+  "kind": "equivalence",
+  "description": "Two equivalence groups of three programs (3! * 3! = 36 orders).",
+  "inputs": {
+    "student_id": "12345678-5",
+    "use_equivalence_classes": true,
+    "wishes": [
+      {
+        "wish_rank": 1,
+        "preference_group": 1,
+        "program_id": "4871:131000000133",
+        "program_label": "Liceo Copiulemu",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 2,
+        "preference_group": 1,
+        "program_id": "12741:131000000133",
+        "program_label": "Colegio Lationoamericano las Parinas",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 3,
+        "preference_group": 1,
+        "program_id": "15600:131000000133",
+        "program_label": "Alberto Hurtado Cruchaga",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 4,
+        "preference_group": 2,
+        "program_id": "22641:131000000133",
+        "program_label": "Colegio Sagrada Familia (Hualaihué)",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 5,
+        "preference_group": 2,
+        "program_id": "25395:131000000133",
+        "program_label": "Colegio Betterland School",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 6,
+        "preference_group": 2,
+        "program_id": "31253:131000000133",
+        "program_label": "Colegio Alto del Maipo",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      }
+    ]
+  },
+  "expected": {
+    "mode": "equivalence",
+    "total_orders": 36,
+    "max_exact_equiv_permutations": 10000,
+    "rejected_over_cap": false,
+    "reference_choices": [
+      {
+        "wish_rank": 1,
+        "program": "Liceo Copiulemu",
+        "lottery_number": 6,
+        "priority_tier": "no_priority",
+        "capacity": 5,
+        "true_applicants_last_year": 10,
+        "lottery_population_used": 21,
+        "raw_lottery_rank": 6,
+        "lottery_percentile_used": 0.25,
+        "priority_effective_percentile": 0.25,
+        "priority_effective_rank": 6,
+        "availability_probability": 0.9918730650154799,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 1.0,
+        "choice_assignment_probability": 0.9918730650154799,
+        "cumulative_unavailable_after_choice": 0.008126934984520107,
+        "program_id": "4871:131000000133"
+      },
+      {
+        "wish_rank": 2,
+        "program": "Colegio Lationoamericano las Parinas",
+        "lottery_number": 7,
+        "priority_tier": "no_priority",
+        "capacity": 9,
+        "true_applicants_last_year": 18,
+        "lottery_population_used": 31,
+        "raw_lottery_rank": 7,
+        "lottery_percentile_used": 0.2,
+        "priority_effective_percentile": 0.2258064516,
+        "priority_effective_rank": 7,
+        "availability_probability": 1.0,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.008126934984520107,
+        "choice_assignment_probability": 0.008126934984520107,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "12741:131000000133"
+      },
+      {
+        "wish_rank": 3,
+        "program": "Alberto Hurtado Cruchaga",
+        "lottery_number": 64,
+        "priority_tier": "no_priority",
+        "capacity": 37,
+        "true_applicants_last_year": 74,
+        "lottery_population_used": 155,
+        "raw_lottery_rank": 64,
+        "lottery_percentile_used": 0.4090909090909091,
+        "priority_effective_percentile": 0.46627565979545454,
+        "priority_effective_rank": 73,
+        "availability_probability": 0.7783086740077102,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.0,
+        "choice_assignment_probability": 0.0,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "15600:131000000133"
+      },
+      {
+        "wish_rank": 4,
+        "program": "Colegio Sagrada Familia (Hualaihué)",
+        "lottery_number": 4,
+        "priority_tier": "no_priority",
+        "capacity": 3,
+        "true_applicants_last_year": 6,
+        "lottery_population_used": 35,
+        "raw_lottery_rank": 4,
+        "lottery_percentile_used": 0.08823529411764706,
+        "priority_effective_percentile": 0.16638655460882354,
+        "priority_effective_rank": 6,
+        "availability_probability": 0.9848844229774021,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.0,
+        "choice_assignment_probability": 0.0,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "22641:131000000133"
+      },
+      {
+        "wish_rank": 5,
+        "program": "Colegio Betterland School",
+        "lottery_number": 11,
+        "priority_tier": "no_priority",
+        "capacity": 11,
+        "true_applicants_last_year": 22,
+        "lottery_population_used": 31,
+        "raw_lottery_rank": 11,
+        "lottery_percentile_used": 0.3333333333333333,
+        "priority_effective_percentile": 0.41935483873333335,
+        "priority_effective_rank": 14,
+        "availability_probability": 0.8701849075462269,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.0,
+        "choice_assignment_probability": 0.0,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "25395:131000000133"
+      },
+      {
+        "wish_rank": 6,
+        "program": "Colegio Alto del Maipo",
+        "lottery_number": 77,
+        "priority_tier": "no_priority",
+        "capacity": 18,
+        "true_applicants_last_year": 36,
+        "lottery_population_used": 86,
+        "raw_lottery_rank": 77,
+        "lottery_percentile_used": 0.8941176470588236,
+        "priority_effective_percentile": 0.9064295485670588,
+        "priority_effective_rank": 78,
+        "availability_probability": 0.0,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.0,
+        "choice_assignment_probability": 0.0,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "31253:131000000133"
+      }
+    ],
+    "variants": [
+      {
+        "strict_order_number": 1,
+        "order_program_ids": [
+          "4871:131000000133",
+          "12741:131000000133",
+          "15600:131000000133",
+          "22641:131000000133",
+          "25395:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 2,
+        "order_program_ids": [
+          "4871:131000000133",
+          "12741:131000000133",
+          "15600:131000000133",
+          "22641:131000000133",
+          "31253:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 3,
+        "order_program_ids": [
+          "4871:131000000133",
+          "12741:131000000133",
+          "15600:131000000133",
+          "25395:131000000133",
+          "22641:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 4,
+        "order_program_ids": [
+          "4871:131000000133",
+          "12741:131000000133",
+          "15600:131000000133",
+          "25395:131000000133",
+          "31253:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 5,
+        "order_program_ids": [
+          "4871:131000000133",
+          "12741:131000000133",
+          "15600:131000000133",
+          "31253:131000000133",
+          "22641:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 6,
+        "order_program_ids": [
+          "4871:131000000133",
+          "12741:131000000133",
+          "15600:131000000133",
+          "31253:131000000133",
+          "25395:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 7,
+        "order_program_ids": [
+          "4871:131000000133",
+          "15600:131000000133",
+          "12741:131000000133",
+          "22641:131000000133",
+          "25395:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 8,
+        "order_program_ids": [
+          "4871:131000000133",
+          "15600:131000000133",
+          "12741:131000000133",
+          "22641:131000000133",
+          "31253:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 9,
+        "order_program_ids": [
+          "4871:131000000133",
+          "15600:131000000133",
+          "12741:131000000133",
+          "25395:131000000133",
+          "22641:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 10,
+        "order_program_ids": [
+          "4871:131000000133",
+          "15600:131000000133",
+          "12741:131000000133",
+          "25395:131000000133",
+          "31253:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 11,
+        "order_program_ids": [
+          "4871:131000000133",
+          "15600:131000000133",
+          "12741:131000000133",
+          "31253:131000000133",
+          "22641:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 12,
+        "order_program_ids": [
+          "4871:131000000133",
+          "15600:131000000133",
+          "12741:131000000133",
+          "31253:131000000133",
+          "25395:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Liceo Copiulemu",
+        "predicted_outcome_program_id": "4871:131000000133",
+        "predicted_outcome_final_chance": 0.9918730650154799,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 13,
+        "order_program_ids": [
+          "12741:131000000133",
+          "4871:131000000133",
+          "15600:131000000133",
+          "22641:131000000133",
+          "25395:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 14,
+        "order_program_ids": [
+          "12741:131000000133",
+          "4871:131000000133",
+          "15600:131000000133",
+          "22641:131000000133",
+          "31253:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 15,
+        "order_program_ids": [
+          "12741:131000000133",
+          "4871:131000000133",
+          "15600:131000000133",
+          "25395:131000000133",
+          "22641:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 16,
+        "order_program_ids": [
+          "12741:131000000133",
+          "4871:131000000133",
+          "15600:131000000133",
+          "25395:131000000133",
+          "31253:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 17,
+        "order_program_ids": [
+          "12741:131000000133",
+          "4871:131000000133",
+          "15600:131000000133",
+          "31253:131000000133",
+          "22641:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 18,
+        "order_program_ids": [
+          "12741:131000000133",
+          "4871:131000000133",
+          "15600:131000000133",
+          "31253:131000000133",
+          "25395:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Alberto Hurtado Cruchaga",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 19,
+        "order_program_ids": [
+          "12741:131000000133",
+          "15600:131000000133",
+          "4871:131000000133",
+          "22641:131000000133",
+          "25395:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 20,
+        "order_program_ids": [
+          "12741:131000000133",
+          "15600:131000000133",
+          "4871:131000000133",
+          "22641:131000000133",
+          "31253:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 21,
+        "order_program_ids": [
+          "12741:131000000133",
+          "15600:131000000133",
+          "4871:131000000133",
+          "25395:131000000133",
+          "22641:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 22,
+        "order_program_ids": [
+          "12741:131000000133",
+          "15600:131000000133",
+          "4871:131000000133",
+          "25395:131000000133",
+          "31253:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 23,
+        "order_program_ids": [
+          "12741:131000000133",
+          "15600:131000000133",
+          "4871:131000000133",
+          "31253:131000000133",
+          "22641:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 24,
+        "order_program_ids": [
+          "12741:131000000133",
+          "15600:131000000133",
+          "4871:131000000133",
+          "31253:131000000133",
+          "25395:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Lationoamericano las Parinas",
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Colegio Lationoamericano las Parinas",
+        "predicted_outcome_program_id": "12741:131000000133",
+        "predicted_outcome_final_chance": 1.0,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 25,
+        "order_program_ids": [
+          "15600:131000000133",
+          "4871:131000000133",
+          "12741:131000000133",
+          "22641:131000000133",
+          "25395:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 26,
+        "order_program_ids": [
+          "15600:131000000133",
+          "4871:131000000133",
+          "12741:131000000133",
+          "22641:131000000133",
+          "31253:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 27,
+        "order_program_ids": [
+          "15600:131000000133",
+          "4871:131000000133",
+          "12741:131000000133",
+          "25395:131000000133",
+          "22641:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 28,
+        "order_program_ids": [
+          "15600:131000000133",
+          "4871:131000000133",
+          "12741:131000000133",
+          "25395:131000000133",
+          "31253:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 29,
+        "order_program_ids": [
+          "15600:131000000133",
+          "4871:131000000133",
+          "12741:131000000133",
+          "31253:131000000133",
+          "22641:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 30,
+        "order_program_ids": [
+          "15600:131000000133",
+          "4871:131000000133",
+          "12741:131000000133",
+          "31253:131000000133",
+          "25395:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Liceo Copiulemu",
+          "Colegio Lationoamericano las Parinas",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 31,
+        "order_program_ids": [
+          "15600:131000000133",
+          "12741:131000000133",
+          "4871:131000000133",
+          "22641:131000000133",
+          "25395:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 32,
+        "order_program_ids": [
+          "15600:131000000133",
+          "12741:131000000133",
+          "4871:131000000133",
+          "22641:131000000133",
+          "31253:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 33,
+        "order_program_ids": [
+          "15600:131000000133",
+          "12741:131000000133",
+          "4871:131000000133",
+          "25395:131000000133",
+          "22641:131000000133",
+          "31253:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Alto del Maipo"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 34,
+        "order_program_ids": [
+          "15600:131000000133",
+          "12741:131000000133",
+          "4871:131000000133",
+          "25395:131000000133",
+          "31253:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Colegio Betterland School",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 35,
+        "order_program_ids": [
+          "15600:131000000133",
+          "12741:131000000133",
+          "4871:131000000133",
+          "31253:131000000133",
+          "22641:131000000133",
+          "25395:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Colegio Alto del Maipo",
+          "Colegio Sagrada Familia (Hualaihué)",
+          "Colegio Betterland School"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 36,
+        "order_program_ids": [
+          "15600:131000000133",
+          "12741:131000000133",
+          "4871:131000000133",
+          "31253:131000000133",
+          "25395:131000000133",
+          "22641:131000000133"
+        ],
+        "order_program_labels": [
+          "Alberto Hurtado Cruchaga",
+          "Colegio Lationoamericano las Parinas",
+          "Liceo Copiulemu",
+          "Colegio Alto del Maipo",
+          "Colegio Betterland School",
+          "Colegio Sagrada Familia (Hualaihué)"
+        ],
+        "predicted_outcome": "Alberto Hurtado Cruchaga",
+        "predicted_outcome_program_id": "15600:131000000133",
+        "predicted_outcome_final_chance": 0.7783086740077102,
+        "unmatched_risk": 0.0,
+        "flagged_at_risk": false
+      }
+    ],
+    "distinct_outcomes": [
+      "Alberto Hurtado Cruchaga",
+      "Colegio Lationoamericano las Parinas",
+      "Liceo Copiulemu"
+    ]
+  }
+}

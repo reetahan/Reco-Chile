@@ -1,0 +1,47 @@
+{
+  "title": "Calculate your admission chances",
+  "tagline": "Enter your preference list and estimate your chances of getting a place. This research tool helps you decide; it does not replace or submit your official SAE application.",
+  "simulationName": "SAE admission-chance simulation",
+  "languageLabel": "Language",
+  "language": {
+    "es": "Español",
+    "en": "English"
+  },
+  "yes": "Yes",
+  "no": "No",
+  "welcome": {
+    "headline": "Calculate your admission chances",
+    "question": "Do you already have your preference list?",
+    "yes": "Yes",
+    "no": "No, help me build it"
+  },
+  "disclaimer": {
+    "headline": "Before we continue, please keep two things in mind",
+    "item1Title": "This is not your official application.",
+    "item1Body": "You still need to submit your application separately to SAE — this tool does not do that for you.",
+    "item2Title": "These are estimates, not guarantees.",
+    "item2Body": "We calculate your chances based on past years' data, so please treat the results as general guidance, not a certain outcome.",
+    "checkbox": "I understand and want to continue"
+  },
+  "finish": {
+    "title": "You're done",
+    "lead": "You have reviewed your chances. This is the list you ended up with.",
+    "chanceLabel": "Your estimated chance of being assigned",
+    "staleNote": "Go back to the result to calculate your chances with the current list.",
+    "listTitle": "Your preference list",
+    "listEmpty": "You have not added any programs to your list yet.",
+    "locationUnknown": "Commune and region not available",
+    "official": "Remember: this tool submits nothing. To apply for real, enter your list on the official SAE website before the deadline.",
+    "backToResult": "Back to my results",
+    "startOver": "Start over"
+  },
+  "aboutEstimate": {
+    "body": "The model uses historical 2024 calibration data and 2025 capacity data. Results are estimates, not official admission guarantees."
+  },
+  "error": {
+    "title": "We could not show this step",
+    "body": "Something went wrong unexpectedly. Your entries are still in this tab, so you can try again without starting over.",
+    "retry": "Try again",
+    "digest": "Reference code: {digest}"
+  }
+}

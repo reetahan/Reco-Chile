@@ -1,0 +1,101 @@
+{
+  "title": "Program search filters",
+  "intro": "Start with the region and program type. Additional filters are optional.",
+  "emptyHint": "Leave every filter empty to include all programs.",
+  "region": {
+    "label": "Program region",
+    "help": "Choose a region to make the program list shorter. Already selected programs from other regions are kept in the list.",
+    "all": "All regions",
+    "allInline": "all regions"
+  },
+  "track": {
+    "legend": "Program type",
+    "general": "General academic programs",
+    "specialized": "Specialized / technical programs"
+  },
+  "more": {
+    "trigger": "More filters: school day, PIE, PACE, fees and other characteristics",
+    "hint": "Leave a filter empty when that characteristic is not essential for you."
+  },
+  "fields": {
+    "specialty": {
+      "label": "Specialized area",
+      "help": "Leave empty to include all specialized areas."
+    },
+    "gender": {
+      "label": "Gender composition",
+      "help": "Leave empty to include mixed, boys-only, and girls-only programs."
+    },
+    "schoolDay": {
+      "label": "School day",
+      "help": "Leave empty to include full-day, morning, and afternoon programs."
+    },
+    "rurality": {
+      "label": "Rurality",
+      "help": "Leave empty to include both urban and rural schools."
+    },
+    "pace": {
+      "label": "PACE program",
+      "help": "Leave empty to include schools with and without PACE."
+    },
+    "pie": {
+      "label": "PIE integration program",
+      "help": "Leave empty to include schools with and without PIE."
+    },
+    "monthlyFee": {
+      "label": "Monthly fee",
+      "help": "Leave empty to include every monthly-fee category."
+    },
+    "enrollmentFee": {
+      "label": "Enrollment fee",
+      "help": "Leave empty to include every enrollment-fee category."
+    },
+    "religious": {
+      "label": "Religious orientation",
+      "help": "Leave empty to include every orientation."
+    }
+  },
+  "multi": {
+    "any": "Any",
+    "search": "Search option…",
+    "empty": "No options.",
+    "clear": "Clear",
+    "selected": "{n} selected"
+  },
+  "matchCount": "Showing {n} matching program option(s) for {region}.",
+  "keptOutside": "Existing selected program(s) outside the current filters are also kept available: {n}.",
+  "search": {
+    "title": "Search and add programs",
+    "label": "Search for a program",
+    "help": "Search by school name, commune, or program.",
+    "placeholder": "Select a program",
+    "inputPlaceholder": "School, commune, or program details",
+    "add": "Add",
+    "added": "Already in the list",
+    "locationUnknown": "Commune and region not available",
+    "loading": "Searching programs…",
+    "empty": "No program matches this search.",
+    "error": "The program list could not be loaded.",
+    "truncated": "Showing the first {n} results. Narrow the search or the filters."
+  },
+  "details": {
+    "title": "Program details",
+    "trigger": "View program details",
+    "loading": "Loading the program details…",
+    "notFound": "This program is no longer available in the loaded data.",
+    "error": "The program details could not be loaded.",
+    "noInformation": "No information",
+    "fields": {
+      "programDisplayName": "Program details",
+      "commune": "Commune",
+      "region": "Region",
+      "programTrack": "Program type",
+      "schoolDay": "School day",
+      "pie": "PIE",
+      "pace": "PACE",
+      "enrollmentFee": "Enrollment fee",
+      "monthlyFee": "Monthly fee",
+      "religious": "Religious orientation"
+    }
+  }
+}

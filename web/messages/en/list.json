@@ -1,0 +1,46 @@
+{
+  "title": "Build your list",
+  "current": {
+    "title": "Current preference list",
+    "empty": "No programs added yet. Add your first preference above.",
+    "count": "{n} program(s) selected"
+  },
+  "order": {
+    "preferenceHint": "Search for programs, add them, and order by preference",
+    "reorderHint": "Use ↑ and ↓ to reorder your strict ranking."
+  },
+  "ties": {
+    "label": "I have not yet decided the exact order between some programs",
+    "helpTrigger": "What does this mean?",
+    "help": "Use this option to compare different possible rankings of your programs."
+  },
+  "card": {
+    "detailsTitle": "Program details",
+    "fields": {
+      "school": "School",
+      "commune": "Commune",
+      "region": "Region",
+      "programType": "Program type",
+      "specialty": "Specialty area",
+      "gender": "Gender composition",
+      "schoolDay": "School day",
+      "rurality": "Rurality",
+      "pie": "PIE",
+      "pace": "PACE",
+      "enrollmentFee": "Enrollment fee",
+      "monthlyFee": "Monthly fee",
+      "religious": "Religious orientation",
+      "capacity": "Capacity",
+      "trueApplicants": "True applicants last year",
+      "applicantsPerSeat": "Applicants / seat"
+    }
+  },
+  "notices": {
+    "imputedTitle": "Some selected programs use estimated historical calibration values.",
+    "imputedBody": "Complete historical observations were unavailable for at least one selected program, so the model uses an imputed 2024 value. Interpret those program-level estimates with additional caution.",
+    "removed": "Some programs in the current wish list are no longer available in the loaded data and were removed: {programs}",
+    "recommendationsAdded": "{n} recommended program(s) were added at the end of the list. Check priorities for the new programs, then analyze the list again.",
+    "maxWishes": "The list cannot hold more than {max} programs.",
+    "imputedWhat": "What does this mean?"
+  }
+}

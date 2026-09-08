@@ -1,0 +1,13 @@
+{
+  "name": "identifier_05_garbage",
+  "kind": "identifier",
+  "description": "Free text that is neither a RUN nor an IPE.",
+  "inputs": {
+    "raw_identifier": "not-an-identifier"
+  },
+  "expected": {
+    "normalized": null,
+    "error_class": "InvalidStudentIdentifier",
+    "message_key": "Invalid RUN format. Enter the numeric body plus its check digit, for example 12.345.678-5. Dots and the hyphen are optional."
+  }
+}

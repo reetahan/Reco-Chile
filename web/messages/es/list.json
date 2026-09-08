@@ -1,0 +1,46 @@
+{
+  "title": "Arma tu lista",
+  "current": {
+    "title": "Lista de preferencias actual",
+    "empty": "Todavía no has agregado programas. Agrega arriba tu primera preferencia.",
+    "count": "{n} programa(s) seleccionado(s)"
+  },
+  "order": {
+    "preferenceHint": "Busca programas, agrégalos y ordénalos por preferencia",
+    "reorderHint": "Usa ↑ y ↓ para reordenar tu ranking estricto."
+  },
+  "ties": {
+    "label": "Todavía no he decidido el orden exacto entre algunos programas",
+    "helpTrigger": "¿Qué significa esto?",
+    "help": "Usa esta opción para comparar distintos órdenes posibles de tus programas."
+  },
+  "card": {
+    "detailsTitle": "Detalles del programa",
+    "fields": {
+      "school": "Establecimiento",
+      "commune": "Comuna",
+      "region": "Región",
+      "programType": "Tipo de programa",
+      "specialty": "Área de especialidad",
+      "gender": "Composición por género",
+      "schoolDay": "Jornada escolar",
+      "rurality": "Ruralidad",
+      "pie": "PIE",
+      "pace": "PACE",
+      "enrollmentFee": "Matrícula",
+      "monthlyFee": "Mensualidad",
+      "religious": "Orientación religiosa",
+      "capacity": "Cupos",
+      "trueApplicants": "Postulantes reales el año anterior",
+      "applicantsPerSeat": "Postulantes / cupo"
+    }
+  },
+  "notices": {
+    "imputedTitle": "Algunos programas seleccionados usan valores históricos de calibración estimados.",
+    "imputedBody": "No había observaciones históricas completas para al menos un programa seleccionado, por lo que el modelo usa un valor imputado de 2024. Interpreta esas estimaciones con especial cautela.",
+    "removed": "Algunos programas de la lista actual ya no están disponibles en los datos cargados y fueron eliminados: {programs}",
+    "recommendationsAdded": "Se agregaron {n} programa(s) recomendado(s) al final de la lista. Revisa las prioridades de los nuevos programas y vuelve a analizar la lista.",
+    "maxWishes": "La lista no puede tener más de {max} programas.",
+    "imputedWhat": "¿Qué significa esto?"
+  }
+}

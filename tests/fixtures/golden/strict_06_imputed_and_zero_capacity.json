@@ -1,0 +1,120 @@
+{
+  "name": "strict_06_imputed_and_zero_capacity",
+  "kind": "strict",
+  "description": "A program with imputed 2024 calibration, a program with zero admission seats, and an ordinary program.",
+  "inputs": {
+    "student_id": "12345678-5",
+    "use_equivalence_classes": false,
+    "wishes": [
+      {
+        "wish_rank": 1,
+        "preference_group": 1,
+        "program_id": "1:131000000133",
+        "program_label": "Liceo Politecnico Arica",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 2,
+        "preference_group": 2,
+        "program_id": "56:131000000133",
+        "program_label": "Colegio San Marcos de Arica",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 3,
+        "preference_group": 3,
+        "program_id": "4871:131000000133",
+        "program_label": "Liceo Copiulemu",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      }
+    ]
+  },
+  "expected": {
+    "mode": "strict",
+    "hard_threshold": 0.027,
+    "soft_threshold": 0.004,
+    "choices": [
+      {
+        "wish_rank": 1,
+        "program": "Liceo Politecnico Arica",
+        "lottery_number": 12,
+        "priority_tier": "no_priority",
+        "capacity": 301,
+        "true_applicants_last_year": 246,
+        "lottery_population_used": 508,
+        "raw_lottery_rank": 12,
+        "lottery_percentile_used": 0.021696252465483234,
+        "priority_effective_percentile": 0.18538880864776333,
+        "priority_effective_rank": 95,
+        "availability_probability": 1.0,
+        "calibration_2024_imputed": true,
+        "calibration_2024_imputation_method": "mapped_1_to_1_from_2024_source_programs:131000000131;population_and_priority_distribution_mapped",
+        "cumulative_unavailable_before_choice": 1.0,
+        "choice_assignment_probability": 1.0,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "1:131000000133"
+      },
+      {
+        "wish_rank": 2,
+        "program": "Colegio San Marcos de Arica",
+        "lottery_number": 136,
+        "priority_tier": "no_priority",
+        "capacity": 0,
+        "true_applicants_last_year": 160,
+        "lottery_population_used": 230,
+        "raw_lottery_rank": 136,
+        "lottery_percentile_used": 0.5895196506550219,
+        "priority_effective_percentile": 0.607366622378166,
+        "priority_effective_rank": 140,
+        "availability_probability": 0.0,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.0,
+        "choice_assignment_probability": 0.0,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "56:131000000133"
+      },
+      {
+        "wish_rank": 3,
+        "program": "Liceo Copiulemu",
+        "lottery_number": 6,
+        "priority_tier": "no_priority",
+        "capacity": 5,
+        "true_applicants_last_year": 10,
+        "lottery_population_used": 21,
+        "raw_lottery_rank": 6,
+        "lottery_percentile_used": 0.25,
+        "priority_effective_percentile": 0.25,
+        "priority_effective_rank": 6,
+        "availability_probability": 0.9918730650154799,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.0,
+        "choice_assignment_probability": 0.0,
+        "cumulative_unavailable_after_choice": 0.0,
+        "program_id": "4871:131000000133"
+      }
+    ],
+    "unmatched_risk": 0.0,
+    "predicted_outcome": "Liceo Politecnico Arica",
+    "predicted_outcome_program_id": "1:131000000133",
+    "predicted_outcome_final_chance": 1.0,
+    "flagged_at_risk": false
+  },
+  "notes": {
+    "imputed_program_available": true,
+    "zero_capacity_program_available": true
+  }
+}

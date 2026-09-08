@@ -1,0 +1,707 @@
+{
+  "name": "equiv_03_group_of_four_probability_shift",
+  "kind": "equivalence",
+  "description": "One equivalence group of four plus a fixed tail (4! = 24 orders). The group ties one near-certain program to three long shots, which is the third sensitivity case: every order predicts the same school, but its final assignment probability moves far more than EQUIV_PROBABILITY_CHANGE_WARNING_THRESHOLD depending on where the near-certain program sits inside the group. Together with equiv_01 (same outcome, same chance) and equiv_02 (the outcome itself changes), all three equivalence verdicts are frozen.",
+  "inputs": {
+    "student_id": "12345678-5",
+    "use_equivalence_classes": true,
+    "wishes": [
+      {
+        "wish_rank": 1,
+        "preference_group": 1,
+        "program_id": "8813:131000000131",
+        "program_label": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 2,
+        "preference_group": 1,
+        "program_id": "14870:131000000133",
+        "program_label": "Colegio Entre Valles",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 3,
+        "preference_group": 1,
+        "program_id": "13503:131000000133",
+        "program_label": "Colegio Valentin Letelier",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 4,
+        "preference_group": 1,
+        "program_id": "24233:131000000133",
+        "program_label": "Liceo Francisco Xavier Butina",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      },
+      {
+        "wish_rank": 5,
+        "preference_group": 2,
+        "program_id": "4871:131000000133",
+        "program_label": "Liceo Copiulemu",
+        "priority_sibling": false,
+        "priority_student": false,
+        "priority_parent_civil_servant": false,
+        "priority_ex_student": false,
+        "priority_already_registered": false
+      }
+    ]
+  },
+  "expected": {
+    "mode": "equivalence",
+    "total_orders": 24,
+    "max_exact_equiv_permutations": 10000,
+    "rejected_over_cap": false,
+    "reference_choices": [
+      {
+        "wish_rank": 1,
+        "program": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "lottery_number": 408,
+        "priority_tier": "no_priority",
+        "capacity": 195,
+        "true_applicants_last_year": 209,
+        "lottery_population_used": 460,
+        "raw_lottery_rank": 408,
+        "lottery_percentile_used": 0.8867102396514162,
+        "priority_effective_percentile": 0.8985317798631809,
+        "priority_effective_rank": 414,
+        "availability_probability": 0.9900056308153562,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 1.0,
+        "choice_assignment_probability": 0.9900056308153562,
+        "cumulative_unavailable_after_choice": 0.009994369184643803,
+        "program_id": "8813:131000000131"
+      },
+      {
+        "wish_rank": 2,
+        "program": "Colegio Entre Valles",
+        "lottery_number": 14,
+        "priority_tier": "no_priority",
+        "capacity": 7,
+        "true_applicants_last_year": 29,
+        "lottery_population_used": 53,
+        "raw_lottery_rank": 14,
+        "lottery_percentile_used": 0.25,
+        "priority_effective_percentile": 0.32075471695,
+        "priority_effective_rank": 17,
+        "availability_probability": 0.10117809520423539,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.009994369184643803,
+        "choice_assignment_probability": 0.001011211236870167,
+        "cumulative_unavailable_after_choice": 0.008983157947773636,
+        "program_id": "14870:131000000133"
+      },
+      {
+        "wish_rank": 3,
+        "program": "Colegio Valentin Letelier",
+        "lottery_number": 53,
+        "priority_tier": "no_priority",
+        "capacity": 29,
+        "true_applicants_last_year": 51,
+        "lottery_population_used": 87,
+        "raw_lottery_rank": 53,
+        "lottery_percentile_used": 0.6046511627906976,
+        "priority_effective_percentile": 0.6273723603441861,
+        "priority_effective_rank": 55,
+        "availability_probability": 0.09463951778895735,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.008983157947773636,
+        "choice_assignment_probability": 0.0008501617363993366,
+        "cumulative_unavailable_after_choice": 0.008132996211374298,
+        "program_id": "13503:131000000133"
+      },
+      {
+        "wish_rank": 4,
+        "program": "Liceo Francisco Xavier Butina",
+        "lottery_number": 20,
+        "priority_tier": "no_priority",
+        "capacity": 8,
+        "true_applicants_last_year": 23,
+        "lottery_population_used": 49,
+        "raw_lottery_rank": 20,
+        "lottery_percentile_used": 0.3958333333333333,
+        "priority_effective_percentile": 0.44515306124791665,
+        "priority_effective_rank": 22,
+        "availability_probability": 0.10705420136564182,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.008132996211374298,
+        "choice_assignment_probability": 0.0008706714141184661,
+        "cumulative_unavailable_after_choice": 0.007262324797255832,
+        "program_id": "24233:131000000133"
+      },
+      {
+        "wish_rank": 5,
+        "program": "Liceo Copiulemu",
+        "lottery_number": 6,
+        "priority_tier": "no_priority",
+        "capacity": 5,
+        "true_applicants_last_year": 10,
+        "lottery_population_used": 21,
+        "raw_lottery_rank": 6,
+        "lottery_percentile_used": 0.25,
+        "priority_effective_percentile": 0.25,
+        "priority_effective_rank": 6,
+        "availability_probability": 0.9918730650154799,
+        "calibration_2024_imputed": false,
+        "calibration_2024_imputation_method": "observed_2024_program_match",
+        "cumulative_unavailable_before_choice": 0.007262324797255832,
+        "choice_assignment_probability": 0.007203304355792066,
+        "cumulative_unavailable_after_choice": 5.9020441463766314e-05,
+        "program_id": "4871:131000000133"
+      }
+    ],
+    "variants": [
+      {
+        "strict_order_number": 1,
+        "order_program_ids": [
+          "8813:131000000131",
+          "14870:131000000133",
+          "13503:131000000133",
+          "24233:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Entre Valles",
+          "Colegio Valentin Letelier",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.9900056308153562,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 2,
+        "order_program_ids": [
+          "8813:131000000131",
+          "14870:131000000133",
+          "24233:131000000133",
+          "13503:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Entre Valles",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Valentin Letelier",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.9900056308153562,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 3,
+        "order_program_ids": [
+          "8813:131000000131",
+          "13503:131000000133",
+          "14870:131000000133",
+          "24233:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Valentin Letelier",
+          "Colegio Entre Valles",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.9900056308153562,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 4,
+        "order_program_ids": [
+          "8813:131000000131",
+          "13503:131000000133",
+          "24233:131000000133",
+          "14870:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Valentin Letelier",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Entre Valles",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.9900056308153562,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 5,
+        "order_program_ids": [
+          "8813:131000000131",
+          "24233:131000000133",
+          "14870:131000000133",
+          "13503:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Entre Valles",
+          "Colegio Valentin Letelier",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.9900056308153562,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 6,
+        "order_program_ids": [
+          "8813:131000000131",
+          "24233:131000000133",
+          "13503:131000000133",
+          "14870:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Valentin Letelier",
+          "Colegio Entre Valles",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.9900056308153562,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 7,
+        "order_program_ids": [
+          "14870:131000000133",
+          "8813:131000000131",
+          "13503:131000000133",
+          "24233:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Entre Valles",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Valentin Letelier",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.889838746847991,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 8,
+        "order_program_ids": [
+          "14870:131000000133",
+          "8813:131000000131",
+          "24233:131000000133",
+          "13503:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Entre Valles",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Valentin Letelier",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.889838746847991,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 9,
+        "order_program_ids": [
+          "14870:131000000133",
+          "13503:131000000133",
+          "8813:131000000131",
+          "24233:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Entre Valles",
+          "Colegio Valentin Letelier",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.805624836936367,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 10,
+        "order_program_ids": [
+          "14870:131000000133",
+          "13503:131000000133",
+          "24233:131000000133",
+          "8813:131000000131",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Entre Valles",
+          "Colegio Valentin Letelier",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7193793134178188,
+        "unmatched_risk": 5.902044146376632e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 11,
+        "order_program_ids": [
+          "14870:131000000133",
+          "24233:131000000133",
+          "8813:131000000131",
+          "13503:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Entre Valles",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Valentin Letelier",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7945777704599758,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 12,
+        "order_program_ids": [
+          "14870:131000000133",
+          "24233:131000000133",
+          "13503:131000000133",
+          "8813:131000000131",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Entre Valles",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Valentin Letelier",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7193793134178188,
+        "unmatched_risk": 5.902044146376632e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 13,
+        "order_program_ids": [
+          "13503:131000000133",
+          "8813:131000000131",
+          "14870:131000000133",
+          "24233:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Valentin Letelier",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Entre Valles",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.8963119753066383,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 14,
+        "order_program_ids": [
+          "13503:131000000133",
+          "8813:131000000131",
+          "24233:131000000133",
+          "14870:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Valentin Letelier",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Entre Valles",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.8963119753066383,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 15,
+        "order_program_ids": [
+          "13503:131000000133",
+          "14870:131000000133",
+          "8813:131000000131",
+          "24233:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Valentin Letelier",
+          "Colegio Entre Valles",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.805624836936367,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 16,
+        "order_program_ids": [
+          "13503:131000000133",
+          "14870:131000000133",
+          "24233:131000000133",
+          "8813:131000000131",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Valentin Letelier",
+          "Colegio Entre Valles",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7193793134178188,
+        "unmatched_risk": 5.902044146376632e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 17,
+        "order_program_ids": [
+          "13503:131000000133",
+          "24233:131000000133",
+          "8813:131000000131",
+          "14870:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Valentin Letelier",
+          "Liceo Francisco Xavier Butina",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Entre Valles",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.8003580126157253,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 18,
+        "order_program_ids": [
+          "13503:131000000133",
+          "24233:131000000133",
+          "14870:131000000133",
+          "8813:131000000131",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Colegio Valentin Letelier",
+          "Liceo Francisco Xavier Butina",
+          "Colegio Entre Valles",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7193793134178188,
+        "unmatched_risk": 5.902044146376632e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 19,
+        "order_program_ids": [
+          "24233:131000000133",
+          "8813:131000000131",
+          "14870:131000000133",
+          "13503:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Francisco Xavier Butina",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Entre Valles",
+          "Colegio Valentin Letelier",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.8840213686609298,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 20,
+        "order_program_ids": [
+          "24233:131000000133",
+          "8813:131000000131",
+          "13503:131000000133",
+          "14870:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Francisco Xavier Butina",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Valentin Letelier",
+          "Colegio Entre Valles",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.8840213686609298,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 21,
+        "order_program_ids": [
+          "24233:131000000133",
+          "14870:131000000133",
+          "8813:131000000131",
+          "13503:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Francisco Xavier Butina",
+          "Colegio Entre Valles",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Valentin Letelier",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7945777704599758,
+        "unmatched_risk": 5.902044146376633e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 22,
+        "order_program_ids": [
+          "24233:131000000133",
+          "14870:131000000133",
+          "13503:131000000133",
+          "8813:131000000131",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Francisco Xavier Butina",
+          "Colegio Entre Valles",
+          "Colegio Valentin Letelier",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7193793134178188,
+        "unmatched_risk": 5.902044146376632e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 23,
+        "order_program_ids": [
+          "24233:131000000133",
+          "13503:131000000133",
+          "8813:131000000131",
+          "14870:131000000133",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Francisco Xavier Butina",
+          "Colegio Valentin Letelier",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Colegio Entre Valles",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.8003580126157253,
+        "unmatched_risk": 5.9020441463766314e-05,
+        "flagged_at_risk": false
+      },
+      {
+        "strict_order_number": 24,
+        "order_program_ids": [
+          "24233:131000000133",
+          "13503:131000000133",
+          "14870:131000000133",
+          "8813:131000000131",
+          "4871:131000000133"
+        ],
+        "order_program_labels": [
+          "Liceo Francisco Xavier Butina",
+          "Colegio Valentin Letelier",
+          "Colegio Entre Valles",
+          "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+          "Liceo Copiulemu"
+        ],
+        "predicted_outcome": "Liceo Bicentenario Técnico Profesional Ignacio Domeyko",
+        "predicted_outcome_program_id": "8813:131000000131",
+        "predicted_outcome_final_chance": 0.7193793134178188,
+        "unmatched_risk": 5.902044146376632e-05,
+        "flagged_at_risk": false
+      }
+    ],
+    "distinct_outcomes": [
+      "Liceo Bicentenario Técnico Profesional Ignacio Domeyko"
+    ]
+  }
+}

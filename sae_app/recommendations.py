@@ -11,7 +11,6 @@ import logging
 
 import numpy as np
 import pandas as pd
-import streamlit as st
 
 from sae_app.constants import (
     CAPACITY,
@@ -45,13 +44,18 @@ from sae_app.geo import (
     valid_lat_lon,
 )
 from sae_app.errors import CandidateEvaluationError
-from sae_app.i18n import t
 from sae_app.mtb_engine import attach_mtb_hashes, availability
 from sae_app.program_options import ProgramRecord
 from sae_app.text_utils import as_float, clean_recommendation_value, normalize_geo_key
 from sae_app.wish_list import make_builder_wish_row
 
 LOGGER = logging.getLogger(__name__)
+
+# Placeholder emitted in the "School" column when a program carries no school
+# name. It is a *code*, not user-facing copy: this module must stay
+# language-free, so the value is the English i18n key
+# and the presentation layer translates it (`web/`, through `enums.*`).
+SCHOOL_NAME_UNAVAILABLE = "School name unavailable"
 
 RECOMMENDATION_CRITERIA = [
     (PROGRAM_TRACK, "Program type", 1.00),
@@ -98,12 +102,36 @@ RECOMMENDATION_DIVERSITY_STRENGTH = 0.35
 # on candidate filtering and final ranking.
 RECOMMENDATION_FULL_RELIABILITY_WISH_COUNT = 4.0
 
-# Recommendation row colors use the same unmatched-risk thresholds as the
-# simulation summary, applied to the projected risk after appending a program.
-# This makes the color depend on the real marginal portfolio effect rather than
-# only on the conditional chance of admission.
-CANDIDATE_RISK_CACHE_SESSION_KEY = "candidate_risk_cache_v2"
-LEGACY_CANDIDATE_RISK_CACHE_SESSION_KEYS = ("candidate_risk_cache_v1",)
+
+class CandidateRiskCache:
+    """Per-call memo of candidate base metrics, owned by the caller.
+
+    ``recommend_similar_programs`` evaluates every program in the mapping, and
+    ``candidate_portfolio_metrics`` is the expensive part (one MTB hash plus one
+    hypergeometric availability per candidate). Passing an explicit cache keeps
+    the engine free of any framework-owned global state: the API creates one per
+    request.
+    """
+
+    __slots__ = ("_entries",)
+
+    def __init__(self) -> None:
+        self._entries: dict[tuple, dict] = {}
+
+    def get(self, key: tuple):
+        """Return the cached value for ``key``, or ``None`` when absent."""
+        return self._entries.get(key)
+
+    def set(self, key: tuple, value: dict) -> None:
+        """Store ``value`` under ``key``."""
+        self._entries[key] = value
+
+    def clear(self) -> None:
+        """Drop every cached entry."""
+        self._entries.clear()
+
+    def __len__(self) -> int:
+        return len(self._entries)
 
 
 def wish_rank_weight(rank, rank_sensitive: bool = True) -> float:
@@ -317,6 +345,10 @@ def current_unmatched_risk_from_simulation_result(simulation_result: dict | None
     return np.nan
 
 
+# Recommendation row colors use the same unmatched-risk thresholds as the
+# simulation summary, applied to the projected risk after appending a program.
+# This makes the color depend on the real marginal portfolio effect rather than
+# only on the conditional chance of admission.
 def risk_color_from_projected_unmatched_risk(projected_unmatched_risk: float) -> str:
     """Color a recommendation from the risk remaining after it is appended."""
     try:
@@ -347,8 +379,9 @@ def candidate_risk_cache_key(
 ) -> tuple:
     """Cache key for candidate metrics within the current student session.
 
-    The student identifier is deliberately excluded. The whole cache is cleared
-    by the UI whenever the RUN/IPE widget changes.
+    The student identifier is deliberately excluded. A cache is scoped to one
+    student: callers use a fresh ``CandidateRiskCache`` whenever the RUN/IPE
+    changes (the API creates one per request).
     """
     return (
         str(candidate_label),
@@ -362,28 +395,23 @@ def candidate_risk_cache_key(
     )
 
 
-def clear_candidate_risk_cache() -> None:
-    """Remove all student-derived recommendation metrics from session state."""
-    st.session_state.pop(CANDIDATE_RISK_CACHE_SESSION_KEY, None)
-    for legacy_key in LEGACY_CANDIDATE_RISK_CACHE_SESSION_KEYS:
-        st.session_state.pop(legacy_key, None)
-
-
 def cached_candidate_base_metrics(
     candidate_label: str,
     candidate_program: pd.Series,
     program_mapping: dict[str, pd.Series],
     student_id: str,
+    *,
+    cache: CandidateRiskCache,
 ) -> dict:
     """Compute/cache the candidate's chance-if-considered and MTB rank.
 
     current_unmatched_risk is intentionally not part of this cache: it only
     scales the final appended chance and can be applied cheaply after lookup.
     """
-    cache = st.session_state.setdefault(CANDIDATE_RISK_CACHE_SESSION_KEY, {})
     key = candidate_risk_cache_key(candidate_label, candidate_program)
-    if key in cache:
-        return cache[key]
+    hit = cache.get(key)
+    if hit is not None:
+        return hit
 
     candidate_wish = pd.DataFrame([make_builder_wish_row(candidate_label, 1, 1)])
 
@@ -396,7 +424,7 @@ def cached_candidate_base_metrics(
         "chance_if_considered_raw": chance_if_considered,
         "estimated_lottery_rank": lottery_rank,
     }
-    cache[key] = out
+    cache.set(key, out)
     return out
 
 
@@ -407,6 +435,7 @@ def candidate_portfolio_metrics(
     *,
     student_id: str,
     current_unmatched_risk: float,
+    cache: CandidateRiskCache,
 ) -> dict:
     """Estimate one appended recommendation's marginal assignment probability.
 
@@ -423,6 +452,7 @@ def candidate_portfolio_metrics(
         candidate_program,
         program_mapping,
         student_id,
+        cache=cache,
     )
     chance_if_considered = float(base_metrics.get("chance_if_considered_raw", np.nan))
     lottery_rank = base_metrics.get("estimated_lottery_rank", np.nan)
@@ -540,6 +570,7 @@ def recommend_similar_programs(
     min_similarity_score: float = RECOMMENDATION_MIN_SIMILARITY_SCORE,
     diversify: bool = RECOMMENDATION_DIVERSIFY,
     diversity_strength: float = RECOMMENDATION_DIVERSITY_STRENGTH,
+    candidate_cache: CandidateRiskCache | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Recommend programs as a portfolio-risk optimization problem.
@@ -548,7 +579,14 @@ def recommend_similar_programs(
     list. The model uses the student's real MTB hash for the candidate school,
     estimates the chance of obtaining that school if reached, then converts it
     into a marginal improvement in the matched outcome.
+
+    ``candidate_cache`` lets a caller reuse candidate base metrics across calls
+    for the same student. When omitted the call is stateless: a fresh
+    :class:`CandidateRiskCache` lives only for the duration of this call.
     """
+    if candidate_cache is None:
+        candidate_cache = CandidateRiskCache()
+
     commune_lookup = commune_coordinate_lookup()
     profile, profile_table = build_wish_profile(
         wishes,
@@ -688,6 +726,7 @@ def recommend_similar_programs(
                 program_mapping,
                 student_id=student_id,
                 current_unmatched_risk=current_unmatched_risk,
+                cache=candidate_cache,
             )
             chance_if_considered = float(portfolio["chance_if_considered_raw"])
             risk_score = chance_if_considered if np.isfinite(chance_if_considered) else 0.0
@@ -702,7 +741,7 @@ def recommend_similar_programs(
 
             rows.append({
                 PROGRAM: candidate_label,
-                "School": clean_recommendation_value(program.school_name) or t("School name unavailable"),
+                "School": clean_recommendation_value(program.school_name) or SCHOOL_NAME_UNAVAILABLE,
                 "Commune": clean_recommendation_value(program.school_commune),
                 "Region": clean_recommendation_value(program.region) or UNKNOWN_REGION,
                 "Program details": clean_recommendation_value(program.program_display_name),
