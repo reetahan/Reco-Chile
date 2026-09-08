@@ -8,40 +8,21 @@ import { useWizardStore } from "@/lib/store/wizard";
 import { stepNumber, type StepSlug } from "./steps";
 
 /**
- * Deep-link guard for the wizard routes (MIGRATION.md §4.1: "Deep-linking to a
- * locked step redirects to the last allowed step. The step guard lives in the
- * `(wizard)/layout.tsx`"), and for the completion page of §9b item 6.
+ * Deep-link guard for the wizard routes: a locked step (or the completion page)
+ * redirects to `fallbackHref` — the last allowed step, or the welcome page when
+ * its question is unanswered. It gates on client-only state (`studentId`,
+ * `simulation` are never persisted), so this can't be a middleware redirect;
+ * `router.replace` keeps the locked URL out of history.
  *
- * Since §9b the redirect target is not necessarily a step: with the welcome
- * question unanswered the last allowed *anything* is the welcome page, so the
- * caller hands in a path rather than a slug.
+ * A skeleton replaces `children` while a redirect is in flight (rendering the
+ * step would flash it and fire its data hooks) and for the one frame before
+ * `hydrateWizardStore()` runs — see `hydrated` below.
  *
- * The state it gates on is client-only — `studentId` and `simulation` are never
- * persisted (§4.2 privacy posture), so the server cannot know whether a step is
- * reachable and this cannot be a middleware redirect. `router.replace` keeps the
- * locked URL out of the history stack, so Back does not bounce into it again.
- *
- * While the redirect is in flight the locked step's content is replaced by a
- * skeleton: rendering `children` would flash a step the family may not enter and
- * would fire its data hooks. The same skeleton covers the frame before
- * `hydrateWizardStore()` has run — see `hydrated` below.
- *
- * ## Navigations the wizard starts itself
- *
- * The guard reacts to *state*, not to intent, and one flow of §4.2 deliberately
- * makes the current step illegal on purpose: step 4's "Add selected and review"
- * appends the recommendations — which invalidates the simulation and therefore
- * locks step 4 — and then pushes to step 2. Left alone, this effect would see
- * the lock first and `router.replace` to step 3, the furthest step still
- * reachable, cancelling the push.
- *
- * So the producer sets `pendingNavigation` to its destination *before* it
- * mutates the store, and this guard stands down while that flag is set: the
- * wizard is already on its way somewhere legal. `children` keep rendering
- * meanwhile — the family looks at the page they pressed the button on until the
- * router swaps it — and the destination clears the flag when it mounts
- * (`ListStep`), with the arrival check below as the backstop for any other
- * target.
+ * `pendingNavigation` handles the one flow that locks the current step on
+ * purpose: step 4's "Add selected and review" invalidates the simulation (which
+ * locks step 4) and then pushes to step 2. The producer sets that flag before
+ * mutating the store; the guard stands down while it is set, and the
+ * destination clears it on mount.
  */
 export function StepGuard({
   slug,
@@ -49,33 +30,26 @@ export function StepGuard({
   fallbackHref,
   children,
 }: {
-  /** The step the URL is on — needed to recognise the arrival of a wizard-owned
-   *  navigation, not just to decide whether it is allowed. `null` on the
-   *  completion page, which is not a step and is never such a destination. */
+  /** The step the URL is on; `null` on the completion page. */
   slug: StepSlug | null;
   allowed: boolean;
-  /** Locale-free path to redirect to — a step, or `WELCOME_PATH` when the
-   *  welcome question has not been answered (§9b item 2). */
+  /** Locale-free redirect target — a step, or `WELCOME_PATH`. */
   fallbackHref: string;
   children: React.ReactNode;
 }) {
   const router = useRouter();
 
-  // The persisted slices (`listExists`, `wishes`, …) land one effect after the
-  // tree mounts, so until then the store says "nothing answered, nothing
-  // chosen" about a family that may well have answered and chosen. Redirecting
-  // on that would bounce every reload of a legitimately reachable step back to
-  // the welcome page. The skeleton below stands in for the one frame it takes.
+  // Persisted slices land one effect after mount; redirecting before `hydrated`
+  // would bounce every reload of a reachable step back to the welcome page.
   const hydrated = useWizardStore((state) => state.hydrated);
   const pendingNavigation = useWizardStore((state) => state.pendingNavigation);
   const setPendingNavigation = useWizardStore(
     (state) => state.setPendingNavigation,
   );
 
-  // Arrived: whatever the destination was, the hand-off is over and the guard
-  // takes charge again. `ListStep` does the same on mount — the two are
-  // idempotent, and having both means neither the only destination today nor a
-  // future one can leave the guard switched off.
+  // Arrived at the pending destination: the hand-off is over. `ListStep` clears
+  // the flag on mount too; both are idempotent, so no destination can leave the
+  // guard switched off.
   const arrived = slug !== null && pendingNavigation === stepNumber(slug);
   React.useEffect(() => {
     if (arrived) setPendingNavigation(null);

@@ -1,22 +1,15 @@
 {
   "title": "Revisa tus resultados",
-  "summaryTitle": "Resumen",
-  "heading": "Resultado de la lista de preferencias",
   "locationUnknown": "Comuna y región sin información",
+  "running": "Calculando…",
   "outcome": {
     "title": "Lo más probable es que quedes en:",
     "chance": "Probabilidad estimada: {chance}",
     "disclaimer": "Estimación basada en datos históricos - no es una garantía oficial del SAE."
   },
   "headline": {
-    "chanceTitle": "Probabilidad estimada de quedar con un cupo asignado",
-    "chanceNote": "Considera todos los programas de tu lista.",
-    "riskNote": "Riesgo de quedar sin asignación:",
-    "mostLikelyTitle": "Establecimiento más probable",
     "preferenceRank": "Tu preferencia n.º {rank}",
-    "unmatchedTitle": "Resultado más probable",
-    "unmatchedBody": "Lo más probable es que no recibas ninguno de los programas de tu lista.",
-    "outcomeChance": "Probabilidad estimada de este resultado: {chance}"
+    "unmatchedBody": "Lo más probable es que no recibas ninguno de los programas de tu lista."
   },
   "next": {
     "title": "¿Qué quieres hacer ahora?",
@@ -25,96 +18,7 @@
     "improve": "No estoy conforme — ayúdame a mejorar mi lista",
     "improveHint": "Te sugerimos establecimientos adicionales para agregar al final de tu lista."
   },
-  "analyze": "Analizar mi lista de preferencias",
-  "analyzeShort": "Calcular mis posibilidades",
-  "running": "Calculando…",
-  "riskLabel": "Riesgo estimado de quedar sin asignación",
-  "riskShort": "Riesgo de quedar sin cupo",
-  "outcomes": {
-    "title": "Resultados estimados más probables",
-    "showAll": "Mostrar todos los resultados estimados",
-    "mostLikely": "Resultado más probable: <b>{outcome}</b>",
-    "mostLikelyLabel": "Resultado más probable:",
-    "mostLikelyLabelPlural": "Resultados más probables:",
-    "top3Outcomes": "Top 3 de resultados más probables:",
-    "top3Schools": "Top 3 de establecimientos más probables:",
-    "finalChanceFor": "Probabilidad final estimada para este resultado: {chance}"
-  },
-  "table": {
-    "title": "Probabilidad final estimada por preferencia",
-    "wishRank": "Ranking de preferencia",
-    "preference": "Preferencia",
-    "program": "Programa",
-    "establishment": "Establecimiento",
-    "chanceIfConsidered": "Probabilidad si es considerado",
-    "finalChance": "Probabilidad final de asignación",
-    "estimatedFinalChance": "Probabilidad final estimada",
-    "predictedOutcome": "Resultado previsto",
-    "predictedOutcomeChance": "Probabilidad final del resultado previsto",
-    "lotteryRank": "Puesto en la lotería (calculado)",
-    "hashPercentile": "Percentil de la lotería",
-    "percentiles": "Percentiles calculados de la lotería (RUN + RBD)",
-    "priorityTier": "Tramo de prioridad",
-    "seats": "Cupos",
-    "applicants": "Postulantes en la calibración histórica",
-    "strictOrder": "Orden estricto #",
-    "strictOrderFull": "Orden estricto",
-    "flaggedAtRisk": "Marcado en riesgo",
-    "referenceRank": "Ranking de referencia"
-  },
-  "detail": {
-    "trigger": "Ver el cálculo detallado de cada preferencia",
-    "title": "Detalle por preferencia",
-    "note": "La probabilidad final considera todos los programas ubicados por encima de cada preferencia.",
-    "technicalNote": "Los puestos en la lotería, los tramos de prioridad, los cupos y las cantidades históricas de postulantes son detalles del cálculo. No deben interpretarse como resultados oficiales del SAE."
-  },
-  "pagination": {
-    "showing": "Mostrando {shown} de {total}",
-    "showMore": "Mostrar más"
-  },
   "errors": {
-    "title": "No pudimos calcular el resultado",
-    "retry": "Volver a calcular"
-  },
-  "explain": {
-    "chanceTitle": "Probabilidad si es considerado vs. probabilidad final",
-    "chanceBody": "Probabilidad si es considerado es la probabilidad de obtener ese programa si llegas a esa preferencia. La probabilidad final de asignación también considera todas las preferencias mejor rankeadas. Por ejemplo, un establecimiento puede ser accesible si es considerado, pero tener una probabilidad final más baja si es probable que obtengas antes una opción mejor rankeada.",
-    "chanceShort": "La probabilidad si es considerado estima el acceso a un programa si llegas a esa preferencia. La probabilidad final también considera la posibilidad de recibir antes un programa mejor ubicado.",
-    "percentagesTitle": "¿Cómo debo interpretar estos porcentajes?",
-    "percentagesBody": "Este porcentaje es una estimación basada en datos históricos y supuestos del modelo; no es un resultado oficial del SAE ni una garantía.",
-    "finalChanceNote": "La probabilidad final de un programa considera todos los programas ubicados por encima. El riesgo de quedar sin asignación es la probabilidad estimada de que ninguno de los programas de la lista esté disponible.",
-    "whatDoesThisMean": "¿Qué significa esto?",
-    "outcomeOrdering": "Los resultados siempre se ordenan según su probabilidad estimada."
-  },
-  "strategicNote": "Nota estratégica: agregar programas adicionales aceptables al final de tu lista de preferencias no reduce la probabilidad de obtener las opciones mejor rankeadas. El proceso de asignación considera la lista en orden y conserva la mejor opción disponible. Por eso conviene que agregues todos los programas de respaldo aceptables, luego marques las prioridades que apliquen para esos establecimientos y vuelvas a ejecutar la simulación.",
-  "equivalence": {
-    "title": "Sensibilidad de las clases de equivalencia",
-    "question": "¿Importa el orden interno que aún no se ha decidido?",
-    "verdict": {
-      "stable": "El orden estricto dentro de las clases de equivalencia no cambia el resultado final previsto. Los {n} orden(es) estricto(s) compatible(s) llevan a: <b>{outcome}</b>.",
-      "stableProbabilityShift": "El orden estricto dentro de las clases de equivalencia no cambia el establecimiento más probable: <b>{outcome}</b>. Sin embargo, sí cambia la probabilidad final de asignación a ese establecimiento, desde {minChance} hasta {maxChance} entre los órdenes estrictos compatibles.",
-      "outcomeChanges": "El orden estricto dentro de al menos una clase de equivalencia puede cambiar el resultado final previsto. Elige con cuidado el orden estricto de los programas empatados."
-    },
-    "advice": {
-      "stable": "Cambiar el orden interno no cambia el establecimiento previsto. El riesgo global de quedar sin cupo también se mantiene igual entre órdenes compatibles.",
-      "stableProbabilityShift": "Cambiar el orden interno no cambia el establecimiento principal previsto, pero sí puede afectar las probabilidades de recibir otras opciones. El riesgo global de quedar sin cupo se mantiene igual, así que conviene que elijas igualmente con cuidado el orden interno.",
-      "outcomeChanges": "Cambiar el orden interno puede llevar a establecimientos previstos distintos. El riesgo global de quedar sin cupo se mantiene igual; solo cambia la distribución de probabilidades de asignación entre establecimientos."
-    },
-    "chooseFirst": "Dentro de cada grupo empatado, coloca primero el programa que realmente prefieres. El riesgo global de quedar sin cupo no cambia, pero sí puede cambiar el establecimiento más probable.",
-    "ordersTitle": "A qué resultado lleva cada orden dentro de los programas empatados",
-    "optionTitle": "Opción {number}",
-    "placeInOrder": "Ordena los programas empatados de esta manera:",
-    "tiedGroup": "Grupo empatado {group}:",
-    "orderInside": "Orden dentro de los programas empatados",
-    "onlyTiedShown": "A continuación solo se muestran los programas empatados dentro del mismo grupo de preferencia. Se omiten los programas cuya posición nunca cambia.",
-    "noTiedOrder": "No se registró un orden de programas empatados para esta opción.",
-    "groupedNotice": "Como existen {n} órdenes compatibles, se agrupan a continuación según su resultado más probable.",
-    "groupedRow": "{outcome} — {n} orden(es) compatible(s)",
-    "referenceTitle": "Cálculo detallado del orden de referencia",
-    "referenceDetails": "Detalles del orden estricto de referencia",
-    "referenceNote": "Esta referencia usa el orden actual de las filas dentro de cada grupo de preferencia.",
-    "referenceIntro": "Esta tabla muestra un orden de referencia: el orden actual de las filas dentro de cada grupo de preferencia. La prueba de sensibilidad de abajo revisa luego todos los órdenes estrictos compatibles con los grupos. Esto importa porque programas empatados todavía pueden llevar a establecimientos previstos distintos.",
-    "technicalTitle": "Detalles técnicos de todos los órdenes probados",
-    "technicalNote": "Esta tabla técnica contiene el ranking estricto completo de cada permutación probada. No es necesaria para elegir el orden dentro de los grupos empatados."
+    "title": "No pudimos calcular el resultado"
   }
 }

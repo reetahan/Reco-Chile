@@ -3,19 +3,19 @@
 /**
  * Display labels for everything the simulation response names.
  *
- * Three rules from MIGRATION.md §3/§4.3/§9b.4 are enforced here, in one place:
+ * Three rules are enforced here, in one place:
  *
  * - **Program labels always come from the API** (`program_label`); the frontend
- *   never rebuilds one from an id. `tied_order` and `program_order` carry ids,
- *   so this module maps them back through the response's own wishes.
+ * never rebuilds one from an id. `tied_order` and `program_order` carry ids,
+ * so this module maps them back through the response's own wishes.
  * - **Enumerated values stay English codes on the wire** and are translated
- *   from `enums.*`: `Unmatched` and the four priority tiers. School names are
- *   shown verbatim.
- * - **A program is never shown without its commune and region** (§9b item 4).
- *   `WishResult` carries neither, so the location is resolved client-side from
- *   `/programs/{id}` through `usePrograms` — the same lookup the wish cards and
- *   the finish page use, sharing one module-level cache, so step 3 asking for
- *   the list it already asked for on step 2 costs no extra request.
+ * from `enums.*`: `Unmatched` and the four priority tiers. School names are
+ * shown verbatim.
+ * - **A program is never shown without its commune and region**.
+ * `WishResult` carries neither, so the location is resolved client-side from
+ * `/programs/{id}` through `usePrograms` — the same lookup the wish cards and
+ * the finish page use, sharing one module-level cache, so step 3 asking for
+ * the list it already asked for on step 2 costs no extra request.
  */
 
 import { useMemo } from "react";

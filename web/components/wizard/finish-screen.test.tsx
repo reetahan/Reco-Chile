@@ -12,10 +12,10 @@ import es from "@/messages/es";
 import { FinishScreen } from "./finish-screen";
 
 /**
- * The completion page of MIGRATION.md §9b item 6.
+ * The completion page.
  *
  * It is deliberately unreachable by a deep link — the simulation it reports is
- * memory-only (§4.2), so the family can only arrive from the result step by a
+ * memory-only, so the family can only arrive from the result step by a
  * client-side navigation — which is why its rendering is asserted here rather
  * than in Playwright; `e2e/wizard.spec.ts` covers the guard that sends everyone
  * else away.
@@ -130,7 +130,7 @@ describe("FinishScreen", () => {
     expect(screen.queryByTestId("finish-chance-stale")).toBeNull();
   });
 
-  it("shows the final list in order, with commune and region (§9b item 4)", () => {
+  it("shows the final list in order, with commune and region", () => {
     seed();
     renderFinish();
 
@@ -181,7 +181,7 @@ describe("FinishScreen", () => {
 
   it("falls back to a prompt when the stored simulation is stale", () => {
     seed();
-    // Any list change invalidates it (§4.2); the guard normally redirects, so
+    // Any list change invalidates it; the guard normally redirects, so
     // this is the defensive branch.
     useWizardStore.getState().addWish("1003:C");
     renderFinish();

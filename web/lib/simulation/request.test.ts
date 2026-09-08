@@ -5,7 +5,7 @@ import { makeWish } from "@/lib/store/wizard";
 import { buildSimulationRequest, canSimulate } from "./request";
 
 /**
- * The store -> `/simulate` mapping (MIGRATION.md §3, §4.2). The important part
+ * The store -> `/simulate` mapping. The important part
  * is the strict/ties asymmetry: `equivalence_group` must be absent in strict
  * mode, because the contract then treats each wish as its own group equal to
  * its position — the one code path that covers both modes.
@@ -85,7 +85,7 @@ describe("canSimulate", () => {
       canSimulate({ studentId: "", wishes, useEquivalenceClasses: false }),
     ).toBe(false);
     expect(
-      canSimulate({ studentId: "   ", wishes, useEquivalenceClasses: false }),
+      canSimulate({ studentId: " ", wishes, useEquivalenceClasses: false }),
     ).toBe(false);
     expect(
       canSimulate({

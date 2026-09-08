@@ -1,8 +1,8 @@
-"""FastAPI entry point — API contract v1 (MIGRATION.md §3).
+"""FastAPI entry point — API contract v1.
 
-A thin HTTP adapter around the same Streamlit-free engine used by app.py.
-This module only translates HTTP requests into calls against that engine
-and formats the results as JSON. No probability is computed here.
+A thin HTTP adapter over the ``sae_app`` engine: it translates HTTP requests
+into engine calls and formats the results as JSON. No probability is computed
+here.
 
 Note /simulate always runs the equivalence-class pipeline. A wish without an
 explicit equivalence_group is its own singleton group (equal to its position),
@@ -17,7 +17,7 @@ an English internal code the frontend translates itself.
 Logging: nothing here logs a request body, and the access log must not either.
 Uvicorn's access line is ``client - "METHOD path HTTP/1.1" status`` — method,
 path and query string only, never the body — and the student's RUN/IPE and the
-family's home address only ever travel in POST bodies (MIGRATION.md §4.5), so
+family's home address only ever travel in POST bodies, so
 the default access log is safe as it stands. Keep it that way: do not move an
 identifier into a path or query parameter, and do not add body logging or a
 ``--log-config`` that dumps requests. ``tests/test_api_contract.py`` runs a
@@ -150,10 +150,10 @@ MAX_REPORTED_VALIDATION_PROBLEMS = 10
 # The per-IP geocoding budget (GEOCODE_RATE_LIMIT_REQUESTS / _WINDOW_SECONDS)
 # lives in constants.py with every other threshold; it is imported above.
 
-# Hosts whose X-Forwarded-For header may be believed. In the deployment of
-# MIGRATION.md §2 the only client of this service is the Next.js proxy on the
-# same host, so every request arrives with request.client.host == the proxy and
-# the raw socket address is useless as a rate-limit key. Override with
+# Hosts whose X-Forwarded-For header may be believed. In the recommended
+# deployment the only client of this service is the Next.js proxy on the same
+# host, so every request arrives with request.client.host == the proxy and the
+# raw socket address is useless as a rate-limit key. Override with
 # SAE_TRUSTED_PROXIES (comma-separated) when the proxy sits on another host.
 DEFAULT_TRUSTED_PROXIES = "127.0.0.1,::1"
 
@@ -169,8 +169,8 @@ UNMATCHED_OUTCOME = "Unmatched"
 def _t(key: str, lang: str, **params) -> str:
     """Translate ``key`` into ``lang``.
 
-    ``sae_app.i18n.t`` grew its keyword-only ``lang`` parameter in Phase 1. The
-    fallback keeps this module importable against an older signature; it costs
+    The ``except TypeError`` fallback keeps this module importable against an
+    older ``sae_app.i18n.t`` signature without a keyword-only ``lang``; it costs
     one TypeError and never changes the returned text for the default language.
     """
     try:
@@ -264,11 +264,11 @@ def _validation_failure(headline: str, problems: list[str]) -> RuntimeError:
 
 
 def validate_calibration(calib: pd.DataFrame) -> None:
-    """Run the same three startup checks app.py runs, but fail hard.
+    """Run the three data-integrity checks at startup and fail hard.
 
-    Streamlit shows the problems and calls st.stop(); a headless API has no
-    such surface, so an invalid dataset must stop uvicorn from starting
-    rather than let it serve probabilities computed from bad data.
+    A headless API has no surface to show problems on, so an invalid dataset
+    must stop uvicorn from starting rather than let it serve probabilities
+    computed from bad data.
     """
     missing = [column for column in required_cols() if column not in calib.columns]
     if missing:
@@ -346,9 +346,9 @@ def cors_origins(raw: str | None = None) -> list[str]:
     """Parse SAE_CORS_ORIGINS (comma-separated) into an allow-list.
 
     Empty by default, and an empty list means *no CORS middleware at all*: in
-    the deployment of MIGRATION.md §2 the browser only ever calls the Next.js
-    proxy, so every request to this service is same-origin or server-to-server
-    and no CORS header should be minted. Set the variable only when a frontend
+    the recommended deployment the browser only ever calls the Next.js proxy, so
+    every request to this service is same-origin or server-to-server and no CORS
+    header should be minted. Set the variable only when a frontend
     on another origin must reach this service directly, and then to that exact
     origin — never ``*``, which would let any page on the internet read a
     family's simulation from their browser.
@@ -394,7 +394,7 @@ async def envelope_validation_exception_handler(
                 # Project each pydantic error down to its shape only. The raw
                 # `input` (and `ctx`) would echo the request body — including
                 # the student's RUN/IPE — back through the proxy into browser
-                # consoles and error reporters (MIGRATION.md §4.5).
+                # consoles and error reporters.
                 {"errors": [
                     {k: e[k] for k in ("type", "loc", "msg") if k in e}
                     for e in exc.errors()
@@ -664,7 +664,7 @@ class RecommendationItem(BaseModel):
     # the current list, i.e. at wish rank `appended_wish_rank`. See
     # `_final_chance_if_appended`: it is the marginal unmatched-risk reduction
     # the engine already computes, restated. On the wire so `web/` never
-    # combines two probabilities of its own (MIGRATION.md §0).
+    # combines two probabilities of its own.
     final_chance_if_appended: float | None
     projected_unmatched_risk: float | None
     risk_level: str
@@ -745,7 +745,7 @@ def _final_chance_if_appended(current_unmatched_risk: float, projected) -> float
     it from the second form rather than re-deriving the product — the value it
     subtracts is the engine's own, already clipped to [0, 1]. Doing it here
     keeps every probability the browser prints out of the browser's arithmetic
-    (MIGRATION.md §0) without adding a column to the recommendation frame, whose
+ without adding a column to the recommendation frame, whose
     exact key set the golden fixtures pin.
     """
     projected_value = _optional_float(projected)
@@ -793,9 +793,9 @@ def _attention_level(unmatched_risk: float) -> str:
 
 
 def _ordered_outcomes(choices: pd.DataFrame) -> list[EstimatedOutcome]:
-    """Structured mirror of ui_simulation.ordered_estimated_outcomes.
+    """The estimated outcomes, structured for the wire.
 
-    Same rule: only programs with a strictly positive assignment probability,
+    Only programs with a strictly positive assignment probability,
     "Unmatched" always present, sorted by probability descending. Labels stay
     the internal English/join-key values; the frontend renders them.
     """
@@ -851,7 +851,7 @@ def _equivalence_verdict(
     predicted_chance_min: float | None,
     predicted_chance_max: float | None,
 ) -> str:
-    """Same three cases as ui_simulation.render_simulation_result."""
+    """Classify the equivalence-order sensitivity into one of three verdicts."""
     predicted_chance_range = (
         predicted_chance_max - predicted_chance_min
         if predicted_chance_min is not None and predicted_chance_max is not None
@@ -991,8 +991,8 @@ def get_programs(
 ) -> ProgramListResponse:
     """Programs in mapping order (region, rbd, program code), filtered and paged.
 
-    Filter semantics are data_loading.program_matches_filters, so the API and
-    the prototype's filter panel can never drift apart.
+    Filter semantics are ``data_loading.program_matches_filters``, so the API
+    and the web filter panel can never drift apart.
     """
     program_mapping = STATE["program_mapping"]
     needle = q.strip().lower() if q else None
@@ -1173,7 +1173,7 @@ def simulate(
 def _school_name(value: object, lang: str) -> str:
     """Translate the engine's missing-school-name code, pass real names through.
 
-    ``sae_app.recommendations`` is language-free (MIGRATION.md Phase 1): it
+    ``sae_app.recommendations`` is language-free: it
     emits ``SCHOOL_NAME_UNAVAILABLE`` as a code and the presentation layer —
     here, the request language — turns it into copy. School names themselves
     are shown verbatim.
@@ -1189,7 +1189,7 @@ def recommend(
     payload: RecommendationRequest,
     lang: str = Depends(request_language),
 ) -> RecommendationResponse:
-    """Suggest acceptable programs to append, with the same weights as the prototype.
+    """Suggest acceptable programs to append.
 
     The current unmatched risk is recomputed server-side from the submitted
     list; a client-supplied risk would let the frontend steer the ranking.
@@ -1222,7 +1222,7 @@ def recommend(
     home_geo_reference = payload.home.model_dump() if payload.home else None
 
     # Recommendation behavior is intentionally not client-configurable; these
-    # are the constants ui_recommendations.py passes, in the same order.
+    # are the frozen recommendation constants, in the order the engine expects.
     competition_weight = (
         RECOMMENDATION_COMPETITION_WEIGHT if RECOMMENDATION_FAVOR_LESS_OVERSUBSCRIBED else 0.0
     )

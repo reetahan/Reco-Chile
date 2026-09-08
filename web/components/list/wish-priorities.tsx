@@ -1,22 +1,21 @@
 "use client";
 
 /**
- * The per-wish priority editor (prototype: the "Does the student have priority
- * at this establishment?" expander inside every wish card of
- * `ui_wish_builder.render_wish_list_builder`).
+ * The per-wish priority editor (the "Does the student have priority
+ * at this establishment?" collapsible inside every wish card).
  *
- * Two deliberate details are carried over from the prototype:
+ * Two deliberate details:
  *
  * 1. The visible label of each checkbox is the *situation* ("Has a sibling
- *    enrolled at the establishment"), not the name of the criterion. Families
- *    tick what is true of them; the criterion name only appears in the
- *    "Declared priorities: …" summary on the card.
+ * enrolled at the establishment"), not the name of the criterion. Families
+ * tick what is true of them; the criterion name only appears in the
+ * "Declared priorities: …" summary on the card.
  * 2. "Already enrolled" sits below a separator with its own caption, because it
- *    is not one of the four SAE priority criteria — it is the safety flag the
- *    engine reads as `SAFETY`.
+ * is not one of the four SAE priority criteria — it is the safety flag the
+ * engine reads as `SAFETY`.
  *
  * Every checkbox writes straight through `setWishFlag`, which invalidates the
- * simulation (MIGRATION.md §4.2): a priority changes the student's tier, so a
+ * simulation: a priority changes the student's tier, so a
  * result computed without it is no longer valid.
  */
 
@@ -38,7 +37,7 @@ import {
   type Wish,
 } from "@/lib/store/wizard";
 
-/** The four SAE criteria, in the prototype's order. */
+/** The four SAE criteria, in order. */
 export const SAE_PRIORITY_FLAGS = [
   "prioritySibling",
   "priorityStudent",
@@ -98,7 +97,7 @@ export function WishPriorities({
       <CollapsibleTrigger
         className="flex w-full items-center justify-between gap-2 rounded-md py-1 text-left text-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50"
         // Many identical triggers share the page, so the accessible name has to
-        // name the program; the visible text stays the prototype's question.
+        // name the program; the visible text stays the question.
         aria-label={`${t("title")} — ${t("forProgram", { program: programName })}`}
       >
         <span>{t("title")}</span>

@@ -1,7 +1,7 @@
 import { FinishScreen } from "@/components/wizard/finish-screen";
 
 /**
- * The completion page — `/[locale]/finish` (MIGRATION.md §9b item 6).
+ * The completion page — `/[locale]/finish`.
  *
  * Inside the `(wizard)` route group so it inherits `/meta`, the store and the
  * step guard, but it is **not** a step: `components/wizard/wizard-shell.tsx`

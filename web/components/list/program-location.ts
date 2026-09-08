@@ -1,5 +1,5 @@
 /**
- * "Comuna · Región" — the one place that line is built (MIGRATION.md §9b.4).
+ * "Comuna · Región" — the one place that line is built.
  *
  * Several hundred Chilean schools share a name: "Liceo Ignacio Carrera Pinto"
  * exists in San Vicente *and* in Frutillar, "Colegio Alonso de Ercilla" in four
@@ -28,7 +28,7 @@
  * code.
  */
 
-/** The separator `_render_program_details` and the prototype's detail line use. */
+/** The separator used in the program detail line. */
 export const PROGRAM_LOCATION_SEPARATOR = " · ";
 
 /**

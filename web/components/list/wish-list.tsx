@@ -4,8 +4,7 @@
  * The family's preference list: one {@link WishCard} per wish, in the order the
  * store holds them.
  *
- * Strict mode offers two equivalent ways to reorder, exactly as MIGRATION.md
- * §4.1 requires: drag-and-drop with `@dnd-kit`, and the prototype's Move up /
+ * Strict mode offers two equivalent ways to reorder: drag-and-drop with `@dnd-kit`, plus Move up /
  * Move down buttons for keyboard and screen-reader users. `@dnd-kit`'s own
  * keyboard sensor makes the drag handle operable too (space to lift, arrows to
  * move, space to drop), with localized announcements.
@@ -13,7 +12,7 @@
  * Ties mode has no ordering at all — a group number replaces it — so the cards
  * are rendered without a `DndContext` and are shown sorted by group, mirroring
  * `display_rows = current_non_empty.sort_values([EQUIV_GROUP, WISH_RANK])` in
- * `ui_wish_builder`. That sort is display-only: the store keeps the insertion
+ * buttons for keyboard users. That sort is display-only: the store keeps the insertion
  * order, and `/simulate` compacts the groups server-side.
  */
 
@@ -70,7 +69,7 @@ export function WishList() {
   // name, not the raw `rbd:program_code`. Served from the same cache the step
   // and the cards already filled, so this costs no extra request.
   //
-  // The commune and region ride along (MIGRATION.md §9b.4): reordering two
+  // The commune and region ride along: reordering two
   // schools that share a name is exactly when "moved X to preference 2" has to
   // say *which* X, and the announcement is all a screen-reader user hears.
   const { programs } = usePrograms(ids);

@@ -21,7 +21,7 @@ type StepperProps = {
 };
 
 /**
- * The `○────●────○────○` rail of MIGRATION.md §4.1.
+ * The `○────●────○────○` rail
  *
  * Every step is a link, but only while its "can enter" condition holds. A step
  * that cannot be entered renders as inert text marked `aria-disabled`, carrying

@@ -13,8 +13,7 @@ import en from "../messages/en";
 import es from "../messages/es";
 
 /**
- * Accessibility pass — MIGRATION.md §7, Phase 6 ("Accessibility pass (axe in
- * Playwright, focus order, labels)").
+ * Accessibility pass — axe in Playwright, plus focus order and labels.
  *
  * Every wizard step is scanned in both locales and in the state a family
  * actually meets it in, not on an empty page: a step whose only content is a
@@ -89,7 +88,7 @@ const PERSIST_VERSION = 1;
 /**
  * Put a golden list into `sessionStorage` before the first paint, the way
  * `result.spec.ts` does. The RUN/IPE is never seeded — it is memory-only
- * (§4.5) — so it is always typed into step 1.
+ * — so it is always typed into step 1.
  */
 async function seedList(
   page: Page,
@@ -120,7 +119,7 @@ async function seedList(
 }
 
 /**
- * The welcome answer on its own, without a list (§9b item 2).
+ * The welcome answer on its own, without a list.
  *
  * Since the welcome page replaced step 1's "list exists?" radio, `listExists`
  * is what `canEnterStep(1)` requires: a hard load of `/es/student` without it
@@ -189,7 +188,7 @@ const AXE_TAGS = [
 ] as const;
 
 /** `axe-core`'s `Result`, reached through the builder so the spec does not have
- *  to resolve `axe-core` itself (pnpm keeps it out of `web/node_modules`). */
+ * to resolve `axe-core` itself (pnpm keeps it out of `web/node_modules`). */
 type AxeViolation = Awaited<
   ReturnType<AxeBuilder["analyze"]>
 >["violations"][number];
@@ -270,7 +269,7 @@ async function scan(page: Page, info: TestInfo, label: string): Promise<void> {
       description: `${label}\n${lines.join("\n")}`,
     });
     // Visible in `--reporter=list` and in the GitHub log; not a failure.
-    console.log(`axe (advisory) — ${label}\n  ${lines.join("\n  ")}`);
+    console.log(`axe (advisory) — ${label}\n ${lines.join("\n ")}`);
   }
 
   expect(blocking.map(describeViolation), `axe — ${label}`).toEqual([]);
@@ -289,7 +288,7 @@ for (const locale of LOCALES) {
         }),
       ).toBeVisible();
       // The two buttons are one labelled group, and they are the only way in
-      // (§9b item 2) — a scan of the wizard's front door is not optional.
+      // — a scan of the wizard's front door is not optional.
       await scan(page, info, `welcome (${locale})`);
     });
 
@@ -326,7 +325,7 @@ for (const locale of LOCALES) {
       await scan(page, info, `step 1 (${locale}) — empty`);
 
       // Filled: the identifier feedback carries state now. The ties switch and
-      // the welcome-answer note both moved off this step (§9b) — the ties
+      // the welcome-answer note both moved off this step — the ties
       // switch is scanned on step 2 instead, via the seeded "strict list" /
       // "two tied groups" fixtures below.
       await page
@@ -389,7 +388,7 @@ for (const locale of LOCALES) {
       await expect(page.getByTestId("result-outcome")).toBeVisible({
         timeout: 60_000,
       });
-      // Feedback round 2 left step 3 with one box and the finish/improve
+      // Step 3 is one box and the finish/improve
       // choice: there is no disclosure to open, so this is the whole step.
       await scan(page, info, `step 3 (${locale}) — strict`);
     });
@@ -399,7 +398,7 @@ for (const locale of LOCALES) {
       await identify(page, locale, EQUIV_RESULT.inputs.student_id);
       await goToStep(page, locale, 3, "result");
 
-      // Since feedback round 2 the mode no longer changes what step 3 draws —
+      // The mode no longer changes what step 3 draws —
       // the box is the same — but the /simulate call behind it is not, so the
       // ties path still gets its own scan.
       await expect(page.getByTestId("result-outcome")).toBeVisible({
@@ -421,7 +420,7 @@ for (const locale of LOCALES) {
       await expect(page.getByTestId("result-outcome")).toBeVisible({
         timeout: 60_000,
       });
-      // §9b item 6: the result step's own choice replaced the generic Continue.
+      // the result step's own finish / improve choice replaces the generic Continue.
       await page.getByTestId("result-improve").click();
       await page.waitForURL(`**/${locale}/improve`);
 
@@ -496,7 +495,7 @@ async function stubGeocode(page: Page): Promise<void> {
 // --- Focus management and the keyboard path --------------------------------
 
 /**
- * MIGRATION.md §7 Phase 6, "focus order": moving between steps must land focus
+ * Focus order: moving between steps must land focus
  * on the new step's `<h1>`, not leave it on a button that no longer exists.
  * Without this a screen-reader user pressing Continue hears nothing at all and
  * a keyboard user's next Tab starts from the top of the document.
@@ -583,7 +582,7 @@ test.describe("keyboard operability", () => {
     await expect(headingIsFocused(page)).resolves.toBe(es.list.title);
 
     // Reorder: the first card's "Move down" swaps wishes 1 and 2. The drag
-    // handle is not the only path (MIGRATION.md §4.1).
+    // handle is not the only path.
     const moveDown = await tabUntil(
       page,
       (node) =>

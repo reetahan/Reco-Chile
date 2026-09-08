@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  * `usePathname` from `@/i18n/navigation` returns the path *without* the locale
  * prefix, so passing it straight back to `Link` with an explicit `locale`
  * re-renders the same wizard step in the other language — a family half-way
- * through the list does not lose their place by switching (MIGRATION.md §4.3).
+ * through the list does not lose their place by switching.
  *
  * The language names are deliberately identical in both catalogues: a switcher
  * is only useful if you can read the option you cannot currently read.

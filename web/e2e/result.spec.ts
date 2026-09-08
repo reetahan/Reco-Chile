@@ -8,33 +8,27 @@ import es from "../messages/es";
 import en from "../messages/en";
 
 /**
- * Step 3 parity (MIGRATION.md Phase 4 exit gate: "Playwright parity for the
- * strict and equivalence golden fixtures (rendered percentages equal fixture
- * values)").
+ * Step 3 — the rendered percentages must equal the golden-fixture values for
+ * the strict and equivalence scenarios.
  *
- * The fixtures under `tests/fixtures/golden/` were generated from the
- * pre-migration Streamlit engine (§6.1) and are the numerical baseline for the
- * whole migration. These tests drive the real wizard against the real FastAPI
+ * The fixtures under `tests/fixtures/golden/` are the engine's numerical
+ * baseline. These tests drive the real wizard against the real FastAPI
  * (Playwright starts both, see `playwright.config.ts`), then compare every
- * rendered percentage with `formatPercent(<fixture value>)` — the mirror of the
- * prototype's `{:.1%}`. Nothing is hard-coded: change the data and the fixtures
+ * rendered percentage with `formatPercent(<fixture value>)` — the same rule as
+ * Python's `{:.1%}`. Nothing is hard-coded: change the data and the fixtures
  * change with it, and these tests follow.
  *
- * How the list is built: the wizard persists `wishes` to `sessionStorage`
- * (§4.2), so the fixture's exact list — including its preference groups — is
- * seeded there before the first paint. Driving the step-2 combobox for a
- * twelve-wish scarce list would test the search box, not the result, and the
- * RUN/IPE is deliberately *not* seedable (it is memory-only), so it is always
- * typed into the step-1 field, exactly as a family would.
+ * How the list is built: the wizard persists `wishes` to `sessionStorage`, so
+ * the fixture's exact list — including its preference groups — is seeded there
+ * before the first paint. Driving the step-2 combobox for a twelve-wish scarce
+ * list would test the search box, not the result, and the RUN/IPE is
+ * deliberately *not* seedable (it is memory-only), so it is always typed into
+ * the step-1 field, exactly as a family would.
  *
- * Product feedback round 1 (MIGRATION.md §9b, items 5–6) reshaped what step 3
- * *shows* without touching a single number: the attention-level alerts and the
- * threshold disclosure are gone, and the page opens with two figures — the
- * overall chance of being assigned (`1 − unmatched_risk`) and the most likely
- * outcome. The parity assertions below therefore moved onto the new elements;
- * they still compare against the fixtures, and `assignment-chance` is asserted
- * as `formatPercent(1 − <fixture unmatched_risk>)` rather than against a
- * second, independently rendered number.
+ * Step 3 shows two figures — the overall chance of being assigned
+ * (`1 − unmatched_risk`) and the most likely outcome. `assignment-chance` is
+ * asserted as `formatPercent(1 − <fixture unmatched_risk>)` rather than against
+ * a second, independently rendered number.
  */
 
 // --- Fixtures --------------------------------------------------------------
@@ -103,7 +97,7 @@ const EQUIV_STABLE = golden("equiv_01_two_tied_stable_outcome");
  *
  * Truncating a golden list is sound arithmetic, not a new baseline: a wish's
  * `choice_assignment_probability` and the cumulative unavailability after it
- * depend only on the wishes *above* it (§6, `README.md`), so the first ten rows
+ * depend only on the wishes *above* it, so the first ten rows
  * of `strict_05` are exactly the engine's answer for a ten-wish list. The test
  * still asserts the band against `/meta` before it asserts anything else, so a
  * data change that moves these numbers fails loudly instead of passing
@@ -162,7 +156,7 @@ function referenceChoices(fixture: Fixture): Choice[] {
 }
 
 /** The 1-based position of a program in the reference order — the `wish_rank`
- *  the headline prints as "your preference #n". */
+ * the headline prints as "your preference #n". */
 function wishRankOf(fixture: Fixture, program: string): number {
   const index = referenceChoices(fixture).findIndex(
     (choice) => choice.program === program,
@@ -174,7 +168,7 @@ function wishRankOf(fixture: Fixture, program: string): number {
 }
 
 /** The most likely *program* of a fixture — `outcomes[0]` whenever a school is
- *  more likely than staying unmatched. */
+ * more likely than staying unmatched. */
 function topProgram(fixture: Fixture): Choice {
   const best = [...referenceChoices(fixture)].sort(
     (a, b) => b.choice_assignment_probability - a.choice_assignment_probability,
@@ -195,7 +189,7 @@ async function programOf(
   return response.json();
 }
 
-/** Nothing on the page may reintroduce the attention levels (§9b item 5). */
+/** Nothing on the page may reintroduce the attention levels. */
 async function expectNoAttentionLevels(page: Page): Promise<void> {
   await expect(page.getByTestId("attention-alert")).toHaveCount(0);
   // The removed copy, in the words it used: the three alerts, the "How are the
@@ -236,7 +230,7 @@ async function seedList(page: Page, fixture: Fixture): Promise<void> {
 }
 
 /** Type the RUN on step 1, then walk the stepper to step 3 — a client-side
- *  navigation, because a reload would drop the memory-only identifier. */
+ * navigation, because a reload would drop the memory-only identifier. */
 async function openResult(
   page: Page,
   fixture: Fixture,
@@ -284,7 +278,7 @@ test.describe("result step — the outcome box", () => {
     await expect(page.getByTestId("predicted-unmatched")).toHaveText(
       es.result.headline.unmatchedBody,
     );
-    // No percentage here (feedback round 2): the number that belongs to this
+    // No percentage here: the number that belongs to this
     // outcome is its own probability, and "you receive none of the programs" +
     // "Estimated chance: 100.0%" read as a 100% chance of a place.
     await expect(page.getByTestId("predicted-chance")).toHaveCount(0);
@@ -334,9 +328,7 @@ test.describe("result step — the outcome box", () => {
     );
   });
 
-  test("names commune and region with the school (§9b item 4)", async ({
-    page,
-  }) => {
+  test("names commune and region with the school", async ({ page }) => {
     await openResult(page, MID_BAND);
     const top = topProgram(MID_BAND);
     const program = await programOf(page, top.program_id);
@@ -346,10 +338,10 @@ test.describe("result step — the outcome box", () => {
     );
   });
 
-  test("is the whole page: nothing from before feedback round 2 is left", async ({
+  test("is the whole page: the page is only the outcome box", async ({
     page,
   }) => {
-    // Round 2 removed the overall assignment figure and unmatched risk, the
+    // The page no longer shows the overall assignment figure and unmatched risk, the
     // outcome podium, the per-preference family table, the equivalence block
     // and the detailed calculation. The box and the finish/improve choice are
     // all that remain — assert their absence so none of them creeps back.
@@ -392,7 +384,7 @@ test.describe("result step — the outcome box", () => {
     await expect(improve).toHaveAttribute("href", "/es/improve");
 
     // …and *instead of*: the shell's unlabelled Continue used to sit below the
-    // choice and silently take the improve branch (§9b item 6). Back stays.
+    // choice and silently take the improve branch. Back stays.
     await expect(page.getByTestId("wizard-continue")).toHaveCount(0);
     await expect(page.getByTestId("wizard-back")).toBeVisible();
 
@@ -403,7 +395,7 @@ test.describe("result step — the outcome box", () => {
   test("finish clears the wizard and returns to the welcome page", async ({
     page,
   }) => {
-    // Feedback round 2: "I'm happy — finish" no longer opens the completion
+    // "I'm happy — finish" no longer opens the completion
     // page, it ends the session where it began.
     await openResult(page, STRICT);
     await expect(page.getByTestId("result-outcome")).toBeVisible();
@@ -451,7 +443,7 @@ test.describe("result step — the outcome box", () => {
   });
 
   test("ties mode shows the same single box", async ({ page }) => {
-    // Until round 2 the mode decided the branch: ties drew the equivalence
+    // The mode used to decide the branch: ties drew the equivalence
     // sensitivity block, strict drew the family table. Both are gone, so the
     // mode no longer changes what step 3 renders — only what `/simulate` is
     // asked. `equiv_01` is stable, so its top outcome is the fixture's own.
@@ -470,7 +462,7 @@ test.describe("result step — the outcome box", () => {
     );
   });
 
-  test("keeps the RUN out of storage and out of the URL (§4.5)", async ({
+  test("keeps the RUN out of storage and out of the URL ()", async ({
     page,
   }) => {
     await openResult(page, STRICT);
@@ -526,9 +518,9 @@ test.describe("result step — failures", () => {
         .replace("{n}", formatInt(40320, "es"))
         .replace("{limit}", formatInt(10000, "es")),
     );
-    // No way onward while the step has no fresh result (§4.1): the finish /
+    // No way onward while the step has no fresh result: the finish /
     // improve choice is rendered only beside a result, and step 3 has no
-    // generic Continue to fall back on since §9b item 6.
+    // generic Continue to fall back on item 6.
     await expect(page.getByTestId("result-actions")).toHaveCount(0);
     await expect(page.getByTestId("wizard-continue")).toHaveCount(0);
 

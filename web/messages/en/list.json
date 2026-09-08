@@ -3,15 +3,11 @@
   "current": {
     "title": "Current preference list",
     "empty": "No programs added yet. Add your first preference above.",
-    "count": "{n} program(s) selected",
-    "useBuilder": "Use the builder below to enter your existing list directly."
+    "count": "{n} program(s) selected"
   },
   "order": {
-    "strictHint": "Enter programs in strict order. The first program is the highest-ranked choice, and the final chance of each lower option depends on not getting the options above it.",
     "preferenceHint": "Search for programs, add them, and order by preference",
-    "reorderHint": "Use ↑ and ↓ to reorder your strict ranking.",
-    "howTitle": "How should preferences be entered?",
-    "howBody": "Strict ranking means every program has a precise rank. Equivalence classes allow several programs to share the same preference group when you see them as tied."
+    "reorderHint": "Use ↑ and ↓ to reorder your strict ranking."
   },
   "ties": {
     "label": "I have not yet decided the exact order between some programs",
@@ -41,11 +37,9 @@
   },
   "notices": {
     "imputedTitle": "Some selected programs use estimated historical calibration values.",
-    "imputedShort": "Less reliable estimate: at least one selected program uses mean-imputed 2024 calibration values.",
     "imputedBody": "Complete historical observations were unavailable for at least one selected program, so the model uses an imputed 2024 value. Interpret those program-level estimates with additional caution.",
     "removed": "Some programs in the current wish list are no longer available in the loaded data and were removed: {programs}",
     "recommendationsAdded": "{n} recommended program(s) were added at the end of the list. Check priorities for the new programs, then analyze the list again.",
-    "duplicate": "That program is already in the list.",
     "maxWishes": "The list cannot hold more than {max} programs.",
     "imputedWhat": "What does this mean?"
   }

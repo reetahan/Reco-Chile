@@ -1,15 +1,15 @@
 "use client";
 
 /**
- * "Finish" vs "improve my list" — MIGRATION.md §9b, item 6.
+ * "Finish" vs "improve my list", item 6.
  *
- * The prototype (and the wizard until now) let step 3 flow into step 4 through
+ * An earlier design let step 3 flow into step 4 through
  * one anonymous Continue, which reads as "you are not done yet" even for a list
- * the family is happy with. Product feedback round 1 asks for the choice to be
+ * the family is happy with. The step now makes the choice
  * explicit: a primary *I'm happy — finish*, and a secondary *not happy — help
  * me improve my list* that goes to step 4.
  *
- * Feedback round 2 changed where "finish" goes: it used to open the completion
+ * "Finish" ends the session: it used to open the completion
  * page at `FINISH_PATH`; it now clears the wizard and returns to the welcome
  * page, the same thing that page's own "start over" did. `/finish` is
  * consequently unreachable from the UI.

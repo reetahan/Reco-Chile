@@ -3,14 +3,14 @@
 /**
  * `POST /geocode` for the optional home address of step 4.
  *
- * MIGRATION.md §4.5, verbatim: "Address is sent to `/geocode` only on explicit
+ * "Address is sent to `/geocode` only on explicit
  * button click, never on change." `geocode()` is therefore returned as an
  * imperative function and this module contains no effect that could fire it —
  * typing in the field must never reach the network, and Nominatim's 1 req/s
  * budget (shared by every user of the API process) depends on it.
  *
  * What is remembered is the *attempt*: the normalized address that was sent and
- * whatever came back, success or failure. The prototype compares the stored
+ * whatever came back, success or failure. It compares the stored
  * result's address with the field's current content to decide between showing
  * feedback and showing "Address changed. Click the button to update the
  * coordinates."; `geocodeFeedback()` below is that comparison, extracted so it
@@ -28,8 +28,8 @@ import { api, ApiError } from "@/lib/api";
 import type { GeocodeResponse } from "@/lib/api/types";
 import { useWizardStore } from "@/lib/store/wizard";
 
-/** `" ".join(address.strip().split())` — the prototype's normalization, which
- *  is also what the stored result's `address` is compared against. */
+/** `" ".join(address.strip().split())` — the same normalization the API applies, which
+ * is also what the stored result's `address` is compared against. */
 export function normalizeAddress(value: string): string {
   return value.trim().split(/\s+/).filter(Boolean).join(" ");
 }
@@ -50,13 +50,13 @@ export function hasUsableCoordinates(result: GeocodeResponse): boolean {
  *
  * - `idle` — nothing has been looked up for this text yet.
  * - `changed` — an earlier lookup exists but the family has edited the field
- *   since; the coordinates on file no longer describe what is written.
+ * since; the coordinates on file no longer describe what is written.
  * - `confirmed` — `precision === "address"`: the exact address was found.
  * - `approximate` — found, but at street/city/unknown precision; `message` is
- *   the server-localized warning for that precision.
+ * the server-localized warning for that precision.
  * - `failed` — the lookup itself said no (`ok: false`), `message` localized by
- *   the server; or the call never got there, in which case `message` is empty
- *   and the caller supplies its own network wording.
+ * the server; or the call never got there, in which case `message` is empty
+ * and the caller supplies its own network wording.
  */
 export type GeocodeFeedback =
   | { kind: "idle" }
@@ -101,7 +101,7 @@ export function geocodeFeedback(
 
 export type UseGeocodeResult = {
   /** Send the address. Call from a click handler only — never from an effect
-   *  or an `onChange`. */
+   * or an `onChange`. */
   geocode: (address: string) => Promise<void>;
   /** Forget the attempt and drop the stored home point. */
   clear: () => void;

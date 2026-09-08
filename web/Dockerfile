@@ -10,9 +10,7 @@
 # ---------------------------------------------------------------------------
 # deps — node_modules only, cached until the lockfile changes
 # ---------------------------------------------------------------------------
-# Node 22 = current LTS, and the floor in package.json is >=20. The repo's
-# .nvmrc says 26 (Current) for local development; CI and this image stay on the
-# LTS line on purpose.
+# Node 22 (LTS); the floor in package.json is >=20.
 FROM node:22-bookworm-slim AS deps
 # PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: @playwright/test is a devDependency and its
 # browsers are e2e-only. pnpm already blocks unapproved install scripts; this

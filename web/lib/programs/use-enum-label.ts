@@ -4,11 +4,11 @@
  * Wire value → family-facing string, through the `enums.*` catalogue.
  *
  * Every enumerated value the API returns is an English internal code
- * ("With PIE", "Specialized", "Free") — MIGRATION.md §3 — and the frontend owns
- * its display string (§4.3). A value that has no entry is rendered verbatim
+ * ("With PIE", "Specialized", "Free") — and the frontend owns
+ * its display string. A value that has no entry is rendered verbatim
  * rather than as a raw message id: catalogues drift, but a family should still
  * read *something* about their school. A blank or `nan` value becomes
- * "No information", exactly like `ui_wish_builder._family_display_value`.
+ * "No information".
  */
 
 import { useCallback } from "react";

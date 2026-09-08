@@ -10,10 +10,10 @@ import { hydrateWizardStore, useWizardStore } from "@/lib/store/wizard";
 import { DISCLAIMER_PATH } from "./steps";
 
 /**
- * The welcome page — the wizard's front door (MIGRATION.md §9b item 2).
+ * The welcome page — the wizard's front door.
  *
  * Almost blank on purpose: the positive framing sentence as the headline, the
- * reassurance under it, and the one question the prototype used to ask with a
+ * reassurance under it, and the one question that used to be asked with a
  * radio inside step 1. Answering it here is half of what unlocks step 1
  * (`canEnterStep(1)` → `hasListChoice` — the other half is the consent
  * checkbox on `DisclaimerScreen`, which is where both buttons send the

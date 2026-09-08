@@ -22,7 +22,7 @@ import {
 /**
  * One suggested program.
  *
- * Feedback round 2 cut this down to what a family decides on: the school, where
+ * The card shows what a family decides on: the school, where
  * it is, the program, how far away it is, and *the one number that answers
  * "should I add this"* — the chance of actually being assigned to it if it goes
  * on the end of the list. Gone with the text: the before→after unmatched-risk
@@ -32,7 +32,7 @@ import {
  *
  * The chance is `final_chance_if_appended` — computed by the engine as
  * `current_unmatched_risk * chance_if_considered` and put on the wire for this
- * (§0: the frontend never multiplies two probabilities). `appended_wish_rank`
+ * (the frontend never multiplies two probabilities). `appended_wish_rank`
  * names the position it assumes, so the card can say *which* preference the
  * number belongs to instead of leaving the family to infer it.
  *
@@ -41,8 +41,8 @@ import {
  * would take the parity hook with it.
  *
  * The optional lines are dropped rather than dashed when their value is
- * missing. The location line is the one deliberate exception (MIGRATION.md
- * §9b.4): it always renders, because a school name without its commune and
+ * missing. The location line is the one deliberate exception: it always
+ * renders, because a school name without its commune and
  * region cannot be looked up or told apart from its namesakes.
  */
 export function RecommendationCard({
@@ -53,7 +53,7 @@ export function RecommendationCard({
 }: {
   item: RecommendationItem;
   /** `appended_wish_rank` of the same response — the position
-   *  `final_chance_if_appended` assumes. */
+   * `final_chance_if_appended` assumes. */
   appendedWishRank: number | null;
   selected: boolean;
   onSelectedChange: (selected: boolean) => void;
@@ -61,7 +61,7 @@ export function RecommendationCard({
   const t = useTranslations();
   const locale = useLocale();
 
-  // Commune *and* region, always (MIGRATION.md §9b.4). A suggestion is a school
+  // Commune *and* region, always. A suggestion is a school
   // you have never heard of by definition, and dozens of Chilean schools share
   // a name across communes — the card title alone cannot identify one. Built by
   // the same helper the step-2 rows use, so both steps disambiguate alike.
@@ -74,7 +74,7 @@ export function RecommendationCard({
     isFiniteNumber(item.final_chance_if_appended) && appendedWishRank !== null;
 
   // A candidate the API could not map back to a `program_id` cannot be appended
-  // to the list, which stores ids only (§10). It is still shown — it is a real
+  // to the list, which stores ids only. It is still shown — it is a real
   // suggestion the family may add by hand — but its checkbox is inert.
   const selectable =
     typeof item.program_id === "string" && item.program_id !== "";

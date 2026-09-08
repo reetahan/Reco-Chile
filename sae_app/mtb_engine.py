@@ -2,8 +2,8 @@
 
 This is the pure calculation core of the app: given a wish list and a
 student RUN/IPE, it computes the deterministic lottery rank for each school
-and the resulting availability/assignment probabilities. Nothing here touches
-Streamlit widgets, so this module can be unit-tested on its own.
+and the resulting availability/assignment probabilities. It has no I/O and no
+UI dependency, so it can be unit-tested on its own.
 """
 
 from __future__ import annotations

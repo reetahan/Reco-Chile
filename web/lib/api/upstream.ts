@@ -1,72 +1,54 @@
 /**
- * Server-side plumbing for `web/app/api/[...path]/route.ts`.
+ * Server-side plumbing for `web/app/api/[...path]/route.ts`: the browser calls
+ * same-origin `/api/...` and this module forwards it to `API_BASE_URL`, so
+ * there is no CORS, the RUN/IPE stays first-party, and the Python port need
+ * not be published.
  *
- * The browser never calls the FastAPI origin directly (MIGRATION.md §2): it
- * calls same-origin `/api/...`, and this module forwards the call to
- * `API_BASE_URL`. One origin means no CORS in production, the RUN/IPE stays
- * first-party from the browser's point of view, and the Python port need not
- * be published.
+ * PRIVACY — do not add logging here. Request bodies carry the RUN/IPE
+ * (`/simulate`, `/recommend`) and the home address (`/geocode`); they are
+ * forwarded as an opaque string and never reach a log, an error message, or an
+ * analytics sink.
  *
- * PRIVACY — do not add logging here. Request bodies carry the student's
- * RUN/IPE (`/simulate`, `/recommend`) and the family's home address
- * (`/geocode`). MIGRATION.md §4.5 requires that they never reach a log, an
- * error message, or an analytics sink. Bodies are passed through as an opaque
- * string; only method, status and path may ever be observed, and nothing here
- * writes even those.
+ * Headers are rebuilt, not relayed: only `FORWARDED_REQUEST_HEADERS` cross over
+ * (no cookies, no authorization), plus one `X-Forwarded-For` this hop derives
+ * itself — see `clientAddress` and the `TRUST_PROXY` flag.
  *
- * Request headers are rebuilt, not relayed: only the three in
- * `FORWARDED_REQUEST_HEADERS` cross over (no cookies, no authorization), plus
- * one `X-Forwarded-For` this hop derives itself so FastAPI's per-IP geocoding
- * budget can be per browser rather than per proxy — see `clientAddress`, and
- * the `TRUST_PROXY` flag that governs whether an incoming chain may be
- * believed at all.
- *
- * The URL building is kept as a pure function so it can be unit-tested without
- * a running Next.js server.
- *
- * Not to be confused with `web/proxy.ts` at the project root: that is Next 16's
- * renamed Middleware convention (locale routing), and it deliberately does not
- * match `/api/*`.
+ * Not the locale middleware — that is `web/proxy.ts` and does not match
+ * `/api/*`.
  */
 import { NETWORK_ERROR_KEY } from "./errors";
 
-/** Used when `API_BASE_URL` is unset — the dev default of MIGRATION.md §2. */
+/** Used when `API_BASE_URL` is unset — the dev default. */
 export const DEFAULT_UPSTREAM_BASE_URL = "http://localhost:8000";
 
 /**
- * Ceiling on one upstream call. Generous on purpose: an equivalence-class
- * simulation may enumerate up to `max_exact_equiv_permutations` orders
- * server-side. It exists so a wedged upstream cannot pin a Node worker.
+ * Ceiling on one upstream call — generous, because an equivalence-class
+ * simulation can enumerate many orders server-side. It only exists so a wedged
+ * upstream cannot pin a Node worker forever.
  */
 export const UPSTREAM_TIMEOUT_MS = 120_000;
 
 /** Request headers forwarded browser → FastAPI. Everything else is dropped. */
 const FORWARDED_REQUEST_HEADERS = [
   "accept",
-  // The contract's second language selector, after `?lang=` (MIGRATION.md §3).
+  // The contract's second language selector, after `?lang=`.
   "accept-language",
   "content-type",
 ] as const;
 
 /**
- * Placeholder client address for a request whose origin cannot be established
- * — a direct browser→Next connection (`pnpm dev`), a platform that does not
- * populate `X-Forwarded-For`, or a deployment that has not opted into trusting
- * one. Every such caller shares one rate-limit bucket upstream, which is
- * exactly what happened before this header existed.
+ * Client address for a request whose origin cannot be established (dev, a
+ * platform that omits `X-Forwarded-For`, or `TRUST_PROXY` off). Every such
+ * caller shares one rate-limit bucket upstream.
  */
 export const UNKNOWN_CLIENT_ADDRESS = "unknown";
 
 /**
  * Whether a hop in front of this process is trusted to set `X-Forwarded-For`.
- *
- * Opt-in (`TRUST_PROXY=1`), because the header is trustworthy only when
- * something the operator controls writes it. With Next.js exposed directly to
- * the internet, a request's `X-Forwarded-For` is pure client input: honouring
- * it would let one caller mint a fresh rate-limit bucket per request by
- * sending a different value each time, which is strictly worse than having no
- * header at all. Off, every caller shares the `unknown` bucket — the upstream
- * budget then throttles everyone together, which is the safe failure.
+ * Opt-in (`TRUST_PROXY=1`): with Next.js exposed directly, the header is pure
+ * client input, and honouring it would let one caller mint a fresh rate-limit
+ * bucket per request. Off, everyone shares the `unknown` bucket — the safe
+ * failure.
  */
 export function trustsForwardedFor(
   env: Record<string, string | undefined> = process.env,
@@ -115,15 +97,10 @@ export function buildUpstreamUrl(
 }
 
 /**
- * The browser's address as the hop in front of Next.js saw it.
- *
- * Next 16 exposes no socket address to a route handler (`NextRequest.ip` was
- * removed and there is no `connection()` equivalent for it), so the only
- * source is the `X-Forwarded-For` a platform proxy set. Its *rightmost* entry
- * is the address that proxy observed; entries to its left are whatever the
- * client claimed and are worth nothing. Without a proxy in front — the default
- * until `TRUST_PROXY=1` says otherwise — the header is client input and is
- * ignored outright: no trustworthy value exists and none is invented.
+ * The browser's address as the hop in front of Next.js saw it — the *rightmost*
+ * `X-Forwarded-For` entry (Next 16 gives a route handler no socket address of
+ * its own). Entries to its left are unverified client claims. Without
+ * `TRUST_PROXY=1` the whole header is client input and is ignored.
  */
 export function clientAddress(
   request: Request,
@@ -149,17 +126,10 @@ function forwardedRequestHeaders(
     if (value) headers.set(name, value);
   }
   if (!headers.has("accept")) headers.set("accept", "application/json");
-  // FastAPI's `_client_key` reads the rightmost X-Forwarded-For entry as "the
-  // caller as the trusted hop saw it" and buckets /geocode's per-IP budget by
-  // it. Without this header every browser shares the proxy's own address and
-  // one family can spend the whole budget for everyone.
-  //
-  // The header is *set*, not relayed and extended: the incoming chain's
-  // leftmost entries are unverified client claims, and Next 16 gives a route
-  // handler no peer address of its own to append, so the one derived value is
-  // all this hop can honestly assert. Without TRUST_PROXY that value is the
-  // shared placeholder. It is an address either way — no part of the request
-  // body ever reaches a header (MIGRATION.md §4.5).
+  // FastAPI buckets /geocode's per-IP budget by the rightmost X-Forwarded-For
+  // entry. The header is *set* to the one value this hop can honestly assert
+  // (see `clientAddress`), not relayed — and it is always an address, never a
+  // request-body field.
   headers.set("x-forwarded-for", clientAddress(request, env));
   return headers;
 }
@@ -237,7 +207,7 @@ export async function proxyRequest(
     });
   } catch {
     // Never include the caught error: an undici cause can quote the request
-    // body, which is exactly what must not escape (MIGRATION.md §4.5).
+    // body, which is exactly what must not escape.
     return errorEnvelopeResponse(
       502,
       NETWORK_ERROR_KEY,

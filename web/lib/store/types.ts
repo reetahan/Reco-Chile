@@ -10,8 +10,8 @@
 import type { GeocodeResponse, SimulationResponse } from "@/lib/api/types";
 
 /** One entry of the family's preference list. Programs are identified on the
- *  wire by `program_id = "{rbd}:{program_code}"`; labels always come from the
- *  API (MIGRATION.md §3, §10). */
+ * wire by `program_id = "{rbd}:{program_code}"`; labels always come from the
+ * API. */
 export type Wish = {
   programId: string;
   /** `null` in strict mode; the preference-group number in ties mode. */
@@ -40,7 +40,7 @@ export const PRIORITY_FLAGS = [
 ] as const satisfies readonly PriorityFlag[];
 
 /** Region plus the ten repeatable filter lists of `GET /programs`.
- *  Values stay English internal codes; the UI translates them (§3, §4.3). */
+ * Values stay English internal codes; the UI translates them. */
 export type ProgramFilters = {
   /** `null` = all regions. */
   region: string | null;
@@ -59,9 +59,9 @@ export type ProgramFilters = {
 // --- API payloads ----------------------------------------------------------
 
 // Generated from `web/lib/api/openapi.json` (`pnpm api:types`) — the store
-// keeps the payloads verbatim and never recomputes anything from them (§0).
+// keeps the payloads verbatim and never recomputes anything from them.
 export type { SimulationResponse };
 
-/** MIGRATION.md §4.2 calls the stored geocode `GeocodeResult`; on the wire it
- *  is `GeocodeResponse`. Set only after an explicit click, never persisted (§4.5). */
+/** The store calls the stored geocode `GeocodeResult`; on the wire it
+ * is `GeocodeResponse`. Set only after an explicit click, never persisted. */
 export type GeocodeResult = GeocodeResponse;

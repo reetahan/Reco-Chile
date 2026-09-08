@@ -1,7 +1,7 @@
 {
   "name": "equiv_03_group_of_four_probability_shift",
   "kind": "equivalence",
-  "description": "One equivalence group of four plus a fixed tail (4! = 24 orders). The group ties one near-certain program to three long shots, which is the third sensitivity case: every order predicts the same school, but its final assignment probability moves far more than EQUIV_PROBABILITY_CHANGE_WARNING_THRESHOLD depending on where the near-certain program sits inside the group. Together with equiv_01 (same outcome, same chance) and equiv_02 (the outcome itself changes), the three verdicts Phase 1 has to derive are all frozen.",
+  "description": "One equivalence group of four plus a fixed tail (4! = 24 orders). The group ties one near-certain program to three long shots, which is the third sensitivity case: every order predicts the same school, but its final assignment probability moves far more than EQUIV_PROBABILITY_CHANGE_WARNING_THRESHOLD depending on where the near-certain program sits inside the group. Together with equiv_01 (same outcome, same chance) and equiv_02 (the outcome itself changes), all three equivalence verdicts are frozen.",
   "inputs": {
     "student_id": "12345678-5",
     "use_equivalence_classes": true,

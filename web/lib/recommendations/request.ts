@@ -1,12 +1,12 @@
 /**
- * Turning the wizard store into a `POST /recommend` body (MIGRATION.md §3).
+ * Turning the wizard store into a `POST /recommend` body.
  *
  * Kept pure and React-free so the mapping — which is the one place a wish's
  * five priority flags change spelling from camelCase to the wire's snake_case
  * — can be unit-tested without rendering anything.
  *
  * `home` is only ever sent for a *successful* geocode with usable coordinates
- * (§4.5: the address itself never leaves the browser except through the
+ * (the address itself never leaves the browser except through the
  * explicit `/geocode` click, and only the resulting point is reused here).
  */
 import type { GeocodeResult, Wish } from "@/lib/store/wizard";
@@ -17,13 +17,13 @@ import type {
 } from "@/lib/api/types";
 
 /** Chile's bounding box is well inside these, and the engine applies the real
- *  check; this only stops `null`/`NaN` coordinates from reaching the wire. */
+ * check; this only stops `null`/`NaN` coordinates from reaching the wire. */
 function isUsableCoordinate(value: number | null | undefined): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
 /** The store's geocode result as the contract's `HomeLocation`, or `null` when
- *  the family has no confirmed home point. */
+ * the family has no confirmed home point. */
 export function toHomeLocation(
   home: GeocodeResult | null | undefined,
 ): HomeLocation | null {

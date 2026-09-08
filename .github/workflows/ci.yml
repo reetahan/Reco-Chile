@@ -1,7 +1,6 @@
 # Continuous integration for the two halves of the stack.
 #
-#   python  — engine + API: pytest, and the import check that proves the engine
-#             never pulls Streamlit in.
+#   python  — engine + API: pytest, plus an import-isolation check on the engine.
 #   web     — Next.js: lint, formatting, types, unit tests, production build.
 #   e2e     — Playwright against the real pair (uvicorn + next dev).
 #
@@ -13,7 +12,6 @@ on:
   push:
     branches:
       - main
-      - "migration/**"
   pull_request:
 
 permissions:
@@ -25,11 +23,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # No analytics, telemetry included (docs/MIGRATION.md §4.5).
+  # No analytics; Next.js telemetry included.
   NEXT_TELEMETRY_DISABLED: "1"
   # 3.12 is the version the engine is developed against (3.10+ is required);
-  # 22 is the Node LTS line (package.json requires >=20, .nvmrc names 26 for
-  # local development).
+  # 22 is the Node LTS line (package.json requires >=20).
   PYTHON_VERSION: "3.12"
   NODE_VERSION: "22"
 
@@ -54,12 +51,11 @@ jobs:
       - name: Tests
         run: python -m pytest -q
 
-      # Permanent regression test: a fresh import of api.py must not pull
-      # Streamlit in, not even transitively. Setting the module to None makes
-      # `import streamlit` raise instead of succeeding if some future
-      # dependency installs it. The prototype that needed it is gone; this is
-      # what keeps it from creeping back in through a transitive dependency.
-      - name: Engine imports with Streamlit blocked
+      # Import-isolation guard: the engine and API must import with no UI
+      # framework present. Setting the module to None makes `import streamlit`
+      # raise rather than succeed if a future dependency pulls it in
+      # transitively.
+      - name: Engine import isolation
         run: python -c "import sys; sys.modules['streamlit'] = None; import api"
 
   web:

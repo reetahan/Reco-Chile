@@ -5,7 +5,7 @@
  * `@/lib/store/wizard` (`canEnterStep`, `canContinue`, `lastAllowedStep`) next
  * to the state they read, and `use-wizard-gating.ts` binds them to the router.
  * This module only translates between the store's numeric `WizardStep`
- * (`1 | 2 | 3 | 4`) and the URL slugs of MIGRATION.md §2.1, and is deliberately
+ * (`1 | 2 | 3 | 4`) and the URL slugs, and is deliberately
  * free of React so it can be unit-tested and used from server components.
  */
 
@@ -17,8 +17,7 @@ export const STEP_SLUGS = ["student", "list", "result", "improve"] as const;
 export type StepSlug = (typeof STEP_SLUGS)[number];
 
 /**
- * The welcome page — `app/[locale]/page.tsx`, the wizard's front door
- * (MIGRATION.md §9b item 2).
+ * The welcome page — `app/[locale]/page.tsx`, the wizard's front door.
  *
  * It is not a step: it carries no stepper, no Back/Continue bar and no number.
  * Its two buttons write `listExists`, which is what `canEnterStep(1)` now
@@ -40,7 +39,7 @@ export const WELCOME_PATH = "/";
 export const DISCLAIMER_PATH = "/disclaimer";
 
 /**
- * The completion page — `app/[locale]/(wizard)/finish/page.tsx` (§9b item 6).
+ * The completion page — `app/[locale]/(wizard)/finish/page.tsx`.
  *
  * Deliberately *outside* the stepper: the rail keeps its four steps, and the
  * page is reached only from the result step's "Finish" button. It lives in the
@@ -60,9 +59,9 @@ export function isFinishPathname(pathname: string): boolean {
  * Message ids, from `messages/{es,en}.json`.
  *
  * `steps.*` holds the short stepper labels; each step's own namespace holds its
- * page title. The lead sentence is the one line of existing prototype copy that
+ * page title. The lead sentence is the one line of copy that
  * orients the family on that step — deliberately reused rather than newly
- * written, so the wizard says what the Streamlit app says.
+
  */
 /** Leaf ids inside the `steps` namespace. */
 export const STEP_LABEL_KEY = {
@@ -84,7 +83,7 @@ export const STEP_LEAD_KEY = {
   // "Why do we ask for this?" popover.
   student: "student.lead",
   list: "list.order.preferenceHint",
-  // "About this estimate" — the caveat the prototype shows beside the result.
+  // "About this estimate" — the caveat shown beside the result.
   result: "app.aboutEstimate.body",
   improve: "improve.methodBody",
 } as const satisfies Record<StepSlug, string>;
@@ -123,7 +122,7 @@ export function stepFromPathname(pathname: string): StepSlug | null {
 /**
  * Does the step make its own onward choice, instead of the shell's Continue?
  *
- * Step 3 does, since MIGRATION.md §9b item 6: the result page ends with an
+ * Step 3 does, since the result page ends with an
  * explicit *I'm happy — finish* / *not happy — help me improve my list* pair
  * (`components/result/result-actions.tsx`). A third, unlabelled Continue below
  * them silently picked the "improve" branch, which is exactly the "you are not

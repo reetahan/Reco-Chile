@@ -62,8 +62,7 @@ def clean_wish_rows(df: pd.DataFrame) -> pd.DataFrame:
     has_program = out[PROGRAM] != ""
 
     # Rows without a selected program cannot be simulated and are dropped.
-    # Keep the first duplicate so Streamlit widget keys remain unique and the
-    # wish list stays valid if state was produced by an older app version.
+    # On a duplicate program, keep the first occurrence.
     out = out[has_program].copy().reset_index(drop=True)
     out = out.drop_duplicates(subset=[PROGRAM], keep="first").reset_index(drop=True)
 

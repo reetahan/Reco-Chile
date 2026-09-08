@@ -10,7 +10,7 @@ import { routing } from "./routing";
  * `requestLocale` is the `[locale]` segment matched by `proxy.ts`. It can be
  * `undefined` (a request outside the `[locale]` tree) or invalid (the segment
  * acts as a catch-all for unknown paths), so it is validated here and falls
- * back to Spanish — the prototype's default — rather than throwing.
+ * back to Spanish — the default locale — rather than throwing.
  *
  * Messages are loaded per locale from `messages/{locale}/index.ts`, which
  * merges one JSON file per namespace. Only the active

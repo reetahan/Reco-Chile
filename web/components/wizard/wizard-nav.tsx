@@ -15,7 +15,7 @@ import {
 } from "./steps";
 
 /**
- * The `[← Back]                [Continue →]` bar of MIGRATION.md §4.1.
+ * The `[← Back] [Continue →]` bar
  *
  * Sticky to the bottom of the viewport so it stays reachable on a phone without
  * scrolling past a long wish list. `-mx-4 px-4` bleeds the rule and the backdrop
@@ -23,7 +23,7 @@ import {
  * aligned with the step content.
  *
  * Continue is dropped entirely on a step that states its own way forward:
- * the terminal step 4, and — since §9b item 6 — step 3, whose result page ends
+ * the terminal step 4, and — item 6 — step 3, whose result page ends
  * with the explicit finish / improve choice. Back stays on both.
  *
  * Continue is a button rather than a link because it has two disabled states: a
@@ -37,7 +37,7 @@ export function WizardNav({
   pending = false,
 }: {
   slug: StepSlug;
-  /** `canContinue` for the live store state (§4.1, "Continue enabled when"). */
+  /** `canContinue` for the live store state. */
   canContinue: boolean;
   /**
    * A request the step must finish before moving on is in flight. Continue
@@ -46,8 +46,8 @@ export function WizardNav({
    * press cannot queue a second run.
    *
    * No step sets it today: the one candidate was the result step's `/simulate`
-   * (MIGRATION.md §7, Phase 4), which announces itself through its own loading
-   * skeleton instead and, since §9b item 6, has no Continue at all.
+   *, which announces itself through its own loading
+   * skeleton instead and, item 6, has no Continue at all.
    */
   pending?: boolean;
 }) {
@@ -56,7 +56,7 @@ export function WizardNav({
 
   const back = previousSlug(slug);
   // `null` on the terminal step and on any step that offers its own onward
-  // choice — step 3's explicit finish / improve pair (§9b item 6).
+  // choice — step 3's explicit finish / improve pair.
   const forward = ownsForwardChoice(slug) ? null : nextSlug(slug);
 
   return (

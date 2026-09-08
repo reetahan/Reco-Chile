@@ -9,9 +9,9 @@ import en from "../messages/en";
 import es from "../messages/es";
 
 /**
- * Phase 3 exit gate for step 2 (MIGRATION.md §7): "build a 3-wish strict list;
- * build a tied list and see the order count; toggle mode and confirm the list
- * survives; remove and reorder; both locales."
+ * Step 2: build a 3-wish strict list; build a tied list and see the order
+ * count; toggle mode and confirm the list survives; remove and reorder; both
+ * locales.
  *
  * The programs are not hard-coded: the ids come from `GET /api/programs` at run
  * time, so the scenarios stay true when the calibration data changes — and
@@ -69,7 +69,7 @@ async function fetchPrograms(request: APIRequestContext): Promise<Program[]> {
   return body.items;
 }
 
-/** The `commune · region` line a wish card must always carry (§9b.4). */
+/** The `commune · region` line a wish card must always carry. */
 function locationOf(program: Program): string {
   return `${program.school_commune} · ${program.region}`;
 }
@@ -80,7 +80,7 @@ function locationOf(program: Program): string {
  * 91 school names in the current calibration data repeat across communes —
  * "Liceo Ignacio Carrera Pinto" is one school in San Vicente and another in
  * Frutillar. Two cards for those two schools must not read alike, which is what
- * MIGRATION.md §9b.4 asks for. The pair is discovered at run time so the test
+ * the disambiguation rule requires. The pair is discovered at run time so the test
  * survives a data change; `null` (no such pair) skips the paired assertions.
  */
 async function findSameNamePair(
@@ -111,7 +111,7 @@ async function findSameNamePair(
  * Welcome → step 1 → step 2. The RUN is never persisted, so every test starts
  * at the front door.
  *
- * Since §9b item 2 the "do you already have a list?" question is the welcome
+ * The "do you already have a list?" question is the welcome
  * page's pair of buttons, and answering it is what unlocks step 1. `"yes"` is
  * the default here because most of these scenarios are about ordering a list
  * that exists; `"no"` is the branch that adds the filter panel to step 2.
@@ -157,7 +157,7 @@ async function listedIds(page: Page): Promise<string[]> {
     );
 }
 
-/** Flip the equivalence-class switch, which lives on this step (§9b). */
+/** Flip the equivalence-class switch, which lives on this step. */
 async function setTiesMode(page: Page, on: boolean, locale: Locale = "es") {
   const toggle = page.getByRole("switch", {
     name: copy(locale, "list.ties.label"),
@@ -195,7 +195,7 @@ test.describe("step 2 — build and order the list", () => {
         program.program_label,
       );
       // The label alone repeats across communes, so every card states where
-      // the school is (§9b.4) — commune *and* region, never one of the two.
+      // the school is — commune *and* region, never one of the two.
       await expect(card.getByTestId("wish-location")).toHaveText(
         locationOf(program),
       );
@@ -209,7 +209,7 @@ test.describe("step 2 — build and order the list", () => {
     await expect(continueButton).toBeEnabled();
 
     // The imputed-calibration notice follows the data, not a fixed program:
-    // it is shown exactly when a selected program carries the flag (`app.py`).
+    // it is shown exactly when a selected program carries the flag.
     const imputed = programs.some((program) => program.calibration_imputed);
     await expect(page.getByTestId("imputed-notice")).toHaveCount(
       imputed ? 1 : 0,
@@ -355,8 +355,8 @@ test.describe("step 2 — build and order the list", () => {
       }),
     );
 
-    // The details sheet carries the program-details table of the prototype's
-    // popover, for the program the card is about.
+    // The details sheet carries the program-details table for the program the
+    // card is about.
     await first
       .getByRole("button", {
         name: new RegExp(
@@ -386,7 +386,7 @@ test.describe("step 2 — build and order the list", () => {
   });
 
   // The mode badge that used to name "Orden estricto" / "Clases de
-  // equivalencia" is gone (feedback round 2): the switch's own state is the
+  // equivalencia" is gone: the switch's own state is the
   // readout, so that is what this asserts.
   test("the ties switch reflects its state", async ({ page }) => {
     await openListStep(page);
@@ -448,7 +448,7 @@ test.describe("step 2 — build and order the list", () => {
 
     await setTiesMode(page, false);
 
-    // The list survives the mode change (§4.2) and ranks come back.
+    // The list survives the mode change and ranks come back.
     await expect(page.getByTestId("wish-card")).toHaveCount(3);
     expect(await listedIds(page)).toEqual(programs.map((p) => p.program_id));
     await expect(page.getByTestId("wish-rank")).toHaveCount(3);
@@ -463,7 +463,7 @@ test.describe("step 2 — build and order the list", () => {
     for (const program of programs) await addProgram(page, program);
 
     await page.reload();
-    // The identifier is memory-only, so the guard sends the family back (§4.5).
+    // The identifier is memory-only, so the guard sends the family back.
     await page.waitForURL("**/es/student");
     await expect(page.getByLabel(copy("es", "student.idLabel"))).toHaveValue(
       "",
@@ -473,7 +473,7 @@ test.describe("step 2 — build and order the list", () => {
     await page.getByTestId("wizard-continue").click();
     await page.waitForURL("**/es/list");
 
-    // The list itself is persisted to sessionStorage (§4.2).
+    // The list itself is persisted to sessionStorage.
     await expect(page.getByTestId("wish-card")).toHaveCount(3);
     expect(await listedIds(page)).toEqual(programs.map((p) => p.program_id));
   });

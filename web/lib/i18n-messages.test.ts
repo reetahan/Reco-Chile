@@ -5,22 +5,22 @@ import es from "@/messages/es";
 import { routing } from "@/i18n/routing";
 
 /**
- * Contract for `messages/{es,en}/*.json` (MIGRATION.md §4.3).
+ * Contract for `messages/{es,en}/*.json`.
  *
  * Key scheme:
  * - `app`, `steps`, `student`, `list`, `result`, `improve` hold UI copy under
- *   semantic ids. The Spanish values are the prototype's own sentences,
- *   carried over from `sae_app/i18n.py` by `scripts/extract-translations.py`
- *   (run it with `--check` to see which prototype strings are still unused).
+ * semantic ids.
+ * carried over from `sae_app/i18n.py` by `scripts/extract-translations.py`
+
  * - `errors` mixes two kinds of id on purpose: `snake_case` ids are the exact
- *   `error_key` values the API returns (§3), so a 422 can be special-cased
- *   with `t(\`errors.${error_key}\`)`; `camelCase` ids are client-side messages
- *   the API never sends. Their placeholders (`{program_id}`, `{n}`, `{limit}`,
- *   `{error}`, `{status}`) are the API's own `params` names for the same
- *   reason.
+ * `error_key` values the API returns, so a 422 can be special-cased
+ * with `t(\`errors.${error_key}\`)`; `camelCase` ids are client-side messages
+ * the API never sends. Their placeholders (`{program_id}`, `{n}`, `{limit}`,
+ * `{error}`, `{status}`) are the API's own `params` names for the same
+ * reason.
  * - `enums.*` is keyed by the *wire value* ("With PIE", "priority_sibling",
- *   "Unmatched"), never by a re-invented slug, so `t(\`enums.pie.${value}\`)`
- *   is a direct lookup and a renamed constant fails loudly here.
+ * "Unmatched"), never by a re-invented slug, so `t(\`enums.pie.${value}\`)`
+ * is a direct lookup and a renamed constant fails loudly here.
  *
  * A missing key is not an error at runtime — next-intl falls back to the id —
  * so drift between the two catalogues has to be caught by a test.

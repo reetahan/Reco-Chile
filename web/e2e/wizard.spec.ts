@@ -4,18 +4,16 @@ import en from "../messages/en";
 import es from "../messages/es";
 
 /**
- * Phase 2 exit gate (MIGRATION.md §7): "`pnpm e2e` green; navigating
- * `/es/student` → `/es/list` works with the guard", plus the smoke test that
- * "loads step 1 in both locales". Replaces the scaffold's `smoke.spec.ts`,
- * which only asserted that `/` returned 200.
+ * Shell smoke test: navigating `/es/student` → `/es/list` works with the guard,
+ * and step 1 loads in both locales.
  *
- * Since MIGRATION.md §9b the wizard opens on a welcome page instead of step 1:
- * `/es` asks "do you already have your list?", the answer writes `listExists`,
- * and step 1 cannot be entered without it. So every scenario here starts at the
- * front door, and the guard's "last allowed step" can now be the welcome page.
+ * The wizard opens on a welcome page instead of step 1: `/es` asks "do you
+ * already have your list?", the answer writes `listExists`, and step 1 cannot
+ * be entered without it. So every scenario here starts at the front door, and
+ * the guard's "last allowed step" can now be the welcome page.
  *
  * Expected copy is read from `messages/{es,en}.json` rather than frozen here, so
- * these stay true when a phase rewords a sentence — what is under test is the
+ * these stay true when a sentence is reworded — what is under test is the
  * routing, the guard and the store, not the wording. `components/wizard/
  * steps.test.ts` is what fails if an id disappears from a catalogue.
  */
@@ -57,8 +55,7 @@ function stepHeading(locale: Locale, key: string) {
 }
 
 /**
- * Through the front door and into step 1 — the only way in since §9b. The
- * front door is two screens: the welcome question (`answer: "yes"` is "I
+ * Through the front door and into step 1. The front door is two screens: the welcome question (`answer: "yes"` is "I
  * already have my list", `"no"` asks for help building it) and then the
  * "Before we continue" consent checkbox.
  */
@@ -98,7 +95,7 @@ test.describe("welcome page", () => {
       copy("es", "app.welcome.no"),
     );
 
-    // No stepper on the front door (§9b item 2), and no step title either.
+    // No stepper on the front door, and no step title either.
     await expect(
       page.getByRole("navigation", { name: copy("es", "steps.navLabel") }),
     ).toHaveCount(0);
@@ -110,7 +107,7 @@ test.describe("welcome page", () => {
     await expect(
       page.getByRole("heading", stepHeading("es", "student.title")),
     ).toBeVisible();
-    // "Remembered" means it survived into `sessionStorage` (§4.2) — step 1
+    // "Remembered" means it survived into `sessionStorage` — step 1
     // itself carries no visible echo of the answer any more.
     const stored = await page.evaluate(() =>
       window.sessionStorage.getItem("reco-chile.wizard"),
@@ -214,10 +211,10 @@ test.describe("wizard shell", () => {
   test("the guard sends a locked step back to step 1", async ({ page }) => {
     await enterWizard(page, {});
 
-    // The RUN/IPE is never persisted (MIGRATION.md §4.2), so with the welcome
+    // The RUN/IPE is never persisted, so with the welcome
     // answer given and nothing else, steps 2-4 stay locked however the URL was
     // reached — and the fallback is now step 1, not the welcome page. `finish`
-    // is locked by the same chain: it needs a fresh simulation (§9b item 6),
+    // is locked by the same chain: it needs a fresh simulation,
     // and a simulation is memory-only, so a fresh page load never has one.
     for (const locked of ["list", "result", "improve", "finish"]) {
       await page.goto(`/es/${locked}`);
@@ -252,7 +249,7 @@ test.describe("wizard shell", () => {
     const continueButton = page.getByTestId("wizard-continue");
     const feedback = page.getByTestId("student-id-feedback");
     await expect(continueButton).toBeDisabled();
-    await expect(feedback).toHaveCount(0);
+    await expect(feedback).not.toBeVisible();
 
     const input = page.getByLabel(copy("es", "student.idLabel"));
 
@@ -280,8 +277,8 @@ test.describe("wizard shell", () => {
 
   test("step 2 renders live data from /meta", async ({ page }) => {
     // The region select only exists in the guided branch, and it is the step's
-    // one control filled straight from `/meta` (the Phase 2 scaffold printed
-    // the region count instead; the filter panel replaced it in Phase 3).
+    // one control filled straight from `/meta` (an earlier build printed
+    // the region count instead; the filter panel replaced it).
     await enterWizard(page, { answer: "no" });
     await page.getByLabel(copy("es", "student.idLabel")).fill(VALID_RUN);
     await page.getByTestId("wizard-continue").click();
@@ -302,8 +299,7 @@ test.describe("wizard shell", () => {
     await page.getByTestId("wizard-continue").click();
     await page.waitForURL("**/es/list");
 
-    // Entering step 2 does not unlock step 3: that needs at least one wish
-    // (MIGRATION.md §4.1), which Phase 3 adds.
+    // Entering step 2 does not unlock step 3: that needs at least one wish.
     await expect(page.getByTestId("wizard-continue")).toBeDisabled();
     await expect(
       page.getByRole("navigation").getByRole("link", {
@@ -330,7 +326,7 @@ test.describe("wizard shell", () => {
   });
 
   test("the stepper still has exactly four steps", async ({ page }) => {
-    // §9b item 6: the completion page is reached from the result step, not
+    // the completion page is reached from the result step, not
     // from the rail.
     await enterWizard(page, {});
 

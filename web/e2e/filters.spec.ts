@@ -8,15 +8,14 @@ import {
 import es from "../messages/es";
 
 /**
- * Phase 3, step 2 — the program-finding half: filter panel, matching count,
- * "kept outside filters" note and the server-searched combobox
- * (MIGRATION.md §4.1 row 2; `app.py` 226-443).
+ * Step 2 — the program-finding half: filter panel, matching count,
+ * "kept outside filters" note and the server-searched combobox.
  *
  * The assertions compare the UI against `GET /api/programs` with the *same*
  * parameters rather than against numbers frozen here. That is the property
  * that actually matters: the panel, the caption and the combobox must all be
  * showing what `program_matches_filters` says, not a client-side approximation
- * of it (§0 — the engine is the only source of truth). It also keeps the test
+ * of it (the engine is the only source of truth). It also keeps the test
  * true when the calibration CSVs change.
  */
 
@@ -24,14 +23,14 @@ import es from "../messages/es";
 const VALID_RUN = "12.345.678-5";
 
 /** A region that actually has technical-vocational programs, so the specialty
- *  filter has something to narrow. Verified against the API in the test. */
+ * filter has something to narrow. Verified against the API in the test. */
 const REGION = "Región de Los Ríos";
 /** Wire value; the UI shows the `enums.specialty` translation of it. */
 const SPECIALTY = "Food services";
 /** Any region other than {@link REGION} — used for the preserved-wish note. */
 const OTHER_REGION = "Región de Arica y Parinacota";
 /** Where {@link findSameNamePair} looks for a repeated school name first.
- *  Nothing depends on this term matching — it is a shortcut, not a fixture. */
+ * Nothing depends on this term matching — it is a shortcut, not a fixture. */
 const SAME_NAME_SEED = "Carrera Pinto";
 
 const filtersCopy = es.filters as unknown as {
@@ -81,7 +80,7 @@ async function apiPrograms(
 /**
  * Two programs whose schools share a name but sit in different communes.
  *
- * That is the case MIGRATION.md §9b.4 is about: "Liceo Ignacio Carrera Pinto"
+ * That is the disambiguation case: "Liceo Ignacio Carrera Pinto"
  * is a school in San Vicente and a *different* school in Frutillar, and 91
  * school names in the current data repeat across communes. The pair is looked
  * up at run time rather than frozen here, so the test keeps testing the same
@@ -119,7 +118,7 @@ async function findSameNamePair(
 /**
  * Welcome → step 1 with a valid RUN → step 2, on the guided branch.
  *
- * "No — help me build it" is answered on the welcome page since §9b item 2; it
+ * "No — help me build it" is answered on the welcome page item 2; it
  * is what makes step 2 render the filter panel at all.
  */
 async function openBuilder(page: Page) {
@@ -142,7 +141,7 @@ async function chooseRegion(page: Page, region: string) {
 }
 
 /** The caption's machine-readable count; it only exists once something is
- *  filtered, which is the prototype's own rule. */
+ * filtered. */
 function matchCount(page: Page) {
   return page.getByTestId("filter-match-count");
 }
@@ -178,7 +177,7 @@ test.describe("step 2 — filters and program search", () => {
 
     await openBuilder(page);
 
-    // Nothing filtered yet: the prototype prints no caption at all.
+    // Nothing filtered yet: no caption at all.
     await expect(matchCount(page)).toHaveCount(0);
 
     await chooseRegion(page, REGION);
@@ -276,7 +275,7 @@ test.describe("step 2 — filters and program search", () => {
     page,
     request,
   }) => {
-    // MIGRATION.md §9b.4: a program has to be unambiguous wherever it is shown.
+    // A program has to be unambiguous wherever it is shown.
     // The server-side label appends the commune only when the school *name*
     // collides and never appends the region, so the second line is the only
     // thing that separates two same-named schools — and the only thing that
@@ -328,7 +327,7 @@ test.describe("step 2 — filters and program search", () => {
     }
   });
 
-  test("the program details list shows the prototype's ten rows", async ({
+  test("the program details list shows its ten rows", async ({
     page,
     request,
   }) => {
@@ -358,7 +357,7 @@ test.describe("step 2 — filters and program search", () => {
         .first(),
     ).toContainText(/Con PIE|Sin PIE|Sin información/);
 
-    // The sheet is the long form of the card's location line (§9b.4): commune
+    // The sheet is the long form of the card's location line: commune
     // and region are rows of their own, with the values the API returned.
     await expect(details.locator('[data-field="commune"]')).toContainText(
       first.school_commune,

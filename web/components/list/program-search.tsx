@@ -1,27 +1,27 @@
 "use client";
 
 /**
- * The program combobox of step 2 (`ui_wish_builder`'s "Search and add
+ * The program combobox of step 2 ("Search and add
  * programs": a searchable select plus an Add button).
  *
- * The prototype could hold every program label in one Streamlit `selectbox`;
+ * Holding every program label in one client-side list is not viable;
  * a browser cannot, so the search is done server-side — `GET /programs?q=`,
- * debounced, over school name, commune and program name (§3). That has a second
+ * debounced, over school name, commune and program name. That has a second
  * benefit: the combobox and the filter panel's matching count are answered by
  * the *same* endpoint, so they can never disagree about what exists.
  *
- * Which filters apply follows `app.py`: only the guided-builder branch
+ * Which filters apply: only the guided-builder branch
  * ("No — help me build it") narrows the add list. When the family said their
  * list already exists, the panel is not rendered and the search stays global.
  * Pass `filters` explicitly to override that.
  *
- * Selecting is separate from adding, exactly as in the prototype: you pick a
+ * Selecting is separate from adding: you pick a
  * program, read it back on the trigger, then press Add. Programs already on the
  * list stay visible but are disabled — seeing that a school is already chosen
  * answers the question faster than its absence would.
  *
  * Every row — and the trigger's read-back — carries `commune · region` under
- * the label (MIGRATION.md §9b.4). School names repeat all over Chile, and the
+ * the label. School names repeat all over Chile, and the
  * server-side label only disambiguates by commune when the *name* itself
  * collides, so without that second line two different schools can look
  * identical in the list. The commune is part of each option's accessible name

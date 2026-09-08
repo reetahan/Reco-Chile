@@ -1,22 +1,15 @@
 {
   "title": "Review your results",
-  "summaryTitle": "Summary",
-  "heading": "Result of the preference list",
   "locationUnknown": "Commune and region not available",
+  "running": "Calculating…",
   "outcome": {
     "title": "You're most likely to get into:",
     "chance": "Estimated chance: {chance}",
     "disclaimer": "Estimate based on historical data - not an official SAE guarantee."
   },
   "headline": {
-    "chanceTitle": "Overall estimated chance of getting assigned",
-    "chanceNote": "Across every program on your list.",
-    "riskNote": "Risk of ending up without an assignment:",
-    "mostLikelyTitle": "Most likely school",
     "preferenceRank": "Your preference #{rank}",
-    "unmatchedTitle": "Most likely outcome",
-    "unmatchedBody": "The most likely outcome is that you receive none of the programs on your list.",
-    "outcomeChance": "Estimated chance of this outcome: {chance}"
+    "unmatchedBody": "The most likely outcome is that you receive none of the programs on your list."
   },
   "next": {
     "title": "What would you like to do now?",
@@ -25,96 +18,7 @@
     "improve": "Not happy — help me improve my list",
     "improveHint": "We suggest additional schools you can add at the end of your list."
   },
-  "analyze": "Analyze my preference list",
-  "analyzeShort": "Calculate my chances",
-  "running": "Calculating…",
-  "riskLabel": "Estimated risk of remaining without an assignment",
-  "riskShort": "Unmatched risk",
-  "outcomes": {
-    "title": "Most likely estimated outcomes",
-    "showAll": "Show all estimated outcomes",
-    "mostLikely": "Most likely outcome: <b>{outcome}</b>",
-    "mostLikelyLabel": "Most likely outcome:",
-    "mostLikelyLabelPlural": "Most likely outcomes:",
-    "top3Outcomes": "Top 3 most likely outcomes:",
-    "top3Schools": "Top 3 most likely schools:",
-    "finalChanceFor": "Estimated final chance for this outcome: {chance}"
-  },
-  "table": {
-    "title": "Estimated final chance by preference",
-    "wishRank": "Wish rank",
-    "preference": "Preference",
-    "program": "Program",
-    "establishment": "Establishment",
-    "chanceIfConsidered": "Chance if considered",
-    "finalChance": "Final chance of assignment",
-    "estimatedFinalChance": "Estimated final chance",
-    "predictedOutcome": "Predicted outcome",
-    "predictedOutcomeChance": "Predicted outcome final chance",
-    "lotteryRank": "Lottery rank (calculated)",
-    "hashPercentile": "Lottery percentile",
-    "percentiles": "Calculated lottery percentiles (RUN + RBD)",
-    "priorityTier": "Priority tier",
-    "seats": "Seats",
-    "applicants": "Applicants in the historical calibration",
-    "strictOrder": "Strict order #",
-    "strictOrderFull": "Strict order",
-    "flaggedAtRisk": "Flagged at risk",
-    "referenceRank": "Reference rank"
-  },
-  "detail": {
-    "trigger": "See the detailed calculation for each preference",
-    "title": "Wish-level details",
-    "note": "The final chance accounts for every program placed above each preference.",
-    "technicalNote": "Lottery ranks, priority tiers, seats and historical applicant counts are calculation details. They should not be interpreted as official SAE results."
-  },
-  "pagination": {
-    "showing": "Showing {shown} of {total}",
-    "showMore": "Show more"
-  },
   "errors": {
-    "title": "We could not calculate the result",
-    "retry": "Calculate again"
-  },
-  "explain": {
-    "chanceTitle": "Chance if considered vs. final chance",
-    "chanceBody": "Chance if considered is the chance of getting that program if you reach that preference. Final chance of assignment also accounts for all higher-ranked wishes. For example, a school can be accessible if considered, but have a lower final chance if you are likely to get a higher-ranked option first.",
-    "chanceShort": "Chance if considered estimates access to a program if you reach that preference. Final chance also accounts for the possibility of receiving a higher-ranked program first.",
-    "percentagesTitle": "How should I interpret these percentages?",
-    "percentagesBody": "This percentage is an estimate based on historical data and model assumptions; it is not an official SAE result or guarantee.",
-    "finalChanceNote": "A program's final chance accounts for every program placed above it. The unmatched risk is the estimated chance that none of the listed programs is available.",
-    "whatDoesThisMean": "What does this mean?",
-    "outcomeOrdering": "Outcomes are always ordered by their estimated probability."
-  },
-  "strategicNote": "Strategic note: adding additional acceptable programs at the end of your preference list does not reduce your chance of getting higher-ranked choices. The assignment process considers the list in order and keeps the best available option. You should therefore add every acceptable backup program, then mark any applicable priority for those added schools and run the simulation again.",
-  "equivalence": {
-    "title": "Equivalence-class sensitivity",
-    "question": "Does the undecided internal order matter?",
-    "verdict": {
-      "stable": "The strict ordering inside the equivalence classes does not change the predicted final outcome. All {n} compatible strict order(s) lead to: <b>{outcome}</b>.",
-      "stableProbabilityShift": "The strict ordering inside the equivalence classes does not change the most likely school: <b>{outcome}</b>. However, it changes the final assignment probability for that school, from {minChance} to {maxChance} across compatible strict order(s).",
-      "outcomeChanges": "The strict ordering inside at least one equivalence class can change the predicted final outcome. You should choose a strict order carefully for the tied programs."
-    },
-    "advice": {
-      "stable": "Changing the internal order does not change the predicted school. The overall unmatched risk also remains unchanged across compatible orders.",
-      "stableProbabilityShift": "Changing the internal order does not change the main predicted school, but it can still affect the chances of receiving other options. The overall unmatched risk remains unchanged, so you should still choose the internal order carefully.",
-      "outcomeChanges": "Changing the internal order can lead to different predicted schools. The overall unmatched risk remains unchanged; only the distribution of assignment probabilities across schools changes."
-    },
-    "chooseFirst": "Inside each tied group, place first the program you genuinely prefer. The overall unmatched risk does not change, but the most likely school can change.",
-    "ordersTitle": "What each order inside the tied programs leads to",
-    "optionTitle": "Option {number}",
-    "placeInOrder": "Place the tied programs in this order:",
-    "tiedGroup": "Tied group {group}:",
-    "orderInside": "Order inside tied programs",
-    "onlyTiedShown": "Only programs tied within the same preference group are shown below. Programs whose position never changes are omitted.",
-    "noTiedOrder": "No tied-program order was recorded for this option.",
-    "groupedNotice": "Because there are {n} compatible orders, they are grouped below by their most likely outcome.",
-    "groupedRow": "{outcome} — {n} compatible order(s)",
-    "referenceTitle": "Detailed calculation for the reference order",
-    "referenceDetails": "Reference strict-order details",
-    "referenceNote": "This reference uses the current row order inside each preference group.",
-    "referenceIntro": "This table shows one reference order: the current row order inside each preference group. The sensitivity test below then checks every strict order that is compatible with the groups. This matters because tied programs can still lead to different predicted schools.",
-    "technicalTitle": "Technical details of all tested orders",
-    "technicalNote": "This technical table contains the complete strict ranking for every tested permutation. It is not needed to choose the order inside tied groups."
+    "title": "We could not calculate the result"
   }
 }

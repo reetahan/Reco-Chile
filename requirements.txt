@@ -7,9 +7,6 @@
 # collaborators are not pushed onto any one tool. The tradeoff is that installs
 # are not reproducible — see CLAUDE.md for the versions the engine was last
 # smoke-tested against.
-#
-# Streamlit is gone: the prototype UI it served was removed with the migration,
-# and CI asserts that `import api` still succeeds with the module blocked.
 pandas>=2.0
 numpy>=1.24
 scipy>=1.10

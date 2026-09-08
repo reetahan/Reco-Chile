@@ -2,7 +2,7 @@
 
 This module owns "how to interpret the raw CSV files on disk" — encoding
 quirks, column-name variants, and source-language value translation. It does
-not know anything about Streamlit widgets or the recommendation engine.
+not know anything about the recommendation engine.
 """
 
 from __future__ import annotations
@@ -923,7 +923,7 @@ def validate_cumulative_share_columns(
         through_col = f"cum_share_through_{tier}_2024"
         needed = [share_col, before_col, through_col]
         if any(col not in calib.columns for col in needed):
-            # Missing columns are reported by required_cols() in app.py.
+            # Missing columns are reported separately by required_cols().
             continue
 
         share = pd.to_numeric(calib[share_col], errors="coerce")

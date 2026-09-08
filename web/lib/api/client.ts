@@ -1,21 +1,21 @@
 /**
- * Typed fetch wrapper over the FastAPI contract (MIGRATION.md §2, §3).
+ * Typed fetch wrapper over the FastAPI contract.
  *
  * Every method name, query parameter, request body and 200 body is derived
  * from `schema.d.ts`, which `pnpm api:types` generates from the committed
  * `openapi.json`. Nothing here is hand-maintained: adding an endpoint on the
  * Python side and re-running `pnpm api:types` is enough.
  *
- *   const meta = await api.get("/meta", { lang: "es" });
- *   const sim  = await api.post("/simulate", body, { lang: "en" });
- *   const prog = await api.get("/programs/{program_id}", {
- *     path: { program_id: "1234:5" },
- *   });
+ * const meta = await api.get("/meta", { lang: "es" });
+ * const sim = await api.post("/simulate", body, { lang: "en" });
+ * const prog = await api.get("/programs/{program_id}", {
+ * path: { program_id: "1234:5" },
+ * });
  *
  * Base URL: the browser client talks to the **same-origin proxy** `/api`
  * (`web/app/api/[...path]/route.ts`), never to the Python origin. That is what
  * keeps the RUN/IPE first-party from the browser's point of view and keeps the
- * FastAPI port off the public internet (MIGRATION.md §2). Server components
+ * FastAPI port off the public internet. Server components
  * use `createApiClient({ baseUrl: upstreamBaseUrl() })` instead — see
  * `lib/meta/fetch-meta.ts` — because a relative URL has no origin in Node.
  */
@@ -73,7 +73,7 @@ type JsonBody<O> = O extends {
 type CommonOptions = {
   /**
    * UI locale. Sent as `?lang=` on every request — the contract's language
-   * selector (MIGRATION.md §3) — and mirrored into `Accept-Language` so a
+   * selector — and mirrored into `Accept-Language` so a
    * request that loses its query string still resolves the same language.
    * Only `message` fields change; enumerated values stay English codes.
    */

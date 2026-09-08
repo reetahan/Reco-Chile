@@ -1,4 +1,4 @@
-"""Generate the frozen numerical baseline for the engine (docs/MIGRATION.md §6).
+"""Generate the frozen numerical baseline for the engine.
 
 Run from the repository root::
 
@@ -152,7 +152,7 @@ def probe_wish(label: str, row: pd.Series, flags: dict, student_id: str) -> pd.S
     """One wish exactly as ``attach_mtb_hashes`` would hand it to the engine.
 
     Availability depends only on the program and the student's flags, never on
-    the position in the list (CLAUDE.md, "Equivalence-class pipeline"), so a
+    the position in the list (CONTRIBUTING.md, "Equivalence-class pipeline"), so a
     one-wish probe answers "what would this program do in any list?".
     """
     population = max(round(as_float(row[POP])), 1)
@@ -479,8 +479,7 @@ def build_scenarios(pools: dict) -> list[dict]:
             "EQUIV_PROBABILITY_CHANGE_WARNING_THRESHOLD depending on where the "
             "near-certain program sits inside the group. Together with "
             "equiv_01 (same outcome, same chance) and equiv_02 (the outcome "
-            "itself changes), the three verdicts Phase 1 has to derive are all "
-            "frozen."
+            "itself changes), all three equivalence verdicts are frozen."
         ),
         "student_id": STUDENT_RUN,
         "wishes": [
@@ -657,7 +656,7 @@ def build_fixture(
 def verify_coverage(fixtures: list[dict]) -> None:
     """Refuse to write a baseline that lost a case it is supposed to freeze.
 
-    Every check here corresponds to a scenario MIGRATION.md §6.1 asks for and
+    Every check here corresponds to a scenario the fixtures are meant to cover and
     that a plausible data refresh could silently flatten. Failing loudly beats
     committing fixtures that a broken implementation would still reproduce.
     """

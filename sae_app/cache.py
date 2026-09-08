@@ -1,8 +1,6 @@
-"""Tiny in-process caches that replace Streamlit's ``@st.cache_data``.
+"""Tiny in-process caches, standard library only.
 
-The engine must import and run without Streamlit installed (MIGRATION.md
-section 5, item 1), so the two caching behaviours the app actually relied on
-are reimplemented here with the standard library only:
+Two caching behaviours the engine relies on:
 
 * :func:`memoize_bytes` — for the CSV loaders, which are keyed by the *contents*
   of a file rather than by its path. The cache is unbounded on purpose: there
@@ -13,13 +11,12 @@ are reimplemented here with the standard library only:
   addresses per process must stay bounded.
 
 Both decorators hand back a *copy* of the cached value when the value knows how
-to copy itself (``pandas`` objects, ``dict``, ``list``, ``set``). That mirrors
-``st.cache_data``, which returned an independent object on every call, so a
-caller that mutates a loaded DataFrame cannot corrupt the cache. The copy is
-shallow — nested containers are still shared, which is safe here because every
-consumer treats loader and geocoder results as read-only.
+to copy itself (``pandas`` objects, ``dict``, ``list``, ``set``), so a caller
+that mutates a loaded DataFrame cannot corrupt the cache. The copy is shallow —
+nested containers are still shared, which is safe here because every consumer
+treats loader and geocoder results as read-only.
 
-Nothing in this module imports Streamlit or any third-party package.
+Nothing in this module imports a third-party package.
 """
 
 from __future__ import annotations
@@ -54,7 +51,7 @@ class _Missing:
 MISS = _Missing()
 
 # Every cache created in this module registers a `clear` callable here so that
-# tests (and the Streamlit prototype, on a data change) can reset everything.
+# tests can reset everything on a data change.
 _registered_clears: list[Callable[[], None]] = []
 _registry_lock = threading.Lock()
 

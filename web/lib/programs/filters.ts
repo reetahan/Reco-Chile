@@ -4,18 +4,17 @@
  *
  * Everything here is a *mirror* of the Python side and nothing else:
  *
- * - `ProgramFilters` (the store shape, MIGRATION.md §4.2) → query parameters of
- *   `GET /programs` (§3), which FastAPI hands straight to
- *   `data_loading.program_matches_filters`.
+ * - `ProgramFilters` (the store shape) → query parameters of `GET /programs`,
+ * which FastAPI hands straight to `data_loading.program_matches_filters`.
  * - `programMatchesFilters` reproduces that same predicate over a
- *   `ProgramSummary` so the UI can answer one question the server is never
- *   asked: "is a program the family *already selected* outside the current
- *   filters?" (`app.py`'s `preserved` list). It is a display-only decision —
- *   no wish is ever dropped because of it, and every list the family actually
- *   sees is filtered by the server.
+ * `ProgramSummary` so the UI can answer one question the server is never
+ * asked: "is a program the family *already selected* outside the current
+ * filters?" It is a display-only decision —
+ * no wish is ever dropped because of it, and every list the family actually
+ * sees is filtered by the server.
  *
  * Filter option *values* stay English wire codes ("With PIE", "Free"); the
- * `enums.*` catalogue owns their display strings (§3, §4.3).
+ * `enums.*` catalogue owns their display strings.
  */
 
 import type { Meta, ProgramSummary } from "@/lib/api/types";
@@ -48,9 +47,8 @@ export type ProgramFilterField = {
 };
 
 /**
- * The nine multi-selects of the "more filters" expander, in the prototype's
- * reading order: the specialty area spans the panel, the remaining eight fill a
- * two-column grid row by row, reproducing `app.py`'s `c1`/`c2` pairs
+ * The nine multi-selects of the "more filters" section: the specialty area
+ * spans the panel, the remaining eight fill a two-column grid row by row
  * (genders|school days, rurality|PACE, PIE|monthly fee, enrollment|religious).
  */
 export const PROGRAM_FILTER_FIELDS: readonly ProgramFilterField[] = [
@@ -134,7 +132,7 @@ export const SPECIALTY_FIELD = PROGRAM_FILTER_FIELDS[0];
 /** The eight fields of the two-column grid, in reading order. */
 export const GENERAL_FILTER_FIELDS = PROGRAM_FILTER_FIELDS.slice(1);
 
-/** Query shape of `GET /programs` (the repeatable parameters of §3). */
+/** Query shape of `GET /programs` (the repeatable parameters ). */
 export type ProgramQuery = {
   region?: string;
   q?: string;
@@ -162,7 +160,7 @@ function nonEmpty(values: readonly string[] | undefined): string[] | undefined {
  *
  * Empty lists and a null region are *omitted* rather than sent empty: on the
  * wire an absent parameter is "no restriction", which is exactly what an empty
- * multi-select means in the prototype ("leave empty to include …"). The key
+ * multi-select means ("leave empty to include …"). The key
  * order is fixed so the serialized query is a stable cache key.
  */
 export function filtersToQuery(
@@ -208,8 +206,8 @@ function fieldValue(program: ProgramSummary, column: keyof ProgramSummary) {
 }
 
 /**
- * Client mirror of `data_loading.program_matches_filters`, plus the region test
- * `app.py` applies alongside it. Used **only** to count already-selected
+ * Client mirror of `data_loading.program_matches_filters`, plus a region test.
+ * Used **only** to count already-selected
  * programs that fall outside the current filters; the authoritative filtering
  * always happens server-side.
  *
@@ -251,8 +249,8 @@ function wishId(wish: WishLike): string {
 }
 
 /**
- * How many already-selected programs the current filters would hide —
- * `app.py`'s `preserved` list, which drives the "kept outside filters" note.
+ * How many already-selected programs the current filters would hide — this
+ * drives the "kept outside filters" note.
  *
  * `programs` maps `program_id` → summary (what `usePrograms` returns). A wish
  * whose program is not in the map yet (still loading, or gone from the data)

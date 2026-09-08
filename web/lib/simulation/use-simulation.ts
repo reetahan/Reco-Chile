@@ -1,16 +1,15 @@
 "use client";
 
 /**
- * Runs `POST /simulate` on entry to step 3 (MIGRATION.md §4.1: "runs
- * `/simulate` on entry if stale"; Phase 4: "loading and error states (422
- * messages, over-cap)").
+ * Runs `POST /simulate` on entry to step 3 when the stored result is stale;
+ * owns the loading and error states (422 messages, over-cap).
  *
- * Contract with the store (§4.2): every input change already dropped the
+ * Contract with the store: every input change already dropped the
  * cached result and set `simulationStale`, so "stale" is the only trigger this
  * hook needs. The response is written back verbatim with `setSimulation`,
  * which is what unlocks Continue and step 4.
  *
- * Privacy (§4.5): the RUN/IPE is read from the memory-only store slice, goes
+ * Privacy: the RUN/IPE is read from the memory-only store slice, goes
  * into the request body, and appears nowhere else — not in the URL, not in
  * `sessionStorage`, not in a log line, and never in the error state (an
  * `ApiError` carries only the response envelope).
@@ -45,7 +44,7 @@ export type SimulationView = {
 };
 
 /**
- * Numeric params (`n`, `limit`) are pre-formatted with the prototype's `{:,}`
+ * Numeric params (`n`, `limit`) are pre-formatted to match Python's `{:,}`
  * rule before they reach ICU, so the over-cap sentence reads the same in both
  * apps instead of picking up CLDR's own grouping.
  */
@@ -102,7 +101,7 @@ export function useSimulation(): SimulationView {
   /**
    * Turn a thrown error into the sentence the family sees. Order: the local
    * catalogue entry for a known `error_key` (so the wording matches the
-   * prototype's Spanish), then the server's own localized `message`, then a
+   * Spanish), then the server's own localized `message`, then a
    * generic fallback.
    */
   const describe = useCallback(
@@ -121,7 +120,7 @@ export function useSimulation(): SimulationView {
             message: t("errors.networkUnavailable"),
           };
         }
-        // Already localized by the API from `?lang=` (§3).
+        // Already localized by the API from `?lang=`.
         return { key: cause.errorKey, message: cause.message };
       }
       return { key: "unexpected", message: t("errors.unexpected") };

@@ -50,7 +50,7 @@ describe("filtersToQuery", () => {
 
   it("omits empty lists rather than sending them empty", () => {
     // An absent parameter is "no restriction" server-side, which is exactly
-    // what an empty multi-select means in the prototype.
+    // what an empty multi-select means.
     const query = filtersToQuery(filters({ tracks: [], genders: [] }));
     expect(Object.keys(query)).toEqual([]);
   });
@@ -94,7 +94,7 @@ describe("filtersToQuery", () => {
   });
 
   it("drops a blank region", () => {
-    expect(filtersToQuery(filters({ region: "   " }))).toEqual({});
+    expect(filtersToQuery(filters({ region: " " }))).toEqual({});
   });
 
   it("copies the lists instead of aliasing the store", () => {
@@ -180,13 +180,13 @@ describe("programMatchesFilters", () => {
   it("treats a blank column as Unknown", () => {
     expect(
       programMatchesFilters(
-        program({ program_pie: "  " }),
+        program({ program_pie: " " }),
         filters({ pie: ["With PIE"] }),
       ),
     ).toBe(false);
     expect(
       programMatchesFilters(
-        program({ program_pie: "  " }),
+        program({ program_pie: " " }),
         filters({ pie: ["Unknown"] }),
       ),
     ).toBe(true);

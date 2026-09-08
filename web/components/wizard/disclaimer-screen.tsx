@@ -14,8 +14,8 @@ import { stepPath, WELCOME_PATH } from "./steps";
 const CHECKBOX_ID = "disclaimer-acknowledge";
 
 /**
- * The "Before we continue" consent page — screen 2 of the front door (§9b
- * item 2 follow-up), between the welcome page's Yes/No choice and step 1.
+ * The "Before we continue" consent page — screen 2 of the front door,
+ * between the welcome page's Yes/No choice and step 1.
  *
  * The checkbox is a direct, controlled view of the store's
  * `disclaimerAcknowledged` flag rather than local state: checking it writes

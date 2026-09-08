@@ -4,28 +4,15 @@ import { WizardShell } from "@/components/wizard/wizard-shell";
 import { fetchMeta } from "@/lib/meta/fetch-meta";
 
 /**
- * Wizard layout — MIGRATION.md §2.1 / §4.1 ("stepper + step guard").
- *
- * A server component on purpose: it is the only place that can `await`
- * `fetchMeta()`, so `/meta` is read once per render on the server and handed to
- * the client tree as a plain object. `WizardShell` is the `"use client"`
- * boundary and owns everything interactive — stepper, step guard, Back/Continue.
- *
- * The route group `(wizard)` keeps this layout out of the URL: the steps are
- * `/es/student`, `/es/list`, `/es/result`, `/es/improve`.
- *
- * The `<html lang>`, the `NextIntlClientProvider` and the locale switcher live
- * one level up in `app/[locale]/layout.tsx`.
+ * Wizard layout. A server component so it can `await fetchMeta()` once per
+ * render and hand the result to `WizardShell` (the `"use client"` boundary that
+ * owns the stepper, step guard and Back/Continue bar). The `(wizard)` group
+ * keeps it out of the URL; `<html lang>` and the intl provider are one level up.
  */
 
-/**
- * Render per request, not at build time.
- *
- * `/meta` carries the live thresholds, limits and data fingerprint of whichever
- * API instance is actually serving, so baking them into a prerendered shell
- * would let a redeployed engine and the UI that explains it drift apart. It also
- * means `pnpm build` does not need a reachable FastAPI.
- */
+// Per request, not at build time: `/meta` carries live thresholds and a data
+// fingerprint, so a prerendered shell could drift from a redeployed engine (and
+// `pnpm build` would need a reachable FastAPI).
 export const dynamic = "force-dynamic";
 
 export default async function WizardLayout({

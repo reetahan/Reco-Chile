@@ -48,7 +48,7 @@ function studentIdFeedbackState(check: StudentIdCheck): StudentIdFeedbackState {
 }
 
 /**
- * The RUN/IPE field of step 1 (MIGRATION.md §4.1 row 1; `app.py` lines 176-197).
+ * The RUN/IPE field of step 1.
  *
  * The pre-check is display-only. `@/lib/validation/student-id` mirrors
  * `normalize_student_identifier` so the feedback line and the step gate can
@@ -56,7 +56,7 @@ function studentIdFeedbackState(check: StudentIdCheck): StudentIdFeedbackState {
  * the identifier on `/simulate` and the API's 422 message is what the family
  * finally sees.
  *
- * Privacy (§4.5): the value lives in the store's memory-only slice — never
+ * Privacy: the value lives in the store's memory-only slice — never
  * persisted, never in the URL, never logged. `autoComplete="off"` keeps the
  * browser from filling or remembering it, and `spellCheck={false}` keeps it out
  * of the spell-checker's dictionary.
@@ -98,41 +98,45 @@ export function StudentIdField() {
         aria-invalid={state === "invalid" || undefined}
         aria-describedby={state === "empty" ? undefined : FEEDBACK_ID}
       />
-      {check.ok ? (
-        <p
-          id={FEEDBACK_ID}
-          // `role="status"` already implies `aria-live="polite"`.
-          role="status"
-          data-testid={FEEDBACK_ID}
-          data-state={state}
-          className={cn(
-            "flex items-start gap-1.5 text-sm",
-            // emerald-700, not -600: #009966 on white is 3.7:1, below the 4.5:1
-            // AA floor for this 14px line (axe `color-contrast`, serious).
-            "text-emerald-700 dark:text-emerald-400",
-          )}
-        >
-          <CircleCheckIcon
-            className="mt-0.5 size-4 shrink-0"
-            aria-hidden="true"
-          />
-          {t("student.idValid", { kind: KIND_NAME[check.kind] })}
-        </p>
-      ) : check.reason === "empty" ? null : (
-        <p
-          id={FEEDBACK_ID}
-          role="status"
-          data-testid={FEEDBACK_ID}
-          data-state={state}
-          className="flex items-start gap-1.5 text-sm text-destructive"
-        >
-          <CircleAlertIcon
-            className="mt-0.5 size-4 shrink-0"
-            aria-hidden="true"
-          />
-          {t(FAILURE_KEY[check.reason])}
-        </p>
-      )}
+      {/* Always in the DOM — `hidden` when empty rather than unmounted — so a
+          browser extension that grafts onto the input (Grammarly, a page
+          translator, a password manager) cannot desync React's reconciliation
+          of this subtree. Mounting/unmounting a sibling of the field is what
+          makes React's `insertBefore` throw once the extension has moved a
+          node it did not create. `role="status"` implies `aria-live="polite"`;
+          a hidden status region is not announced. */}
+      <p
+        id={FEEDBACK_ID}
+        role="status"
+        data-testid={FEEDBACK_ID}
+        data-state={state}
+        hidden={state === "empty"}
+        className={cn(
+          "flex items-start gap-1.5 text-sm",
+          // emerald-700, not -600: #009966 on white is 3.7:1, below the 4.5:1
+          // AA floor for this 14px line (axe `color-contrast`, serious).
+          state === "valid" && "text-emerald-700 dark:text-emerald-400",
+          state === "invalid" && "text-destructive",
+        )}
+      >
+        {check.ok ? (
+          <>
+            <CircleCheckIcon
+              className="mt-0.5 size-4 shrink-0"
+              aria-hidden="true"
+            />
+            {t("student.idValid", { kind: KIND_NAME[check.kind] })}
+          </>
+        ) : check.reason !== "empty" ? (
+          <>
+            <CircleAlertIcon
+              className="mt-0.5 size-4 shrink-0"
+              aria-hidden="true"
+            />
+            {t(FAILURE_KEY[check.reason])}
+          </>
+        ) : null}
+      </p>
     </div>
   );
 }

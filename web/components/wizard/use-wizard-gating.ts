@@ -23,7 +23,7 @@ import {
 } from "./steps";
 
 /**
- * Binds the store's step gates (MIGRATION.md §4.1) to the current route.
+ * Binds the store's step gates to the current route.
  *
  * The rules themselves live in `@/lib/store/wizard`; this hook only decides
  * *which* route the URL is on, supplies `/meta.max_exact_equiv_permutations` and
@@ -31,9 +31,9 @@ import {
  * component below takes props instead of touching the store.
  *
  * Two routes under `(wizard)` are not steps and are told apart by `kind`:
- * the completion page `/finish` (§9b item 6), which the shell draws without the
+ * the completion page `/finish`, which the shell draws without the
  * rail; and — as a redirect target only — the welcome page at `WELCOME_PATH`,
- * which is where an unanswered welcome question sends the family (§9b item 2).
+ * which is where an unanswered welcome question sends the family.
  *
  * Each gate is a separate primitive subscription, so the shell re-renders only
  * when a gate actually flips — not on every keystroke in the wish list.
@@ -58,7 +58,7 @@ export function useWizardGating(): WizardGating {
   const path = pathname ?? "";
   const finish = isFinishPathname(path);
   const slug = stepFromPathname(path) ?? "student";
-  // Both server caps of §3, straight from `/meta`, so every gate the shell
+  // Both server caps , straight from `/meta`, so every gate the shell
   // draws — the stepper links, Continue, and the guard's fallback — uses the
   // numbers the API will enforce, and does so from the first render rather than
   // waiting for some step to have called `setMaxWishes`.
@@ -67,7 +67,7 @@ export function useWizardGating(): WizardGating {
     maxWishes: meta?.max_wishes ?? null,
   };
 
-  // Step 1 needs the welcome answer and the consent checkbox since §9b, so all
+  // Step 1 needs the welcome answer and the consent checkbox so all
   // four need a subscription — plus the two raw flags, to tell which of the
   // two front-door screens is the right redirect target when neither step is
   // reachable yet.
@@ -113,7 +113,7 @@ export function useWizardGating(): WizardGating {
       // The completion page shows the result again, so it needs the same fresh
       // simulation step 4 does — `canEnterStep(4)` is exactly that condition.
       allowed: entry.improve,
-      // "else redirect to result" (§9b item 6); when the result step itself is
+      // "else redirect to result"; when the result step itself is
       // out of reach the family goes wherever they may legally be instead, so
       // one redirect lands rather than bouncing through a locked step.
       fallbackHref: entry.result ? stepPath("result") : fallbackHref,

@@ -23,11 +23,11 @@ import { apiErrorMessage } from "./api-error";
 import { ToneAlert } from "./tone-alert";
 
 /**
- * "Improve distance estimates — optional" (`ui_recommendations.py`).
+ * "Improve distance estimates — optional".
  *
  * The address is local component state, not store state: it is the rawest form
- * of the family's home location and MIGRATION.md §4.5 keeps it out of storage
- * and out of the URL. Only the geocoded *point* is kept, in the store's
+ * of the family's home location and is kept out of storage and out of the
+ * URL. Only the geocoded *point* is kept, in the store's
  * memory-only `home` slice, and only after the family presses the button —
  * there is deliberately no effect here that could turn typing into a request.
  */
@@ -35,7 +35,7 @@ export function AddressSection({
   hardDistanceFilterApplied,
 }: {
   /** `/recommend`'s own answer for the point currently on file. `null` while
-   *  the first response is still in flight. */
+   * the first response is still in flight. */
   hardDistanceFilterApplied: boolean | null;
 }) {
   const t = useTranslations();
@@ -172,7 +172,7 @@ export function AddressSection({
         >
           {hardDistanceFilterApplied
             ? t("improve.distance.hardLimit", {
-                // `{max_distance:.0f}` in the prototype.
+                // Matches the API's `{max_distance:.0f}` formatting.
                 maxDistance: Math.round(
                   meta.recommendation_max_home_distance_km,
                 ),

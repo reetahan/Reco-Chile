@@ -4,11 +4,9 @@ Both the fixture generator (``tests/generate_golden.py``) and the golden tests
 (``tests/test_engine_golden.py``) import this module, so the "how the engine is
 called" logic exists once.
 
-This convention is the *baseline*, not a mirror of any current caller. It was
-taken from the Streamlit prototype (``app.py`` and ``sae_app/ui_*``, deleted
-after the migration) at commit ``0a52f56``, and that is precisely why it is
-worth keeping: `api.py` reproducing these numbers through a different code path
-is what proves the migration changed no arithmetic. The sequences are:
+This convention is the frozen *baseline*, not a mirror of any current caller.
+`api.py` reproducing these numbers through a different code path is what keeps
+the engine's arithmetic under contract. The sequences are:
 
 * strict simulation      -> ``prepare_ordered_wishes`` / ``attach_mtb_hashes`` /
                             ``compute``
@@ -17,9 +15,8 @@ is what proves the migration changed no arithmetic. The sequences are:
                             ``precompute_equivalence_availability`` once,
                             then ``iter_equivalence_orders`` +
                             ``compute_equivalence_order_from_precomputed``)
-* recommendations        -> ``recommend_similar_programs`` with the constants and
-                            argument order the prototype's recommendation
-                            section passed
+* recommendations        -> ``recommend_similar_programs`` with the frozen
+                            constants and argument order
 
 When the engine's calling convention changes, update this runner — never the
 fixtures.
@@ -113,18 +110,17 @@ def build_id_maps(program_mapping: dict[str, pd.Series]) -> tuple[dict, dict]:
 
 
 # ---------------------------------------------------------------------------
-# Wish-list construction (same path as the Streamlit builder)
+# Wish-list construction
 # ---------------------------------------------------------------------------
 
 def build_edited_wishes(
     wish_specs: list[dict],
     use_equivalence_classes: bool,
 ) -> pd.DataFrame:
-    """Return the ``edited`` DataFrame ``app.py`` hands to the engine.
+    """Return the ``edited`` DataFrame handed to the engine.
 
-    ``ui_wish_builder.render_wish_list_builder`` always returns
-    ``normalize_builder_wishes(rows, use_equivalence_classes)``, so the golden
-    scenarios go through exactly that function.
+    The golden scenarios go through
+    ``normalize_builder_wishes(rows, use_equivalence_classes)``.
     """
     rows = []
     for position, spec in enumerate(wish_specs, start=1):
@@ -195,7 +191,7 @@ def run_strict_simulation(
     student_id: str,
     label_to_id: dict[str, str],
 ) -> dict:
-    """Strict-mode simulation, mirroring ``app.py``'s ``else`` branch."""
+    """Strict-mode simulation."""
     strict_order = prepare_ordered_wishes(edited, use_equivalence_classes=False)
     wishes_for_compute = attach_mtb_hashes(strict_order, program_mapping, student_id)
     choices = compute(wishes_for_compute, program_mapping)
@@ -221,7 +217,7 @@ def strict_unmatched_risk(
     program_mapping: dict[str, pd.Series],
     student_id: str,
 ) -> float:
-    """Current unmatched risk of a list, as section 4 of the app reads it."""
+    """Current unmatched risk of a list."""
     strict_order = prepare_ordered_wishes(edited, use_equivalence_classes=False)
     choices = compute(
         attach_mtb_hashes(strict_order, program_mapping, student_id),
@@ -236,13 +232,13 @@ def run_equivalence_simulation(
     student_id: str,
     label_to_id: dict[str, str],
 ) -> dict:
-    """Equivalence-class simulation, mirroring ``app.py``'s equivalence branch."""
+    """Equivalence-class simulation."""
     reference_order = prepare_ordered_wishes(edited, use_equivalence_classes=True)
     total_orders = count_equivalence_orders(reference_order)
 
     if total_orders > MAX_EXACT_EQUIV_PERMUTATIONS:
-        # app.py stops here with the "too many strict orders" error and never
-        # calls the availability pipeline.
+        # Stop here with the "too many strict orders" error; the availability
+        # pipeline is never called.
         return {
             "mode": "equivalence",
             "total_orders": total_orders,
@@ -305,7 +301,7 @@ def run_recommendations(
     max_recommendations: int,
     home_geo_reference: dict | None,
 ) -> dict:
-    """Recommendations with the exact arguments ``ui_recommendations.py`` passes.
+    """Recommendations with the frozen argument set.
 
     ``home_geo_reference`` is passed straight through as a dict; the geocoder is
     never called, so no test or fixture generation touches the network.
@@ -374,7 +370,7 @@ def identifier_expectation(raw_identifier: str) -> dict:
     """Normalized identifier, or the error class plus its untranslated key.
 
     Engine errors carry a ``message_key`` and are never translated inside the
-    engine (CLAUDE.md, "Error handling"), so the key is what gets frozen.
+    engine (CONTRIBUTING.md, "Error handling"), so the key is what gets frozen.
     """
     try:
         return {
