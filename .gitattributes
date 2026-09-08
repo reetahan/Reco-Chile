@@ -1,0 +1,6 @@
+# Collapse machine-generated files in diffs and drop them from language stats.
+# They are committed on purpose (reproducible installs, a checked-in API
+# contract) but are never hand-edited.
+web/pnpm-lock.yaml       linguist-generated=true
+web/lib/api/openapi.json linguist-generated=true
+web/lib/api/schema.d.ts  linguist-generated=true
