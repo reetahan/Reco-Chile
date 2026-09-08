@@ -1,10 +1,9 @@
 # Golden fixtures — the frozen numerical baseline
 
 These JSON files are **committed artifacts**, not build output. They record what
-the pre-migration Streamlit engine (`main` at commit `0a52f56`) computed for a
-fixed set of scenarios. The migration was proven against them, and they stay the
-numerical contract of the engine: any change to `sae_app/` that moves a number
-shows up here first (`docs/MIGRATION.md` §6).
+the engine computes for a fixed set of scenarios, and they are the numerical
+contract of the engine: any change to `sae_app/` that moves a number shows up
+here first.
 
 `tests/test_engine_golden.py` replays each file through the engine and compares:
 
@@ -42,7 +41,7 @@ baseline untouched, when:
    `HARD_UNMATCHED_THRESHOLD`; or `equiv_03` stops being the *same outcome,
    shifted probability* case (one outcome, chance range at least
    `EQUIV_PROBABILITY_CHANGE_WARNING_THRESHOLD`) — between them and `equiv_02`
-   the three verdicts of `docs/MIGRATION.md` §3 are all frozen;
+   all three equivalence-sensitivity verdicts are frozen;
 3. the `address`- and `city`-precision recommendation runs return the same
    programs — that would mean the hard distance filter excluded nothing and the
    precision branch is untested.

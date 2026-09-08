@@ -1,28 +1,27 @@
 "use client";
 
 /**
- * Step 2 — build and order the preference list (MIGRATION.md §4.1, §4.2;
- * prototype: `app.py` lines 242-470 plus `ui_wish_builder`).
+ * Step 2 — build and order the preference list.
  *
- * Section order is the prototype's, top to bottom, with one addition: the
- * "I have not yet decided the exact order" ties toggle moved here from step 1
- * (MIGRATION.md §9b) since it governs how *this* list gets built and ordered.
+ * Section order, top to bottom, with the ties toggle added first: the
+ * "I have not yet decided the exact order" ties toggle lives here because it
+ * governs how *this* list gets built and ordered.
  *
- *   heading + one caption that depends on the mode
- *   the ties toggle (`EquivalenceSwitch`)
- *   "N recommended programs were added…"      (returning from step 4)
- *   filter panel                              (only "No — help me build it")
- *   program search + Add
- *   the wish list itself
- *   "some programs use imputed calibration"   (+ "What does this mean?")
- *   the over-cap order-count warning           (ties mode, over the limit only)
+ * heading + one caption that depends on the mode
+ * the ties toggle (`EquivalenceSwitch`)
+ * "N recommended programs were added…" (returning from step 4)
+ * filter panel (only "No — help me build it")
+ * program search + Add
+ * the wish list itself
+ * "some programs use imputed calibration" (+ "What does this mean?")
+ * the over-cap order-count warning (ties mode, over the limit only)
  *
  * The step owns three things the individual components deliberately do not:
  * the `/meta.max_wishes` limit it hands to the store (so every gate — this
  * page's and the wizard nav's — uses one number), the one `usePrograms` lookup
  * over the whole list (which answers both "is any of them imputed?" and "did
  * any of them vanish?"), and the reaction to the latter — `dropMissingPrograms`
- * plus one warning toast, exactly like `app.py`.
+ * plus one warning toast.
  */
 
 import * as React from "react";
@@ -42,7 +41,7 @@ import { useMeta } from "@/lib/meta";
 import { usePrograms } from "@/lib/programs";
 import { useWizardStore } from "@/lib/store/wizard";
 
-/** How many removed programs `app.py` names before it prints an ellipsis. */
+/** How many removed programs to name before printing an ellipsis. */
 const MAX_NAMED_REMOVALS = 5;
 
 export function ListStep() {
@@ -88,13 +87,13 @@ export function ListStep() {
   );
   const { programs, missing } = usePrograms(wishIds);
 
-  // `app.py`: any selected program with `calibration_imputed` triggers the
+  // Any selected program with `calibration_imputed` triggers the
   // notice, whatever its position.
   const anyImputed = wishes.some(
     (wish) => programs.get(wish.programId)?.calibration_imputed === true,
   );
 
-  // --- programs that disappeared from the data (§4.2) ----------------------
+  // --- programs that disappeared from the data ----------------------
   // `missing` is a fresh array on every render, so the effect keys on its
   // content; dropping the wishes shortens the list and ends the cycle.
   const missingKey = missing.join(",");
@@ -110,8 +109,8 @@ export function ListStep() {
     toast.warning(t("list.notices.removed", { programs: named.join(", ") }));
   }, [missingKey, dropMissingPrograms, t]);
 
-  // --- "N recommendations were added" (§4.2, arriving from step 4) ---------
-  // Streamlit's `st.session_state.pop(...)`: shown once, then cleared, so the
+  // --- "N recommendations were added" ---------
+  // Shown once, then cleared, so the
   // message cannot reappear on a later visit. It is mirrored into local state —
   // adjusted during render, never in an effect — because clearing the store
   // must not take the notice off the screen again. Step 4 appends *before* it
@@ -147,7 +146,7 @@ export function ListStep() {
   const needsBuilder = listExists === false;
 
   return (
-    // The prototype prints a different caption per branch: the filter intro
+    // A different caption per branch: the filter intro
     // when it is helping to build the list, the preference-order reminder when
     // the family already has one. That is the whole reason `StepPage` takes a
     // `lead` — this step used to duplicate the frame to say it, and then did

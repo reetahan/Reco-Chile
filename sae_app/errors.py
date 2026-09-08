@@ -1,7 +1,7 @@
 """Typed exceptions raised by the calculation engine.
 
-The engine exposes translation keys rather than importing the Streamlit/i18n
-layer. User interfaces localize these errors at the presentation boundary.
+The engine exposes translation keys rather than importing the i18n layer. The
+presentation layer localizes these errors at its boundary.
 """
 
 from __future__ import annotations

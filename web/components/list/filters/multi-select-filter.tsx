@@ -1,17 +1,17 @@
 "use client";
 
 /**
- * One of the nine "more filters" multi-selects (MIGRATION.md §4.1 row 2).
+ * One of the nine "more filters" multi-selects.
  *
  * A `Popover` + `Command` combobox rather than a plain list of checkboxes: the
- * payment and specialty lists are long enough that the prototype's Streamlit
+ * payment and specialty lists are long enough that a plain
  * multiselect had a search box, and this keeps that. The trigger always reports
  * the current state in words ("Any", a single value, or "n selected"), because
  * a collapsed filter that silently restricts the results is the one thing that
  * makes the matching count look wrong.
  *
  * Values are the API's English wire codes; `optionLabel` is what translates
- * them through `enums.*` (§4.3). Nothing here filters anything — it only edits
+ * them through `enums.*`. Nothing here filters anything — it only edits
  * the store, and the server does the filtering.
  */
 

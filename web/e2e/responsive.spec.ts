@@ -6,28 +6,25 @@ import { expect, test, type Page } from "@playwright/test";
 import es from "../messages/es";
 
 /**
- * Responsive pass — MIGRATION.md §7, Phase 6 ("Responsive pass at 360 / 768 /
- * 1280 px"), and the mobile requirement of Phase 3 ("single column ≤ 640 px").
+ * Responsive pass at 360 / 768 / 1280 px, plus single-column layout at ≤ 640 px.
  *
  * Each viewport walks the whole wizard with a real list and a real simulation,
  * and at every step asserts the three things that actually break a phone:
  *
  * 1. **The page does not scroll sideways.** `documentElement.scrollWidth <=
- *    clientWidth` is the whole rule. One over-wide element anywhere pushes the
- *    entire layout, and a family on a 360 px screen then reads every sentence
- *    twice.
+ * clientWidth` is the whole rule. One over-wide element anywhere pushes the
+ * entire layout, and a family on a 360 px screen then reads every sentence
+ * twice.
  * 2. **Wide content scrolls inside its own container.** Result tables have more
- *    columns than a phone has room for, so each `<table>` must sit in an
- *    ancestor with `overflow-x: auto|scroll` that is itself no wider than the
- *    viewport — otherwise rule 1 can only be met by truncating numbers.
+ * columns than a phone has room for, so each `<table>` must sit in an
+ * ancestor with `overflow-x: auto|scroll` that is itself no wider than the
+ * viewport — otherwise rule 1 can only be met by truncating numbers.
  * 3. **The stepper and the Back/Continue bar stay usable.** Both are fixed
- *    furniture: four markers on one row inside the viewport, and two buttons
- *    with a real touch target in the sticky footer.
+ * furniture: four markers on one row inside the viewport, and two buttons
+ * with a real touch target in the sticky footer.
  *
- * A screenshot of every step at every width is written to `e2e/__screenshots__/`
- * (git-ignored). They are evidence for the manual side-by-side of §7, not
- * golden images: nothing here compares pixels, so a font-rendering difference
- * between machines cannot fail the suite.
+ * Nothing here compares pixels — a font-rendering difference between machines
+ * cannot fail the suite.
  */
 
 // --- Viewports -------------------------------------------------------------
@@ -101,9 +98,6 @@ async function seedList(page: Page): Promise<void> {
 }
 
 // --- Assertions ------------------------------------------------------------
-
-/** Where the screenshots go. Git-ignored (`web/.gitignore`). */
-const SHOTS = "e2e/__screenshots__";
 
 type TableReport = {
   /** Text of the first header cell, so a failure names the table. */
@@ -268,7 +262,7 @@ async function expectStepperUsable(
 /** The Back/Continue bar: visible, inside the viewport, tappable.
  *
  * `forward: false` is a step that states its own way onward instead of the
- * shell's Continue — step 3 since §9b item 6 — so the button must be absent
+ * shell's Continue — step 3 item 6 — so the button must be absent
  * rather than merely disabled. `back: false` likewise asserts no Back button
  * where there is none to find (step 1, and the completion page, which is drawn
  * without the bar entirely). */
@@ -322,11 +316,11 @@ async function expectNavUsable(
 }
 
 /**
- * One step, fully checked, plus a screenshot for the manual comparison.
+ * One step, fully checked.
  *
  * `stepper: false` is a page in the wizard's route group that is not a step and
- * carries neither rail nor Back/Continue bar — the completion page (§9b item
- * 6). Everything else about it still has to fit a 360 px screen.
+ * carries neither rail nor Back/Continue bar — the completion page. Everything
+ * else about it still has to fit a 360 px screen.
  */
 async function checkStep(
   page: Page,
@@ -344,10 +338,6 @@ async function checkStep(
   await expectTablesScrollThemselves(page, where);
   if (stepper) await expectStepperUsable(page, where, viewport.width);
   await expectNavUsable(page, where, viewport, { back, forward });
-  await page.screenshot({
-    path: `${SHOTS}/${slug}-${viewport.name}.png`,
-    fullPage: true,
-  });
 }
 
 // --- The walk --------------------------------------------------------------
@@ -413,7 +403,7 @@ for (const viewport of VIEWPORTS) {
         back: true,
         forward: false,
       });
-      // The two halves of the §9b item 6 choice are the way onward now, so they
+      // The two halves of the choice are the way onward now, so they
       // are what has to fit and be tappable at this width.
       for (const testId of ["result-finish", "result-improve"]) {
         const choice = page.getByTestId(testId);
@@ -429,7 +419,7 @@ for (const viewport of VIEWPORTS) {
         ).toBeGreaterThanOrEqual(32);
       }
 
-      // Feedback round 2 removed every table from step 3, and with it the
+      // Step 3 has no tables, and so no
       // completion page this walkthrough used to visit: the outcome box is now
       // the widest thing here, and "finish" ends the session at the front door.
 
@@ -447,10 +437,6 @@ for (const viewport of VIEWPORTS) {
       await expectStepperUsable(page, where, viewport.width);
       await expect(page.getByTestId("wizard-back")).toBeVisible();
       await expect(page.getByTestId("wizard-continue")).toHaveCount(0);
-      await page.screenshot({
-        path: `${SHOTS}/4-improve-${viewport.name}.png`,
-        fullPage: true,
-      });
     });
   });
 }
@@ -467,7 +453,7 @@ test.describe("responsive — 360 px furniture", () => {
     page,
   }) => {
     // Seeded so step 1 is actually reachable: without the welcome answer the
-    // guard bounces to `/es` (§9b item 2) and the header would be measured
+    // guard bounces to `/es` and the header would be measured
     // mid-redirect.
     await seedList(page);
     await page.goto("/es/student");
@@ -476,17 +462,25 @@ test.describe("responsive — 360 px furniture", () => {
     ).toBeVisible();
 
     const header = page.locator("header").first();
+    const brand = header.getByRole("link", { name: es.app.title });
     const switcher = page.getByRole("navigation", {
       name: es.app.languageLabel,
     });
     await expect(switcher).toBeVisible();
 
-    const headerBox = (await header.boundingBox())!;
     const switcherBox = (await switcher.boundingBox())!;
+    const brandBox = (await brand.boundingBox())!;
     expect(switcherBox.x + switcherBox.width).toBeLessThanOrEqual(361);
-    // One row: the header is not taller than a single line of controls plus
-    // its padding.
-    expect(headerBox.height).toBeLessThanOrEqual(72);
+
+    // On one row: the brand and the switcher overlap vertically. If the header
+    // wrapped to two lines they would not — and the exact pixel height varies
+    // with the platform's font metrics, so it is not a reliable proxy.
+    const rowTop = Math.max(brandBox.y, switcherBox.y);
+    const rowBottom = Math.min(
+      brandBox.y + brandBox.height,
+      switcherBox.y + switcherBox.height,
+    );
+    expect(rowBottom).toBeGreaterThan(rowTop);
 
     await expectNoHorizontalScroll(page, "header @ 360x740");
   });

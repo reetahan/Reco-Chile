@@ -1,13 +1,13 @@
 "use client";
 
 /**
- * `POST /recommend` for step 4 (MIGRATION.md §4.1 row 4, Phase 5).
+ * `POST /recommend` for step 4.
  *
- * The engine is the only place a probability is computed (§0): this hook sends
+ * The engine is the only place a probability is computed: this hook sends
  * the current list and hands back the response untouched. It never derives a
  * risk, never re-ranks, and never caches across students — the server re-runs
  * the simulation itself to obtain `current_unmatched_risk`, precisely so a
- * client-supplied risk cannot steer the ranking (§3).
+ * client-supplied risk cannot steer the ranking.
  *
  * Re-fetches when the wishes, the home point, the count slider, the student
  * identifier or the locale change, debounced by 300 ms so dragging the slider
@@ -17,7 +17,7 @@
  * current inputs ask for" rather than being a third piece of state that could
  * disagree with the other two.
  *
- * Privacy (§4.5): the RUN/IPE travels in the request body to the same-origin
+ * Privacy: the RUN/IPE travels in the request body to the same-origin
  * proxy and is never logged, never put in the URL, and never attached to an
  * error — `ApiError` carries the response only.
  */
@@ -45,7 +45,7 @@ export type UseRecommendationsResult = {
 };
 
 /** What a settled answer belongs to: the exact body plus the language it was
- *  asked in (only `message` fields are language-dependent, but they are shown). */
+ * asked in (only `message` fields are language-dependent, but they are shown). */
 type Settled = {
   key: string | null;
   data: RecommendationResponse | null;

@@ -1,26 +1,24 @@
 /**
- * Wizard state (MIGRATION.md §4.2) — the client-side mirror of the prototype's
- * `st.session_state` plus `invalidate_simulation_state`.
+ * Wizard state (zustand). The invalidation table below mirrors the one in
+ * `docs/architecture.md`, "Wizard state".
  *
- * Rules implemented here, 1:1 with the invalidation table of §4.2:
- *
- * | Change                                   | Effect                                                        |
+ * | Change | Effect |
  * | ---------------------------------------- | ------------------------------------------------------------- |
- * | `studentId` changes                      | `simulation = null`, `simulationStale = true`                  |
- * | `useEquivalenceClasses` toggles          | wishes kept; groups → `null` (strict) or `1..n` (ties); invalid |
- * | any wish add/remove/reorder/group/flag   | simulation invalidated                                         |
- * | a `programId` disappears from the data   | wish dropped (caller shows the toast); simulation invalidated   |
- * | recommendations appended                 | singleton trailing groups (ties) / trailing ranks (strict); inv |
- * |                                          | ...and never past `maxWishes` when the API's cap is known       |
+ * | `studentId` changes | `simulation = null`, `simulationStale = true` |
+ * | `useEquivalenceClasses` toggles | wishes kept; groups → `null` (strict) or `1..n` (ties); invalid |
+ * | any wish add/remove/reorder/group/flag | simulation invalidated |
+ * | a `programId` disappears from the data | wish dropped (caller shows the toast); simulation invalidated |
+ * | recommendations appended | singleton trailing groups (ties) / trailing ranks (strict); inv |
+ * | | ...and never past `maxWishes` when the API's cap is known |
  *
  * Persistence: only `wishes`, `listExists`, `useEquivalenceClasses`, `filters`
- * go to `sessionStorage`. `studentId`, `simulation` and `home` are memory-only —
- * the same privacy posture as `migrate_legacy_sensitive_state` (§4.5).
+ * go to `sessionStorage`. `studentId`, `simulation` and `home` are memory-only,
+ * for privacy.
  *
  * No probability is ever computed here; the engine stays the only source of
- * numbers (§0). The one number this module derives is the *count* of compatible
+ * numbers. The one number this module derives is the *count* of compatible
  * strict orders, which is combinatorics over the user's own grouping and is
- * re-checked server-side (422 `too_many_equivalence_orders`, §3).
+ * re-checked server-side (422 `too_many_equivalence_orders`).
  */
 
 import { create } from "zustand";
@@ -49,7 +47,7 @@ export type {
 };
 export { PRIORITY_FLAGS } from "./types";
 
-/** Prototype default of the "number of recommendations" slider (2–10). */
+/** Default of the "number of recommendations" slider (2–10). */
 export const DEFAULT_RECOMMENDATION_COUNT = 3;
 export const MIN_RECOMMENDATION_COUNT = 2;
 export const MAX_RECOMMENDATION_COUNT = 10;
@@ -63,13 +61,13 @@ export type WizardStep = 1 | 2 | 3 | 4;
 export type MoveTarget = "up" | "down" | number;
 
 export type WizardState = {
-  /** RUN/IPE — memory only, never persisted, never logged (§4.5). */
+  /** RUN/IPE — memory only, never persisted, never logged. */
   studentId: string;
   /** The welcome page's answer; `null` = not asked yet, which locks step 1. */
   listExists: boolean | null;
   /** The "Before we continue" consent checkbox, shown after the welcome
-   *  answer and before step 1. `false` locks step 1 the same way an
-   *  unanswered `listExists` does. */
+   * answer and before step 1. `false` locks step 1 the same way an
+   * unanswered `listExists` does. */
   disclaimerAcknowledged: boolean;
   useEquivalenceClasses: boolean;
   filters: ProgramFilters;
@@ -87,15 +85,15 @@ export type WizardState = {
   maxWishes: number | null;
   /**
    * How many recommendations the last `appendRecommendations` added, for the
-   * success notice at the top of step 2 (`recommendations_added_notice` in the
-   * prototype). Transient: never persisted, and the step that shows it clears
-   * it with `clearRecommendationsNotice()` — the port of Streamlit's `pop`.
+   * success notice at the top of step 2. Transient: never persisted, and the
+   * step that shows it clears it with `clearRecommendationsNotice()` — shown
+   * once, then cleared.
    */
   recommendationsAddedNotice: number;
   /**
    * A navigation the wizard itself started, as the destination's step number —
-   * memory-only, and the one thing that makes the step-4 → step-2 hand-off of
-   * §4.2 possible.
+   * memory-only, and the one thing that makes the step-4 → step-2 hand-off
+   * possible.
    *
    * `appendRecommendations` invalidates the simulation, which instantly makes
    * step 4 unenterable. Without this flag the step guard in
@@ -111,7 +109,7 @@ export type WizardState = {
   pendingNavigation: WizardStep | null;
   /**
    * The current step is waiting on a request it must finish before the family
-   * can move on — the result step's `/simulate` (§4.1 row 3). Memory-only, and
+   * can move on — the result step's `/simulate`. Memory-only, and
    * read by the shell to put `WizardNav` in its `pending` state.
    *
    * Contract for the owning step: call `setStepBusy(true)` when the request
@@ -126,7 +124,7 @@ export type WizardState = {
    *
    * Memory-only, never persisted, and `false` on every fresh document. It
    * exists because the persisted slices arrive one effect *after* the tree
-   * mounts, and the step guard now gates on one of them (`listExists`, §9b):
+   * mounts, and the step guard now gates on one of them (`listExists`):
    * without this flag a reload of `/es/student` would see the empty default,
    * decide the welcome question was never answered, and bounce a family that
    * had answered it. Whoever redirects on store state must wait for this.
@@ -150,19 +148,19 @@ export type WizardActions = {
   setWishGroup: (programId: string, group: number | null) => void;
   setWishFlag: (programId: string, flag: PriorityFlag, value: boolean) => void;
   /** Drops wishes whose program vanished from the data; returns the dropped ids
-   *  so the caller can raise the warning toast with the labels it still knows. */
+   * so the caller can raise the warning toast with the labels it still knows. */
   dropMissingPrograms: (programIds: readonly string[]) => string[];
   appendRecommendations: (programIds: readonly string[]) => void;
   setSimulation: (simulation: SimulationResponse | null) => void;
   setHome: (home: GeocodeResult | null) => void;
   setRecommendationCount: (count: number) => void;
   setMaxWishes: (maxWishes: number | null) => void;
-  /** Acknowledge the "N recommendations added" notice (Streamlit's `pop`). */
+  /** Acknowledge the "N recommendations added" notice (shown once, then cleared). */
   clearRecommendationsNotice: () => void;
   /** Announce a navigation the wizard itself is performing, so the step guard
-   *  does not redirect while it is in flight. `null` cancels/acknowledges it. */
+   * does not redirect while it is in flight. `null` cancels/acknowledges it. */
   setPendingNavigation: (step: WizardStep | null) => void;
-  /** Put the Continue button in its "request in flight" state (§4.1). */
+  /** Put the Continue button in its "request in flight" state. */
   setStepBusy: (busy: boolean) => void;
   reset: () => void;
 };
@@ -215,7 +213,7 @@ export function makeWish(
 }
 
 /**
- * Next free preference group, mirroring `ui_wish_builder`/`ui_recommendations`:
+ * Next free preference group, for a new wish or recommendation:
  * `max(existing groups) + 1`, falling back to `len(list) + 1` when no wish
  * carries a group yet.
  */
@@ -308,7 +306,7 @@ function sessionStorageOrNull(): Storage | null {
 }
 
 /** Exported for tests. Every access is guarded; a failure degrades to "no
- *  persistence", never to a crash. */
+ * persistence", never to a crash. */
 export const wizardSessionStorage: StateStorage = {
   getItem: (name) => {
     try {
@@ -357,9 +355,8 @@ export function initialWizardState(): WizardState {
   };
 }
 
-/** What "the simulation is invalidated" means everywhere in §4.2: the cached
- *  result is dropped, not merely flagged (mirrors `invalidate_simulation_state`,
- *  which pops the result key). */
+/** What "the simulation is invalidated" means everywhere: the cached result is
+ * dropped, not merely flagged. */
 const INVALIDATED = {
   simulation: null,
   simulationStale: true,
@@ -378,12 +375,12 @@ export const useWizardStore = create<WizardStore>()(
       setStudentId: (studentId) => {
         if (get().studentId === studentId) return;
         // Recommendations are re-fetched by the caller; the server keeps no
-        // per-student cache to clear (§4.2).
+        // per-student cache to clear.
         set({ studentId, ...INVALIDATED });
       },
 
       setListExists: (listExists) => {
-        // The welcome page's answer (§9b item 2). It selects a UI branch — step
+        // The welcome page's answer. It selects a UI branch — step
         // 2 shows the filter panel only for "No, help me build it" — so the
         // list itself and the simulation survive a change of mind. `null` puts
         // the family back in front of the welcome question (`canEnterStep(1)`).
@@ -398,7 +395,7 @@ export const useWizardStore = create<WizardStore>()(
         const state = get();
         if (state.useEquivalenceClasses === useEquivalenceClasses) return;
         // The wishes are kept — switching interpretation must never silently
-        // reset the family's list (app.py keeps `editor_state_key` stable).
+        // reset the family's list.
         const wishes = state.wishes.map((wish, index) => ({
           ...wish,
           equivalenceGroup: useEquivalenceClasses ? index + 1 : null,
@@ -503,7 +500,7 @@ export const useWizardStore = create<WizardStore>()(
         const state = get();
         const seen = new Set(state.wishes.map((wish) => wish.programId));
         const added: Wish[] = [];
-        // `/meta.max_wishes` is a hard server cap (`MAX_WISHES`, §3): a list
+        // `/meta.max_wishes` is a hard server cap (`MAX_WISHES`,): a list
         // built past it is rejected by `/simulate`, so appending past it would
         // hand the family a list they cannot analyse. When the limit is unknown
         // there is nothing to enforce and the server's 422 stays the only gate.
@@ -588,7 +585,7 @@ export const useWizardStore = create<WizardStore>()(
       name: WIZARD_PERSIST_KEY,
       version: WIZARD_PERSIST_VERSION,
       storage: createJSONStorage(() => wizardSessionStorage),
-      // NEVER add studentId, simulation or home here (§4.5). `maxWishes`,
+      // NEVER add studentId, simulation or home here. `maxWishes`,
       // `recommendationsAddedNotice`, `pendingNavigation` and `stepBusy` stay
       // out too: the first is a fact about the live API, the others are
       // in-flight UI state that must not survive a reload — a persisted
@@ -624,20 +621,20 @@ export function hydrateWizardStore(): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// Selectors (MIGRATION.md §4.1 step table)
+// Selectors
 // ---------------------------------------------------------------------------
 
 export type StepGateOptions = {
   /** `/meta.max_exact_equiv_permutations`. When unknown, the order-count gate
-   *  is not applied client-side and the server's 422 is the only check. */
+   * is not applied client-side and the server's 422 is the only check. */
   maxOrders?: number | bigint | null;
   /** `/meta.max_wishes`. Overrides `state.maxWishes`; when neither is known the
-   *  length gate is not applied client-side and `/simulate` rejects instead. */
+   * length gate is not applied client-side and `/simulate` rejects instead. */
   maxWishes?: number | null;
 };
 
 /** Step 1: the RUN/IPE passes the client pre-check (display only — the server
- *  re-validates it). */
+ * re-validates it). */
 export function isStudentIdValid(
   state: Pick<WizardState, "studentId">,
 ): boolean {
@@ -645,7 +642,7 @@ export function isStudentIdValid(
 }
 
 /**
- * Has the welcome page's question been answered? (MIGRATION.md §9b item 2.)
+ * Has the welcome page's question been answered?
  *
  * `listExists === null` means "not asked yet", and since the two welcome
  * buttons are the only way to answer it, an unanswered choice means the family
@@ -654,7 +651,7 @@ export function isStudentIdValid(
  * step 1 rather than a Continue condition: the guard sends them to
  * `WELCOME_PATH` instead of showing a step whose question was skipped.
  *
- * The answer is persisted (§4.2), so a reload keeps the family where they were.
+ * The answer is persisted, so a reload keeps the family where they were.
  */
 export function hasListChoice(state: Pick<WizardState, "listExists">): boolean {
   return state.listExists !== null;
@@ -679,7 +676,7 @@ export function hasAcknowledgedDisclaimer(
  *
  * Both caps are server-enforced (`MAX_WISHES`, `MAX_EXACT_EQUIV_PERMUTATIONS`);
  * checking them here only lets Continue disable itself with the same message
- * instead of sending a request that is certain to 422 (MIGRATION.md §3).
+ * instead of sending a request that is certain to 422.
  */
 export function isWishListValid(
   state: Pick<WizardState, "wishes" | "useEquivalenceClasses" | "maxWishes">,
@@ -701,7 +698,7 @@ export function hasFreshSimulation(
 }
 
 /** Is the "Continue" button of `step` enabled? Step 4 is terminal (the table
- *  shows "—"), so it has no forward action. */
+ * shows "—"), so it has no forward action. */
 export function canContinue(
   state: WizardState,
   step: WizardStep,
@@ -720,8 +717,8 @@ export function canContinue(
 }
 
 /** May the user open `step`? Cumulative: every earlier gate must hold too, so
- *  a deep link to a locked step can be redirected. Step 1 is no longer
- *  unconditional — it needs the welcome page's answer (`hasListChoice`). */
+ * a deep link to a locked step can be redirected. Step 1 is no longer
+ * unconditional — it needs the welcome page's answer (`hasListChoice`). */
 export function canEnterStep(
   state: WizardState,
   step: WizardStep,
@@ -729,9 +726,9 @@ export function canEnterStep(
 ): boolean {
   switch (step) {
     case 1:
-      // The welcome choice and the consent checkbox, not "always" (§9b item
-      // 2): step 1 no longer asks the question, so entering it without an
-      // answer would strand the family in a wizard branch nobody chose.
+      // The welcome choice and the consent checkbox, not "always": step 1 no
+      // longer asks the question, so entering it without an answer would strand
+      // the family in a wizard branch nobody chose.
       return hasListChoice(state) && hasAcknowledgedDisclaimer(state);
     case 2:
       return canEnterStep(state, 1, options) && canContinue(state, 1, options);
@@ -743,7 +740,7 @@ export function canEnterStep(
 }
 
 /** Highest step the current state allows — the redirect target of the step
- *  guard in `(wizard)/layout.tsx` (§4.1). */
+ * guard in `(wizard)/layout.tsx`. */
 export function lastAllowedStep(
   state: WizardState,
   options: StepGateOptions = {},

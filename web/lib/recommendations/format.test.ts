@@ -7,7 +7,7 @@ import { formatDistanceKm, formatRatio, isFiniteNumber } from "./format";
  * only the two step-4 shapes are asserted here. The expectations are what
  * CPython prints for the same double:
  *
- *   .venv/bin/python -c "print(format(4.25, '.1f'), round(3.456, 2))"
+ * .venv/bin/python -c "print(format(4.25, '.1f'), round(3.456, 2))"
  */
 describe("formatDistanceKm — Python's {:.1f}", () => {
   it("keeps exactly one decimal", () => {
@@ -49,7 +49,7 @@ describe("formatRatio — Python's str(round(x, 2))", () => {
   it("drops trailing zeros but keeps a whole number's single decimal", () => {
     expect(formatRatio(1.2, "en")).toBe("1.2");
     // `recommendations.py:769` stores a rounded *float*, and
-    // `ui_recommendations.py:424` interpolates it, so the prototype prints
+    // The API interpolates it, so it arrives as
     // `str(3.0)` — "3.0", not "3".
     expect(formatRatio(3, "en")).toBe("3.0");
     expect(formatRatio(0, "en")).toBe("0.0");

@@ -6,9 +6,9 @@ import { expect, test, type Page } from "@playwright/test";
 import es from "../messages/es";
 
 /**
- * Step 4 — improve the preference list (MIGRATION.md Phase 5 exit gate:
- * "from a simulated list, geocode with a mocked `/geocode`, select two
- * recommendations, land on step 2 with 2 new cards and a stale simulation").
+ * Step 4 — improve the preference list: from a simulated list, geocode with a
+ * mocked `/geocode`, select two recommendations, and land on step 2 with two
+ * new cards and a stale simulation.
  *
  * `/api/geocode` is ALWAYS intercepted in the browser, so no test in this file
  * can reach the Next.js proxy, FastAPI, or OpenStreetMap/Nominatim. That is not
@@ -17,9 +17,9 @@ import es from "../messages/es";
  * looking up their home. `/recommend` and `/simulate`, by contrast, are the
  * real engine — the numbers on this step are the thing under test.
  *
- * The wish list is seeded into `sessionStorage` (§4.2) from the golden
- * recommendation fixture, so the list is exactly the one Phase 0 froze. The
- * RUN/IPE is never seedable — it is memory-only (§4.5) — so it is typed into
+ * The wish list is seeded into `sessionStorage` from the golden
+ * recommendation fixture, so the list is exactly the frozen fixture. The
+ * RUN/IPE is never seedable — it is memory-only — so it is typed into
  * step 1 the way a family would.
  */
 
@@ -53,7 +53,7 @@ function golden(name: string): Fixture {
 }
 
 /** Three wishes in the Santiago metropolitan area — the same list the
- *  `recommend_*` fixtures were generated from. */
+ * `recommend_*` fixtures were generated from. */
 const LIST = golden("recommend_01_no_home");
 
 // --- Store seeding ---------------------------------------------------------
@@ -93,9 +93,9 @@ const RESOLVED_ADDRESS = "Fake 123, Santiago";
 
 type Precision = "address" | "city";
 
-/** Exactly the `GeocodeResponse` shape of the contract (§3), with `message`
- *  already localized by the server — which for `city` is the precision warning
- *  `geocoding_precision_warning_key` selects. */
+/** Exactly the `GeocodeResponse` shape of the contract, with `message`
+ * already localized by the server — which for `city` is the precision warning
+ * `geocoding_precision_warning_key` selects. */
 function geocodeBody(precision: Precision) {
   return {
     ok: true,
@@ -139,7 +139,7 @@ async function stubGeocode(
 // --- Navigation ------------------------------------------------------------
 
 /** Type the RUN on step 1, run the simulation on step 3, continue to step 4.
- *  All client-side: a reload would drop the memory-only identifier. */
+ * All client-side: a reload would drop the memory-only identifier. */
 async function openImprove(page: Page): Promise<void> {
   await seedList(page);
   await page.goto("/es/student");
@@ -155,12 +155,12 @@ async function openImprove(page: Page): Promise<void> {
     .getByRole("link", { name: `3. ${es.steps.result}` })
     .click();
   await page.waitForURL("**/es/result");
-  // The simulation has to succeed before step 4 unlocks (§4.1).
+  // The simulation has to succeed before step 4 unlocks.
   await expect(page.getByTestId("result-outcome")).toBeVisible({
     timeout: 60_000,
   });
 
-  // Step 3 has no generic Continue since §9b item 6 — the way to step 4 is the
+  // Step 3 has no generic Continue item 6 — the way to step 4 is the
   // explicit "not happy, help me improve my list" half of the result's choice.
   await page.getByTestId("result-improve").click();
   await page.waitForURL("**/es/improve");
@@ -199,12 +199,12 @@ test.describe("improve step — the home address", () => {
     const input = page.getByTestId("home-address-input");
     const submit = page.getByTestId("geocode-submit");
 
-    // Empty field: the prototype disables the button, and so does this.
+    // Empty field: the button is disabled.
     await expect(submit).toBeDisabled();
 
     await input.fill(TYPED_ADDRESS);
     await expect(submit).toBeEnabled();
-    // The privacy rule of §4.5, asserted rather than assumed: typing a home
+    // The privacy rule , asserted rather than assumed: typing a home
     // address must never reach the network.
     expect(calls.count).toBe(0);
     await expect(page.getByTestId("geocode-feedback")).toHaveAttribute(
@@ -218,7 +218,7 @@ test.describe("improve step — the home address", () => {
       "confirmed",
     );
     expect(calls.count).toBe(1);
-    // Whitespace is collapsed before sending, like the prototype's
+    // Whitespace is collapsed before sending, matching the API's
     // `" ".join(address.strip().split())`.
     expect(calls.addresses).toEqual([TYPED_ADDRESS]);
   });
@@ -251,7 +251,7 @@ test.describe("improve step — the home address", () => {
     );
 
     // Editing the field invalidates the coordinates on file until the family
-    // asks again — the same check `ui_recommendations.py` makes.
+    // asks again — the same check the API makes.
     await page.getByTestId("home-address-input").fill("Otra calle 1, Santiago");
     await expect(feedback).toHaveAttribute("data-kind", "changed");
     await expect(feedback).toHaveText(es.improve.address.changed);
@@ -274,7 +274,7 @@ test.describe("improve step — the home address", () => {
     await expect(feedback).toHaveAttribute("data-kind", "approximate");
     await expect(feedback).toHaveText(
       fill(es.improve.address.usedLocation, {
-        // Shown verbatim: the API already localized it (§3).
+        // Shown verbatim: the API already localized it.
         warning: es.improve.precision.city,
         address: RESOLVED_ADDRESS,
       }),
@@ -324,7 +324,7 @@ test.describe("improve step — feeding recommendations back into the list", () 
     await submit.click();
     await page.waitForURL("**/es/list");
 
-    // §4.2: appended, invalidated, and landed on step 2 with the success
+    // Appended, invalidated, and landed on step 2 with the success
     // notice. The banner is the message — one message, not a banner and a toast
     // — and it renders because the improve step announces the navigation
     // through the store's `pendingNavigation` before it invalidates the
@@ -367,7 +367,7 @@ test.describe("improve step — feeding recommendations back into the list", () 
 
     expect(calls.count).toBe(0);
 
-    // Streamlit's `pop`: the notice is shown once. Leaving step 2 and coming
+    // The notice is shown once. Leaving step 2 and coming
     // back must not resurface it.
     await page.getByTestId("wizard-back").click();
     await page.waitForURL("**/es/student");

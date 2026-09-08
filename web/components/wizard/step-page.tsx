@@ -6,19 +6,10 @@ import { useTranslations } from "next-intl";
 import { STEP_LEAD_KEY, STEP_TITLE_KEY, type StepSlug } from "./steps";
 
 /**
- * Shared frame for a wizard step: the numbered title and the one sentence of
- * prototype copy that orients the family, followed by the step body.
- *
- * The step title is the page's single `<h1>`. The application title in
- * `app/[locale]/layout.tsx` is deliberately a `<p>` brand element and not a
- * heading: it repeats on every route, so making it the `<h1>` would leave every
- * step announced under the same, uninformative document heading. Everything
- * below opens at `<h2>` — a screen reader navigates by that outline, and a step
- * that jumps straight to `<h3>` reads as if a section were missing.
- *
- * Single column throughout — the prototype is `layout="centered"`, and the
- * centred column with its max width comes from the locale layout, so this
- * component never sets a width of its own.
+ * Shared frame for a wizard step: the step title (the page's single `<h1>` —
+ * the header brand is a `<p>`), an optional lead sentence, then the step body.
+ * The centred, max-width column comes from the locale layout; this sets no
+ * width of its own.
  */
 export function StepPage({
   slug,
@@ -31,8 +22,8 @@ export function StepPage({
    * Replaces the step's static lead sentence. Step 2 needs it because its
    * caption depends on whether the family already has a list, which a fixed
    * `STEP_LEAD_KEY` entry cannot express. Pass `null` to show no lead line at
-   * all (step 1, MIGRATION.md §9b: that sentence moved into the "Why do we ask
-   * for this?" popover instead of sitting under the heading).
+   * all (step 1: that sentence lives in the "Why do we ask for this?" popover
+   * instead of under the heading).
    */
   lead?: React.ReactNode | null;
   leadTestId?: string;
@@ -69,31 +60,20 @@ export function StepPage({
 }
 
 /**
- * The last step this document rendered.
- *
- * Module scope, deliberately: it has to survive the unmount of one step page
- * and the mount of the next, which is exactly what a React ref or state cannot
- * do. A full page load resets it, which is the distinction that matters — see
- * below.
+ * The last step this document rendered. Module scope so it survives one step
+ * page's unmount and the next's mount (a ref cannot); a full page load resets
+ * it, which is the point.
  */
 let renderedSlug: StepSlug | null = null;
 
 /**
- * Move focus to the step's `<h1>` after a step change (MIGRATION.md §7, Phase 6
- * "focus order").
+ * Move focus to the step's `<h1>` after a step change, so a screen reader is
+ * not left on a button the client-side router just removed.
  *
- * The wizard is a client-side router: pressing Continue or Back replaces the
- * page under a shell that never unmounts, so without this the focused element
- * is a button that no longer exists. A screen reader then announces nothing at
- * all, and the next Tab starts over from the top of the document.
- *
- * A *first* load must not steal focus — the family has not navigated anywhere,
- * and hijacking focus on arrival is its own bug — which is why the trigger is
- * "the step changed since the last one this document rendered", not "this
- * component mounted". Comparing slugs rather than counting mounts also makes it
- * idempotent under React's development double-invoke, and it leaves the locale
- * switcher alone: `/es/list` and `/en/list` are the same step, so switching
- * language keeps the family where they were.
+ * Triggers on "the slug changed since the last render of this document", not on
+ * mount: a first load must not steal focus, the check is idempotent under
+ * React's dev double-invoke, and a locale switch (`/es/list` → `/en/list`) is
+ * the same step so focus stays put.
  */
 function useStepHeadingFocus(
   slug: StepSlug,

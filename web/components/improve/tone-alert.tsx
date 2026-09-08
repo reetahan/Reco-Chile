@@ -12,11 +12,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 
 /**
- * The prototype's four Streamlit callout colours, which the risk badges of
- * MIGRATION.md §4.4 reuse: `st.success` / `st.warning` / `st.error` / `st.info`.
+ * Four callout tones, shared with the recommendation risk badges:
+ * success / warning / error / info.
  *
  * shadcn's `Alert` only ships `default` and `destructive`, and the theme
- * (`app/globals.css`, carried over from `.streamlit/config.toml`) defines no
+ * (`app/globals.css`) defines no
  * success or warning token — the palette is deliberately near-monochrome. The
  * green and amber are therefore raw Tailwind palette colours, used here and in
  * `student-step.tsx` for the same reason. Red is the theme's `--destructive`.
@@ -76,7 +76,7 @@ export function ToneAlert({
   return (
     <Alert
       // The colour is the message here, so it is also exposed as data for the
-      // parity assertions of MIGRATION.md §6 ("badge colour boundaries
+      // parity assertions ("badge colour boundaries
       // identical") — a class-name assertion would break on a restyle.
       data-tone={tone}
       className={cn("px-3 py-2.5", TONE_CLASS[tone], className)}

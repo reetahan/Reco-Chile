@@ -76,8 +76,8 @@ export interface paths {
      * Get Programs
      * @description Programs in mapping order (region, rbd, program code), filtered and paged.
      *
-     *     Filter semantics are data_loading.program_matches_filters, so the API and
-     *     the prototype's filter panel can never drift apart.
+     *     Filter semantics are ``data_loading.program_matches_filters``, so the API
+     *     and the web filter panel can never drift apart.
      */
     get: operations["get_programs_programs_get"];
     put?: never;
@@ -116,7 +116,7 @@ export interface paths {
     put?: never;
     /**
      * Recommend
-     * @description Suggest acceptable programs to append, with the same weights as the prototype.
+     * @description Suggest acceptable programs to append.
      *
      *     The current unmatched risk is recomputed server-side from the submitted
      *     list; a client-supplied risk would let the frontend steer the ranking.

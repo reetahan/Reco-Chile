@@ -4,18 +4,17 @@ import en from "../messages/en";
 import es from "../messages/es";
 
 /**
- * Phase 3, step 1 — the Student step (MIGRATION.md §4.1 row 1).
+ * The Student step.
  *
  * `wizard.spec.ts` already covers the shell (routing, the welcome page, the
  * guard, the stepper, the locale switch). What is under test here is the step
- * itself: the live RUN/IPE pre-check, the copy MIGRATION.md §9b item 3 stripped
- * of jargon, and the welcome answer — including that it survives a reload
- * while the identifier does not (the privacy line of §4.2/§4.5). The
- * research-tool disclaimer lives on its own page now (`DisclaimerScreen`,
+ * itself: the live RUN/IPE pre-check, the jargon-free copy, and the welcome
+ * answer — including that it survives a reload while the identifier does not.
+ * The research-tool disclaimer lives on its own page now (`DisclaimerScreen`,
  * covered by `e2e/wizard.spec.ts`), the "about this estimate" caveat is gone
  * from this step, and the ties switch moved to step 2 (`e2e/list.spec.ts`).
  *
- * Since §9b the step is only reachable through the welcome page, so every test
+ * The step is only reachable through the welcome page, so every test
  * enters through `openStudent()` rather than deep-linking `/es/student`.
  *
  * Expected copy is read from `messages/{es,en}/*.json`, never frozen here, so a
@@ -23,8 +22,8 @@ import es from "../messages/es";
  */
 
 /** `sessionStorage` key of the zustand store (`WIZARD_PERSIST_KEY`). Written
- *  out rather than imported: the Playwright runner does not resolve the `@/`
- *  alias the store module uses. */
+ * out rather than imported: the Playwright runner does not resolve the `@/`
+ * alias the store module uses. */
 const PERSIST_KEY = "reco-chile.wizard";
 
 /** A valid RUN — body 12345678, modulo-11 check digit 5. */
@@ -63,7 +62,7 @@ function validCopy(locale: Locale, kind: "RUN" | "IPE"): string {
 
 /**
  * Through the welcome page and the "Before we continue" consent page into
- * step 1 — the only way in since §9b item 2.
+ * step 1.
  */
 async function openStudent(
   page: Page,
@@ -106,7 +105,7 @@ test.describe("step 1 — identify the student", () => {
   }) => {
     await openStudent(page);
 
-    await expect(feedback(page)).toHaveCount(0);
+    await expect(feedback(page)).not.toBeVisible();
     await expect(continueButton(page)).toBeDisabled();
 
     await identifierInput(page).fill(BAD_CHECK_DIGIT);
@@ -153,7 +152,7 @@ test.describe("step 1 — identify the student", () => {
     await expect(content).toContainText(copy("es", "student.why.body"));
     await expect(content).toContainText(copy("es", "student.why.privacy"));
 
-    // §9b item 3: no "MTB tie-break calculation", and the OpenStreetMap note
+    // no "MTB tie-break calculation", and the OpenStreetMap note
     // belongs to step 4, where the address is actually used.
     await expect(content).not.toContainText(/MTB/i);
     await expect(content).not.toContainText(/OpenStreetMap/i);
@@ -179,7 +178,7 @@ test.describe("step 1 — mode controls", () => {
     await identifierInput(page).fill(VALID_RUN);
     await expect(continueButton(page)).toBeEnabled();
 
-    // Privacy (§4.2, §4.5): the welcome answer is persisted, the identifier is
+    // Privacy: the welcome answer is persisted, the identifier is
     // never written anywhere.
     const stored = await persisted(page);
     expect(stored).toContain('"listExists":false');
@@ -190,11 +189,11 @@ test.describe("step 1 — mode controls", () => {
     await page.reload();
 
     // The answer is what keeps the step reachable at all after a reload
-    // (§9b item 2) — nothing on this step echoes it back any more.
+    // — nothing on this step echoes it back any more.
     await expect(page).toHaveURL(/\/es\/student$/);
 
     await expect(identifierInput(page)).toHaveValue("");
-    await expect(feedback(page)).toHaveCount(0);
+    await expect(feedback(page)).not.toBeVisible();
     await expect(continueButton(page)).toBeDisabled();
   });
 });

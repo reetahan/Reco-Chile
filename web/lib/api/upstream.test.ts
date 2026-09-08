@@ -7,7 +7,7 @@ import {
   trustsForwardedFor,
   UNKNOWN_CLIENT_ADDRESS,
   upstreamBaseUrl,
-} from "./proxy";
+} from "./upstream";
 
 /** Env of a deployment that sits behind a proxy it controls. */
 const TRUSTING_ENV = { TRUST_PROXY: "1" };
@@ -33,7 +33,7 @@ function stubFetch(response: Response | Error) {
 describe("upstreamBaseUrl", () => {
   it("falls back to the documented dev origin", () => {
     expect(upstreamBaseUrl({})).toBe(DEFAULT_UPSTREAM_BASE_URL);
-    expect(upstreamBaseUrl({ API_BASE_URL: "   " })).toBe(
+    expect(upstreamBaseUrl({ API_BASE_URL: " " })).toBe(
       DEFAULT_UPSTREAM_BASE_URL,
     );
   });
@@ -91,7 +91,7 @@ describe("trustsForwardedFor", () => {
     expect(trustsForwardedFor({})).toBe(false);
     expect(trustsForwardedFor({ TRUST_PROXY: "1" })).toBe(true);
     // Tolerate the whitespace a compose file or a .env line can leave behind.
-    expect(trustsForwardedFor({ TRUST_PROXY: "  1  " })).toBe(true);
+    expect(trustsForwardedFor({ TRUST_PROXY: " 1 " })).toBe(true);
     for (const value of ["", "0", "true", "yes", "on", "11"]) {
       expect(trustsForwardedFor({ TRUST_PROXY: value })).toBe(false);
     }
@@ -116,10 +116,7 @@ describe("clientAddress", () => {
       clientAddress(requestWith("198.51.100.1, 203.0.113.7"), TRUSTING_ENV),
     ).toBe("203.0.113.7");
     expect(
-      clientAddress(
-        requestWith("  198.51.100.1 ,  203.0.113.7  "),
-        TRUSTING_ENV,
-      ),
+      clientAddress(requestWith(" 198.51.100.1 , 203.0.113.7 "), TRUSTING_ENV),
     ).toBe("203.0.113.7");
   });
 
@@ -127,7 +124,7 @@ describe("clientAddress", () => {
     expect(clientAddress(requestWith(), TRUSTING_ENV)).toBe(
       UNKNOWN_CLIENT_ADDRESS,
     );
-    expect(clientAddress(requestWith("   "), TRUSTING_ENV)).toBe(
+    expect(clientAddress(requestWith(" "), TRUSTING_ENV)).toBe(
       UNKNOWN_CLIENT_ADDRESS,
     );
     expect(clientAddress(requestWith(" , , "), TRUSTING_ENV)).toBe(
@@ -285,7 +282,7 @@ describe("proxyRequest", () => {
       { baseUrl: "http://localhost:8000", fetch: down.doFetch },
     );
 
-    // MIGRATION.md §4.5: the RUN/IPE and the home address never reach a log.
+    // The RUN/IPE and the home address never reach a log.
     for (const spy of [log, info, warn, error, debug]) {
       expect(spy).not.toHaveBeenCalled();
     }
@@ -379,7 +376,7 @@ describe("proxyRequest", () => {
       "content-type",
       "x-forwarded-for",
     ]);
-    // The RUN never leaves the body for a header (MIGRATION.md §4.5).
+    // The RUN never leaves the body for a header.
     expect(JSON.stringify([...forwarded])).not.toContain(RUN);
   });
 });

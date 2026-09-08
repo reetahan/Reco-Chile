@@ -53,7 +53,7 @@ LOGGER = logging.getLogger(__name__)
 
 # Placeholder emitted in the "School" column when a program carries no school
 # name. It is a *code*, not user-facing copy: this module must stay
-# language-free (MIGRATION.md Phase 1), so the value is the English i18n key
+# language-free, so the value is the English i18n key
 # and the presentation layer translates it (`web/`, through `enums.*`).
 SCHOOL_NAME_UNAVAILABLE = "School name unavailable"
 
@@ -110,7 +110,7 @@ class CandidateRiskCache:
     ``candidate_portfolio_metrics`` is the expensive part (one MTB hash plus one
     hypergeometric availability per candidate). Passing an explicit cache keeps
     the engine free of any framework-owned global state: the API creates one per
-    request, the Streamlit UI gets a fresh one per rerun.
+    request.
     """
 
     __slots__ = ("_entries",)

@@ -1,14 +1,14 @@
 /**
  * One localized sentence for a failed API call on step 4.
  *
- * The contract (MIGRATION.md §3) already returns a message localized by the
+ * The contract already returns a message localized by the
  * server from `?lang=`, so that string is preferred verbatim — re-translating
  * it in the browser would fork the wording. Only the two cases the server never
  * produced fall back to the catalogue: a request that never arrived
  * (`network_error`), and a response that carried no envelope at all.
  *
  * The RUN/IPE and the home address are request-side data and never appear in an
- * `ApiError` (§4.5), so this is safe to render as-is.
+ * `ApiError`, so this is safe to render as-is.
  */
 import { ApiError, NETWORK_ERROR_KEY, UNEXPECTED_ERROR_KEY } from "@/lib/api";
 

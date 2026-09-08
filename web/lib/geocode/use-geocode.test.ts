@@ -36,11 +36,11 @@ function attempt(overrides: Partial<GeocodeAttempt> = {}): GeocodeAttempt {
 }
 
 describe("normalizeAddress", () => {
-  it("collapses whitespace like the prototype's ' '.join(x.strip().split())", () => {
-    expect(normalizeAddress("  Av.   Siempre \n Viva 742 ")).toBe(
+  it("collapses whitespace like Python's ' '.join(x.strip().split())", () => {
+    expect(normalizeAddress(" Av. Siempre \n Viva 742 ")).toBe(
       "Av. Siempre Viva 742",
     );
-    expect(normalizeAddress("   ")).toBe("");
+    expect(normalizeAddress(" ")).toBe("");
   });
 });
 
@@ -56,12 +56,12 @@ describe("hasUsableCoordinates", () => {
 describe("geocodeFeedback", () => {
   it("is idle before any lookup and for an empty field", () => {
     expect(geocodeFeedback(null, "anything")).toEqual({ kind: "idle" });
-    expect(geocodeFeedback(attempt(), "   ")).toEqual({ kind: "idle" });
+    expect(geocodeFeedback(attempt(), " ")).toEqual({ kind: "idle" });
   });
 
   it("confirms an exact address match", () => {
     expect(
-      geocodeFeedback(attempt(), " Av.  Siempre Viva 742, Santiago "),
+      geocodeFeedback(attempt(), " Av. Siempre Viva 742, Santiago "),
     ).toEqual({
       kind: "confirmed",
       address: "Av. Siempre Viva 742, Santiago, Chile",
@@ -120,7 +120,7 @@ describe("geocodeFeedback", () => {
 
   it("asks for a fresh lookup once the field no longer matches", () => {
     // The coordinates on file describe a different string, so showing them as
-    // confirmed would be a lie — `ui_recommendations.py` makes the same check.
+    // confirmed would be a lie — the API makes the same check.
     expect(geocodeFeedback(attempt(), "Otra calle 1, Santiago")).toEqual({
       kind: "changed",
     });

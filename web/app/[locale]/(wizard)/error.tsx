@@ -12,23 +12,15 @@ import {
 } from "@/components/ui/alert";
 
 /**
- * Error boundary for the wizard route group (MIGRATION.md §9, Phase 2 leftover
- * "`error.tsx` under `(wizard)`").
+ * Error boundary for the wizard route group. Next wraps a segment's *children*,
+ * so this covers the four step pages and their API calls but not the
+ * `fetchMeta()` in `(wizard)/layout.tsx` — an unreachable FastAPI at layout
+ * time bubbles past here.
  *
- * Scope: Next wraps a segment's *children*, not the segment's own layout, so
- * this covers the four step pages and everything they render — the `/simulate`,
- * `/programs`, `/recommend` and `/geocode` calls of Phases 3–5 — but not the
- * `fetchMeta()` that `(wizard)/layout.tsx` awaits. An unreachable FastAPI at
- * layout time still bubbles past this boundary; catching that needs an
- * `error.tsx` one segment up, which is a separate decision because it would
- * also have to render without the wizard chrome.
- *
- * PRIVACY (MIGRATION.md §4.5): the error is never rendered and never logged.
- * `error.message` may carry an upstream URL, a query string or a serialized
- * request, and requests to `/simulate`, `/recommend` and `/geocode` carry the
- * RUN/IPE and the family's home address. Only a fixed sentence is shown, plus
- * `error.digest` — an opaque hash Next generates so a server-side log line can
- * be found without the family ever reading the cause.
+ * PRIVACY: `error.message` can carry an upstream URL or a serialized request
+ * body (RUN/IPE, home address), so the error is never rendered or logged. Only
+ * a fixed sentence is shown, plus `error.digest` for correlating a server log
+ * line.
  *
  * The locale layout above stays mounted, so `NextIntlClientProvider`, the
  * header and the language switcher are still there and the copy is localized.

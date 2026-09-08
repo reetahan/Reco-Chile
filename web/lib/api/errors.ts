@@ -2,14 +2,14 @@
  * The v1 error envelope and the one error type the client ever throws.
  *
  * The FastAPI adapter answers every handled failure with a *bare*
- * `{error_key, message, params}` body (MIGRATION.md §3) — not FastAPI's
+ * `{error_key, message, params}` body — not FastAPI's
  * default `{"detail": ...}` wrapper. `message` is already localized by the
  * server from `?lang=`; `error_key` is a stable English/snake_case code the
  * UI may special-case. Callers render `message` and never build their own.
  *
  * Privacy: an ApiError carries the *response* only. Request bodies (which
  * contain the RUN/IPE) are never attached to it, never stringified into
- * `message`, and never logged — same posture as MIGRATION.md §4.5.
+ * `message`, and never logged.
  */
 
 /** Body shape of a handled API failure. */
@@ -66,10 +66,10 @@ function asParams(value: unknown): Record<string, unknown> {
  * Read an envelope out of an already-parsed response body.
  *
  * Accepts three shapes, in order of preference:
- *   1. the contract's bare `{error_key, message, params}`;
- *   2. `{detail: {error_key, message, params}}` — what FastAPI would emit if
- *      the bare-envelope exception handler in `api.py` were ever bypassed;
- *   3. `{detail: "some string"}` — Starlette's own 404/405/rate-limit bodies.
+ * 1. the contract's bare `{error_key, message, params}`;
+ * 2. `{detail: {error_key, message, params}}` — what FastAPI would emit if
+ * the bare-envelope exception handler in `api.py` were ever bypassed;
+ * 3. `{detail: "some string"}` — Starlette's own 404/405/rate-limit bodies.
  * Anything else yields `null` and the caller falls back to a generic message.
  */
 export function parseErrorEnvelope(body: unknown): ApiErrorEnvelope | null {

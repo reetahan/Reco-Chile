@@ -2,7 +2,7 @@
 
 /**
  * "Some selected programs use estimated historical calibration values." — the
- * `st.info` + "What does this mean?" expander `app.py` shows under the wish
+ * The "What does this mean?" notice shown under the wish
  * list whenever a selected program carries `calibration_imputed`.
  *
  * Purely presentational: whether any selected program is imputed is decided by

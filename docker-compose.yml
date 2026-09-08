@@ -1,5 +1,5 @@
-# Local and deployment parity for the two services of docs/MIGRATION.md §2:
-# FastAPI (the engine) and Next.js (the wizard), on one private network.
+# The two services on one private network: FastAPI (the engine) and Next.js
+# (the wizard).
 #
 #   docker compose up --build          # http://localhost:3000/es/student
 #   docker compose down
@@ -7,7 +7,7 @@
 # Only the web service publishes a port. The Python service is reachable at
 # http://api:8000 from inside the network and nowhere else: the browser always
 # talks to the Next.js proxy on the same origin, which is what keeps the
-# RUN/IPE first-party and makes CORS unnecessary (docs/MIGRATION.md §2, §4.5).
+# RUN/IPE first-party and makes CORS unnecessary.
 
 services:
   api:

@@ -38,7 +38,7 @@ vi.mock("@/i18n/navigation", () => ({
 }));
 
 /**
- * Step 1's wiring: every control writes the store slice MIGRATION.md §4.2 says
+ * Step 1's wiring: every control writes the store slice it should
  * it owns, and the identifier's live pre-check picks the right message.
  *
  * The Spanish catalogue is used verbatim — the assertions compare against
@@ -83,7 +83,7 @@ describe("StudentStep — identifier field", () => {
     expect(input).toHaveValue("");
     expect(input).not.toHaveAttribute("aria-invalid");
     expect(input).not.toHaveAttribute("aria-describedby");
-    expect(screen.queryByTestId("student-id-feedback")).toBeNull();
+    expect(screen.getByTestId("student-id-feedback")).not.toBeVisible();
   });
 
   it("links the feedback line to the input once there is one to show", async () => {
@@ -97,7 +97,7 @@ describe("StudentStep — identifier field", () => {
     expect(document.getElementById("student-id-feedback")).not.toBeNull();
   });
 
-  it("keeps the identifier out of autofill and spellcheck (§4.5)", () => {
+  it("keeps the identifier out of autofill and spellcheck", () => {
     renderStep();
 
     const input = screen.getByLabelText(copy.idLabel);
@@ -152,7 +152,7 @@ describe("StudentStep — identifier field", () => {
   });
 });
 
-describe("StudentStep — the welcome answer (§9b item 2)", () => {
+describe("StudentStep — the welcome answer", () => {
   it("no longer asks the question, and no longer echoes the answer either", () => {
     renderStep();
 
@@ -170,7 +170,7 @@ describe("StudentStep — the welcome answer (§9b item 2)", () => {
 });
 
 describe("StudentStep — standing copy", () => {
-  it("keeps jargon out of the identifier copy (§9b item 3)", () => {
+  it("keeps jargon out of the identifier copy", () => {
     renderStep();
 
     // No "modulo-11 check digit", no "MTB", no OpenStreetMap on this step.

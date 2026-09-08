@@ -94,7 +94,7 @@ describe("buildRecommendationRequest", () => {
   it("builds the full body", () => {
     expect(
       buildRecommendationRequest({
-        studentId: "  12.345.678-5  ",
+        studentId: " 12.345.678-5 ",
         wishes: [wish(), wish({ programId: "9:1" })],
         maxRecommendations: 7,
         home: geocode(),

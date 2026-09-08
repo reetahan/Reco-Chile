@@ -3,15 +3,11 @@
   "current": {
     "title": "Lista de preferencias actual",
     "empty": "Todavía no has agregado programas. Agrega arriba tu primera preferencia.",
-    "count": "{n} programa(s) seleccionado(s)",
-    "useBuilder": "Usa el editor de abajo para ingresar directamente tu lista actual."
+    "count": "{n} programa(s) seleccionado(s)"
   },
   "order": {
-    "strictHint": "Ingresa los programas en orden estricto. El primer programa es la opción mejor clasificada, y la probabilidad final de cada opción inferior depende de no obtener las opciones anteriores.",
     "preferenceHint": "Busca programas, agrégalos y ordénalos por preferencia",
-    "reorderHint": "Usa ↑ y ↓ para reordenar tu ranking estricto.",
-    "howTitle": "¿Cómo se deben ingresar las preferencias?",
-    "howBody": "Orden estricto significa que cada programa tiene un ranking preciso. Las clases de equivalencia permiten que varios programas compartan el mismo grupo de preferencia cuando los consideras empatados."
+    "reorderHint": "Usa ↑ y ↓ para reordenar tu ranking estricto."
   },
   "ties": {
     "label": "Todavía no he decidido el orden exacto entre algunos programas",
@@ -41,11 +37,9 @@
   },
   "notices": {
     "imputedTitle": "Algunos programas seleccionados usan valores históricos de calibración estimados.",
-    "imputedShort": "Estimación menos confiable: al menos un programa seleccionado usa valores de calibración 2024 imputados por promedio.",
     "imputedBody": "No había observaciones históricas completas para al menos un programa seleccionado, por lo que el modelo usa un valor imputado de 2024. Interpreta esas estimaciones con especial cautela.",
     "removed": "Algunos programas de la lista actual ya no están disponibles en los datos cargados y fueron eliminados: {programs}",
     "recommendationsAdded": "Se agregaron {n} programa(s) recomendado(s) al final de la lista. Revisa las prioridades de los nuevos programas y vuelve a analizar la lista.",
-    "duplicate": "Ese programa ya está en la lista.",
     "maxWishes": "La lista no puede tener más de {max} programas.",
     "imputedWhat": "¿Qué significa esto?"
   }

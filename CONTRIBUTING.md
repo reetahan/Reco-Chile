@@ -1,6 +1,6 @@
-# CLAUDE.md
+# Contributing to Reco Chile
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Conventions for working in this repository, including the frontend style guide.
 
 ## What this is
 
@@ -8,7 +8,7 @@ Reco Chile estimates a student's assignment probabilities in Chile's *Sistema de
 Admisión Escolar* (SAE). Three layers, one direction of dependency:
 
 - **`sae_app/`** — the Python calculation engine. The source of truth for every
-  number. Streamlit-free.
+  number. No UI dependency of any kind.
 - **`api.py`** — a thin FastAPI adapter over the engine. The only backend.
 - **`web/`** — a Next.js (App Router) + shadcn/ui wizard. It formats and
   explains; **it never computes a probability**. Thresholds and option lists
@@ -16,25 +16,8 @@ Admisión Escolar* (SAE). Three layers, one direction of dependency:
 
 `README.md` documents the risk model (MTB hash → priority-adjusted rank →
 hypergeometric availability → cumulative assignment probability). Read it before
-touching `mtb_engine.py`.
-
-### The migration is done and Streamlit is gone
-
-`app.py`, `sae_app/ui_*`, `sae_app/session_state.py`, `.streamlit/` and the
-`streamlit` dependency were deleted after the cutover. There is no second UI and
-no parity reference — do not reintroduce either, and do not add an
-`import streamlit` anywhere. CI enforces this: it imports `api` with the
-`streamlit` module blocked.
-
-`docs/MIGRATION.md` is kept as **historical context only**. Its API contract
-(§3), wizard and state design (§4) and product-feedback record (§9b) still
-describe the app accurately, and code comments across `sae_app/`, `api.py` and
-`web/` cite those section numbers — those references say `MIGRATION.md`
-unqualified and mean that file. What is *no longer* true is its process framing:
-there is no active phase and nothing is gated on it. Do not plan work out of it.
-
-Comments that mention `app.py` or `ui_*` describe where a behaviour came from.
-They are provenance, not a live reference — the code they name no longer exists.
+touching `mtb_engine.py`. `docs/architecture.md` is the wire contract and the
+wizard state model.
 
 ## Commands
 
@@ -83,9 +66,8 @@ numpy 2.5.2 / scipy 1.18.0 on Python 3.12.13.
 
 ## Frontend style guide
 
-These are product decisions made *after* the migration, by reviewing the running
-app. They override prototype parity: where this section and anything
-`docs/MIGRATION.md` says about copy or layout disagree, this section wins. When
+These are product decisions made by reviewing the running app. Where this section
+and `docs/architecture.md` disagree about copy or layout, this section wins. When
 adding or editing any family-facing string, check it against all of them.
 
 ### Voice
@@ -109,8 +91,8 @@ adding or editing any family-facing string, check it against all of them.
    sentence appears twice on a screen, delete one.
 5. **Show the answer, not the method.** Step 3 is one box: the most likely
    program, its location, which preference it is, the estimated chance, and a
-   one-line caveat. Everything else the prototype showed there was removed on
-   purpose (`components/result/result-step.tsx` documents exactly what and why).
+   one-line caveat. Nothing else belongs there — see
+   `docs/architecture.md`, "Product decisions that shape the UI".
 
 ### Layout of information
 
@@ -171,8 +153,8 @@ adding or editing any family-facing string, check it against all of them.
   persisted** — no `localStorage`/`sessionStorage`, no URL params. Only
   `wishes`, `listExists`, `useEquivalenceClasses`, `disclaimerAcknowledged` and
   `filters` go to `sessionStorage`.
-- The browser reaches FastAPI **only** through the proxy route handler
-  `web/app/api/[...path]/route.ts` (logic in `lib/api/proxy.ts`). Never
+- The browser reaches FastAPI **only** through the route handler
+  `web/app/api/[...path]/route.ts` (logic in `lib/api/upstream.ts`). Never
   hard-code the Python origin in client code, and **never log a request body**
   there — bodies carry the RUN/IPE and the home address.
 - `lib/api/openapi.json` and `lib/api/schema.d.ts` are generated, never
@@ -200,12 +182,11 @@ HTTP callers — `web/` included — never see labels except as `program_label`,
 
 ### Caching
 
-`sae_app/cache.py` replaces Streamlit's `@st.cache_data` with plain-stdlib
-memoisation. The CSV loaders are keyed on **file bytes**, not paths — that is
-why `load_calibration` reads and passes the bytes of all four CSVs explicitly.
-Geocoding uses a TTL cache. Recommendation candidate metrics use a per-request
-`CandidateRiskCache`; its key deliberately excludes the student identifier —
-keep it that way.
+`sae_app/cache.py` is plain-stdlib memoisation. The CSV loaders are keyed on
+**file bytes**, not paths — which is why `load_calibration` reads and passes the
+bytes of all four CSVs explicitly. Geocoding uses a TTL cache. Recommendation
+candidate metrics use a per-request `CandidateRiskCache`; its key deliberately
+excludes the student identifier — keep it that way.
 
 ### i18n contract
 
@@ -271,10 +252,9 @@ raises `RuntimeError`, so uvicorn refuses to start on bad data.
   of the stack).
 - `tests/golden_runner.py` is the single implementation of the calling
   convention the fixtures were frozen at, shared by `tests/generate_golden.py`
-  and the golden tests. It deliberately preserves the prototype's convention —
-  `api.py` reaching the same numbers by a different path is the point. When the
-  engine's calling convention changes, update the runner — **never the
-  fixtures**.
+  and the golden tests. `api.py` reaching the same numbers by a different path is
+  the point. When the engine's calling convention changes, update the runner —
+  **never the fixtures**.
 - Regenerating `tests/fixtures/golden/` means the numbers the product shows a
   family changed. It needs a deliberate decision and its own commit, with a
   message saying why (see the README in that directory).

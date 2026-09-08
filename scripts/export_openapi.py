@@ -2,7 +2,7 @@
 """Export the FastAPI schema to web/lib/api/openapi.json.
 
 The committed schema is the contract the TypeScript client is generated from
-(MIGRATION.md §3): ``openapi-typescript`` reads this file, so regenerating it
+: ``openapi-typescript`` reads this file, so regenerating it
 is a build step, never a manual edit. ``tests/test_api_contract.py`` fails when
 the committed file drifts from what ``api.app`` actually serves.
 

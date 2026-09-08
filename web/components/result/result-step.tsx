@@ -1,18 +1,16 @@
 "use client";
 
 /**
- * Step 3 — review the result (MIGRATION.md §4.1, Phase 4; reshaped by §9b).
+ * Step 3 — review the result.
  *
  * The step runs `/simulate` on entry whenever the stored result is stale, then
  * renders exactly two things:
  *
- *   the outcome box (most likely school, its location, which preference it is,
- *     the estimated chance, and the historical-data caveat)
- *   -> the finish / improve choice
+ * the outcome box (most likely school, its location, which preference it is,
+ * the estimated chance, and the historical-data caveat)
+ * -> the finish / improve choice
  *
- * Product feedback round 1 (§9b, items 5–6) had already removed the
- * attention-level alerts and their thresholds. Round 2 removes everything that
- * remained below the headline: the overall assignment figure and unmatched
+ * Earlier designs showed attention-level alerts and, below the headline, the overall assignment figure and unmatched
  * risk, the outcome list, the per-preference family table, the equivalence
  * sensitivity block and the detailed calculation. The page now answers one
  * question — where am I most likely to end up, and how likely is that.
@@ -86,7 +84,7 @@ function ResultSkeleton() {
 /**
  * A failed `/simulate`. The message is already localized — either from the
  * local catalogue for a known `error_key` (the over-cap 422 among them) or
- * from the API's own `message` — and never contains the request body (§4.5).
+ * from the API's own `message` — and never contains the request body.
  */
 function SimulationErrorAlert({
   error,
@@ -121,7 +119,7 @@ function SimulationErrorAlert({
   );
 }
 
-/** `app.py`'s two "unlock the analysis" captions. */
+/** The two "unlock the analysis" captions. */
 function MissingInputNotice({
   hasStudentId,
   hasWishes,

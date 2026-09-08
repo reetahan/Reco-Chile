@@ -1,12 +1,11 @@
 /**
  * The `/simulate` request body, built from the wizard store.
  *
- * Pure and Streamlit-free equivalent of what `app.py` assembles before calling
- * the engine: the list in its current order, the five flags per wish, and — in
- * ties mode only — the preference group. In strict mode `equivalence_group` is
- * omitted entirely, which the contract defines as "each wish is its own group
- * equal to its position", i.e. mathematically identical to strict ranking
- * (MIGRATION.md §2.1, `api.py` docstring).
+ * Assembles what the engine needs before the simulation runs: the list in its
+ * current order, the five flags per wish, and — in ties mode only — the
+ * preference group. In strict mode `equivalence_group` is omitted entirely,
+ * which the contract defines as "each wish is its own group equal to its
+ * position", i.e. mathematically identical to strict ranking.
  */
 
 import type { SimulationRequest, WishItem } from "@/lib/api/types";
@@ -53,8 +52,8 @@ export function buildSimulationRequest(
   };
 }
 
-/** Can this list be simulated at all? Mirrors `can_run_simulation` in `app.py`
- *  ("Enter the student's RUN/IPE…" / "Add at least one program…"). */
+/** Can this list be simulated at all? Mirrors the engine's own precondition
+ * ("Enter the student's RUN/IPE…" / "Add at least one program…"). */
 export function canSimulate(inputs: SimulationInputs): boolean {
   return inputs.studentId.trim() !== "" && inputs.wishes.length > 0;
 }

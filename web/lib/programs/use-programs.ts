@@ -1,22 +1,22 @@
 "use client";
 
 /**
- * Program lookup hooks for step 2 (MIGRATION.md §4.1 row 2).
+ * Program lookup hooks for step 2.
  *
  * Two jobs, both of them thin:
  *
  * - `useProgramSearch` is the debounced server search behind the combobox and
- *   behind the filter panel's matching count. Every filter decision is made by
- *   FastAPI (`program_matches_filters`), so the browser can never disagree with
- *   the engine about which programs exist.
+ * behind the filter panel's matching count. Every filter decision is made by
+ * FastAPI (`program_matches_filters`), so the browser can never disagree with
+ * the engine about which programs exist.
  * - `useProgram` / `usePrograms` resolve a `program_id` to its display fields.
- *   The store holds only ids (§10: labels change when the data or the labelling
- *   rules change, ids do not), so every card, details sheet and "kept outside
- *   filters" count needs this lookup. Results are memoized in a module-level
- *   map and concurrent callers share one in-flight request, so ten wish cards
- *   asking for the same program issue one HTTP call.
+ * The store holds only ids (labels change when the data or the labelling
+ * rules change, ids do not), so every card, details sheet and "kept outside
+ * filters" count needs this lookup. Results are memoized in a module-level
+ * map and concurrent callers share one in-flight request, so ten wish cards
+ * asking for the same program issue one HTTP call.
  *
- * Privacy (§4.5): nothing here ever sends or logs the RUN/IPE — these are
+ * Privacy: nothing here ever sends or logs the RUN/IPE — these are
  * catalogue reads, and they go through the same-origin `/api` proxy like every
  * other browser call.
  */
@@ -195,11 +195,11 @@ export function useProgramSearch(
 // ---------------------------------------------------------------------------
 
 /** Resolved programs, by `program_id`. Module-level: the catalogue is
- *  immutable for the lifetime of a page load (a data change bumps
- *  `/meta.data_fingerprint` and the family reloads). */
+ * immutable for the lifetime of a page load (a data change bumps
+ * `/meta.data_fingerprint` and the family reloads). */
 const programCache = new Map<string, ProgramSummary>();
 /** Ids the API answered 404 for — remembered so a dropped wish is not
- *  re-requested on every render. */
+ * re-requested on every render. */
 const missingPrograms = new Set<string>();
 /** In-flight requests, so N callers for one id share one round trip. */
 const inFlight = new Map<string, Promise<ProgramSummary | null>>();
@@ -240,7 +240,7 @@ async function loadProgram(
     })
     .catch((cause: unknown) => {
       // 404 is a fact about the data, not a transport failure: the program
-      // disappeared from the calibration files (§4.2 invalidation rules).
+      // disappeared from the calibration files.
       if (ApiError.is(cause) && cause.status === 404) {
         missingPrograms.add(programId);
         return null;

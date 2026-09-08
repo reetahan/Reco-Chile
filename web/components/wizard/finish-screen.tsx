@@ -17,7 +17,7 @@ import { hasFreshSimulation, useWizardStore } from "@/lib/store/wizard";
 import { stepPath, WELCOME_PATH } from "./steps";
 
 /**
- * The completion page — "Finish" from the result step (MIGRATION.md §9b item 6).
+ * The completion page — "Finish" from the result step.
  *
  * It is an ending, not a fifth step: no stepper marker, no Continue, and the
  * only ways on from here are back to the result or a clean start. What it shows
@@ -26,11 +26,11 @@ import { stepPath, WELCOME_PATH } from "./steps";
  *
  * Read-only throughout: the wish list is rendered from the store's wishes with
  * labels resolved through `usePrograms` (the store holds only `program_id`s,
- * §10), and no control on this page can reorder or remove anything.
+ *), and no control on this page can reorder or remove anything.
  *
  * The chance is `1 − unmatched_risk`, formatted by `@/lib/format` exactly like
  * the result step formats it — the engine stays the only source of the number
- * (§0), and this page recomputes nothing but that one subtraction. It is shown
+ *, and this page recomputes nothing but that one subtraction. It is shown
  * only while the stored simulation still matches the current inputs; a stale
  * one would print a number for a list the family has since changed.
  */
@@ -121,7 +121,7 @@ export function FinishScreen() {
                             {program.program_label}
                           </span>
                           {/* Commune and region on every program listing —
-                              §9b item 4: two schools can share a name. Built by
+                              two schools can share a name. Built by
                               the one helper that owns that line, so a blank or
                               `nan` column never prints as " · ". */}
                           <span className="text-xs text-muted-foreground">

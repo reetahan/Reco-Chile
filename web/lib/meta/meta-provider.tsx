@@ -1,8 +1,7 @@
 "use client";
 
 /**
- * `/meta` as React context (MIGRATION.md Phase 2: "/meta loaded in the root
- * layout and exposed via context").
+ * `/meta` as React context.
  *
  * The value is fetched once on the server by `fetchMeta()` and passed down as
  * a plain serializable object; this provider only makes it reachable from the

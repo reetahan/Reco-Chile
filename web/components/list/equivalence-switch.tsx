@@ -16,10 +16,10 @@ import { useWizardStore } from "@/lib/store/wizard";
 const SWITCH_ID = "use-equivalence-classes";
 
 /**
- * The prototype's `st.toggle(t("I have not yet decided the exact order between
- * some programs"))` plus the `st.info` it reveals (`app.py` lines 211-224).
+ * The "I have not yet decided the exact order between some programs" toggle
+ * plus the explanatory note it reveals.
  *
- * Moved here from step 1 to step 2 (MIGRATION.md §9b): it is a fact about how
+ * Moved here from step 1 to step 2: it is a fact about how
  * the *list* gets built and ordered, not about the student, so it now sits
  * alongside the wish list it governs.
  *
@@ -34,7 +34,7 @@ const SWITCH_ID = "use-equivalence-classes";
  * classes") made the control read as jargon. The switch's own on/off state is
  * the readout, and the popover explains what turning it on is for.
  *
- * Flipping the switch is the §4.2 invalidation rule "useEquivalenceClasses
+ * Flipping the switch triggers the invalidation rule "useEquivalenceClasses
  * toggles → wishes kept, groups reset, simulation invalidated"; the store owns
  * it, this component only calls the action.
  */

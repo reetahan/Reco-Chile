@@ -1,21 +1,21 @@
 /**
- * Same-origin proxy to the FastAPI service (MIGRATION.md §2).
+ * Same-origin proxy to the FastAPI service.
  *
  * `/api/<anything>` → `${API_BASE_URL ?? "http://localhost:8000"}/<anything>`,
  * query string included, status and JSON body streamed straight back. All the
- * logic lives in `lib/api/proxy.ts` so it is unit-testable; this file is only
+ * logic lives in `lib/api/upstream.ts` so it is unit-testable; this file is only
  * the Next.js binding.
  *
  * PRIVACY: request bodies (RUN/IPE, home address) are never logged here or in
- * `proxy.ts` — MIGRATION.md §4.5.
+ * `upstream.ts`.
  *
  * Deployment: set `TRUST_PROXY=1` only when a reverse proxy you control always
- * rewrites `X-Forwarded-For`; see `clientAddress` in `proxy.ts` and
+ * rewrites `X-Forwarded-For`; see `clientAddress` in `upstream.ts` and
  * `.env.example`.
  */
-import { proxyRequest } from "@/lib/api/proxy";
+import { proxyRequest } from "@/lib/api/upstream";
 
-// The proxy needs Node's fetch and `process.env.API_BASE_URL`; the Edge
+// The handler needs Node's fetch and `process.env.API_BASE_URL`; the Edge
 // runtime is deprecated in Next 16 anyway.
 export const runtime = "nodejs";
 // Every call depends on the incoming request (query string, body, headers) and

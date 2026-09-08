@@ -25,7 +25,7 @@ pnpm install
 pnpm dev
 ```
 
-Then open <http://localhost:3000/es/student>.
+Then open <http://localhost:3000/es>.
 
 Alternatively, run both in containers:
 
@@ -43,22 +43,21 @@ Full details — Python version pinning, Windows, Docker specifics — are under
 - Compute a deterministic MTB lottery percentile for each school from `SHA-256(RUN/IPE + RBD)`.
 - Account for sibling, priority-student, civil-servant, former-student, and already-enrolled priority flags.
 - Estimate each program's availability and final assignment probability.
-- Display the overall unmatched risk and the most likely outcomes.
+- Estimate the overall chance of assignment and the single most likely outcome.
 - Test every strict ordering compatible with the selected equivalence classes, up to a configurable limit.
 - Recommend similar programs using revealed preferences, geographic proximity, competition, estimated admission safety, and diversity.
 - Geocode an optional Chilean home address and restrict suggestions to a realistic radius.
 - Switch between Spanish and English from the interface.
-- Use progressive, family-facing explanations while keeping MTB ranks, calibration details, and recommendation methodology available on demand.
+- Present results in progressive, family-facing language; the risk model and the recommendation methodology are documented below.
 
 ## Application workflow
 
-1. Enter the student's RUN or IPE and indicate whether the wish list already exists.
-2. Add programs in the family's genuine order of preference. An optional planning toggle can compare undecided internal orders.
+1. On the welcome screen, indicate whether the wish list already exists; acknowledge the disclaimer, then enter the student's RUN or IPE.
+2. Add programs in the family's genuine order of preference. An optional toggle groups programs whose internal order is undecided so every compatible ordering is tested.
 3. Mark every applicable priority for each establishment and analyze the list.
-4. Review the unmatched-risk estimate, the outcomes ordered by probability, and the short family-facing wish table.
-5. Open the optional detail panels to inspect MTB ranks, calibration inputs, assumptions, or equivalence-order sensitivity.
-6. Inspect suggested backup programs, compare the projected risk after appending each one, and add only acceptable options.
-7. Verify priorities for newly added programs and rerun the analysis.
+4. Review the estimated chance of assignment and the single most likely program, named with its commune and region.
+5. Inspect suggested backup programs, compare the projected chance after appending each one, and add only acceptable options.
+6. Verify priorities for newly added programs and rerun the analysis.
 
 The guided program search can filter by:
 
@@ -137,18 +136,15 @@ The estimated unmatched risk is:
 P(unmatched) = product(1 - a_i) for i = 1, ..., k
 ```
 
-The interface distinguishes between:
+The model distinguishes between:
 
 - **Chance if considered:** availability conditional on reaching that wish.
 - **Final chance of assignment:** availability after accounting for every higher-ranked wish.
 
-The current attention thresholds are defined in `sae_app/constants.py`:
-
-- `2.7%` or above: high attention;
-- `0.4%` to below `2.7%`: moderate attention;
-- below `0.4%`: low attention.
-
-These are presentation thresholds, not official SAE cutoffs. They control only the alert message. Estimated outcomes are always ordered by their actual modeled probability, so the alert never changes the likelihood ranking.
+`sae_app/constants.py` also defines soft and hard unmatched-risk thresholds
+(`0.4%` and `2.7%`). The API still returns them, but they are presentation
+values, not official SAE cutoffs, and the current interface does not surface
+them. Estimated outcomes are always ordered by their modeled probability.
 
 ## Equivalence classes
 
@@ -160,11 +156,7 @@ The app enumerates every compatible strict order inside the tied groups. If grou
 m_1! × m_2! × ... × m_g!
 ```
 
-Availability is computed once per program and reused across permutations. The app then reports whether internal ordering changes:
-
-- the most likely assigned school;
-- the final probability attached to that predicted school;
-- the distribution of outcomes across compatible strict orders.
+Availability is computed once per program and reused across permutations. `/simulate` returns an `equivalence_sensitivity` verdict — whether the internal ordering changes the most likely assigned school, only its final probability, or nothing — with the per-order breakdown. (The current interface computes this but does not surface it; it remains part of the API contract.)
 
 Because the same set of programs is used in every variant, the overall unmatched risk is invariant to internal ordering under the current model. Exact enumeration is capped at `10,000` compatible orders by default.
 
@@ -298,7 +290,7 @@ Two processes, in two terminals — the API above, and:
 ```bash
 cd web
 pnpm install
-pnpm dev                                         # http://localhost:3000/es/student
+pnpm dev                                         # http://localhost:3000/es
 ```
 
 The browser only ever talks to the Next.js origin: `web/app/api/[...path]/`
@@ -314,7 +306,7 @@ Two containers — the FastAPI service and the Next.js server — described by
 `docker-compose.yml`:
 
 ```bash
-docker compose up --build       # http://localhost:3000/es/student
+docker compose up --build       # http://localhost:3000/es
 docker compose down
 ```
 
@@ -332,10 +324,9 @@ docker compose down
   becomes one shared bucket. That is stricter than per browser, never looser;
   set both only behind a reverse proxy that rewrites the header itself.
 
-Continuous integration runs the same checks — `pytest`, the check that the
-engine imports with Streamlit blocked, `pnpm
-lint`/`format:check`/`tsc`/`test`/`build`, and Playwright — in
-`.github/workflows/ci.yml`.
+Continuous integration runs the same checks — `pytest`, an engine
+import-isolation check, `pnpm lint`/`format:check`/`tsc`/`test`/`build`, and
+Playwright — in `.github/workflows/ci.yml`.
 
 ## Data files
 
@@ -368,11 +359,11 @@ Reco-Chile/
 ├── Dockerfile.api                 # Container image for the FastAPI service
 ├── docker-compose.yml             # api + web
 ├── README.md
-├── CLAUDE.md                      # Conventions, including the frontend style guide
+├── CONTRIBUTING.md                # Conventions, including the frontend style guide
 ├── .github/workflows/ci.yml       # Python, web, and end-to-end checks
 ├── data/                          # Calibration and program metadata
 ├── docs/
-│   └── MIGRATION.md               # Streamlit → Next.js migration record (historical)
+│   └── architecture.md            # Engine / API / frontend design reference
 ├── scripts/
 │   └── export_openapi.py          # Writes web/lib/api/openapi.json
 ├── tests/                         # pytest: engine goldens and API contract
@@ -394,8 +385,6 @@ Reco-Chile/
 ```
 
 `api.py` intentionally contains only HTTP adaptation. Calculation logic lives in the focused modules under `sae_app/`, which has no UI dependency of any kind — the frontend in `web/` formats and explains, and never computes a number.
-
-Until the migration recorded in `docs/MIGRATION.md`, the interface was a Streamlit app (`app.py` plus `sae_app/ui_*`). It was removed after cutover; the engine is unchanged and still reproduces the golden fixtures generated from it.
 
 ## Privacy and external services
 
@@ -419,3 +408,7 @@ If the app is deployed on a remote server, inputs are necessarily processed by t
 - Recommendations optimize the encoded score and should be treated as options to investigate, not automatic choices.
 
 For research, auditing, or policy use, review the current data sources, calibration assumptions, and model code before interpreting the outputs.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).

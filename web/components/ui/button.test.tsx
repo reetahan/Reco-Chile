@@ -11,8 +11,8 @@ describe("Button", () => {
     ).toBeInTheDocument();
   });
 
-  // Guards the one deliberate edit to the generated component: the prototype's
-  // `buttonRadius = "full"` (.streamlit/config.toml, MIGRATION.md §4.4).
+  // Guards the one deliberate edit to the generated component: every
+  // `rounded-*` is `rounded-full`.
   it("is pill-shaped", () => {
     render(<Button>Analizar</Button>);
     expect(screen.getByRole("button")).toHaveClass("rounded-full");

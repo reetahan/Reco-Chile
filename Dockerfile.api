@@ -34,6 +34,6 @@ EXPOSE 8000
 # ONE worker on purpose. geo.py throttles Nominatim to 1 request/second *per
 # process*, and api.py's per-IP geocode rate limiter is in-process too, so a
 # second worker would double the outbound rate and halve the effectiveness of
-# the limiter (docs/MIGRATION.md §10, §5.6). Scaling out needs shared throttling
-# (Redis) first — do not add --workers here.
+# the limiter. Scaling out needs shared throttling (Redis) first — do not add
+# --workers here.
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

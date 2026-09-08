@@ -12,13 +12,12 @@ import {
 } from "./number";
 
 /**
- * Parity tests for the two Python format specs the prototype prints
- * (MIGRATION.md §6.4: "asserts the rendered percentages equal the fixture
- * values formatted with the same rule (`{:.1%}`)").
+ * Tests for the two Python format specs the API's numbers must match:
+ * `{:.1%}` and `{:,}`.
  *
  * Every expectation below was produced by CPython 3.12 from the same double:
  *
- *   .venv/bin/python -c "print(format(0.5484693677668459, '.1%'))"  -> 54.8%
+ * .venv/bin/python -c "print(format(0.5484693677668459, '.1%'))" -> 54.8%
  */
 
 /** `f"{value:.1%}"` for a spread of golden-fixture probabilities. */
@@ -69,8 +68,8 @@ const PERCENT_CASES: ReadonlyArray<[number, string]> = [
 
 describe("fixedHalfEven", () => {
   /** The shared core: every other helper here and in
-   *  `lib/recommendations/format.ts` rounds through it, so CPython's rule is
-   *  asserted once. Expectations from `format(<value>, '.<n>f')`. */
+   * `lib/recommendations/format.ts` rounds through it, so CPython's rule is
+   * asserted once. Expectations from `format(<value>, '.<n>f')`. */
   it("rounds the exact double, breaking real ties to even", () => {
     expect(fixedHalfEven(6.25, 1)).toBe("6.2");
     expect(fixedHalfEven(6.35, 1)).toBe("6.3"); // 6.34999…, not a tie
@@ -95,7 +94,7 @@ describe("fixedHalfEven", () => {
   it("keeps the sign above the 1e15 short circuit", () => {
     // Past 1e15 there is no rounding decision left, but the sign still has to
     // survive — the branch used to return the absolute value.
-    //   .venv/bin/python -c "print(format(-1e15, '.0f'))" -> -1000000000000000
+    // .venv/bin/python -c "print(format(-1e15, '.0f'))" -> -1000000000000000
     expect(fixedHalfEven(-1e15, 0)).toBe("-1000000000000000");
     expect(fixedHalfEven(-2.5e15, 1)).toBe("-2500000000000000.0");
     expect(fixedHalfEven(1e15, 0)).toBe("1000000000000000");
@@ -152,7 +151,7 @@ describe("formatInt", () => {
 describe("formatBareInt", () => {
   /**
    * The counterpart of `formatInt`: Python's plain `f"{value}"`, which the
-   * prototype uses for every integer printed inside a table (seats, applicants,
+   * used for every integer printed inside a table (seats, applicants,
    * the MTB lottery rank, and `format_display_table`'s Capacity / Estimated MTB
    * rank). No separator, and therefore no locale.
    */
@@ -189,7 +188,7 @@ describe("formatBareInt", () => {
 
 describe("golden fixtures", () => {
   /** Read straight from the committed baseline, so a regenerated fixture with
-   *  different numbers fails here instead of silently passing. */
+   * different numbers fails here instead of silently passing. */
   function golden(name: string): Record<string, unknown> {
     // Relative to the Vitest root (`web/`), not to this file: Vite rewrites
     // `new URL(<literal>, import.meta.url)` into an asset import.
@@ -201,7 +200,7 @@ describe("golden fixtures", () => {
     return JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
   }
 
-  it("renders the strict_04 unmatched risk as the prototype does", () => {
+  it("renders the strict_04 unmatched risk to the fixture value", () => {
     const fixture = golden("strict_04_eight_wishes_scarce");
     const expected = fixture.expected as { unmatched_risk: number };
 
@@ -219,8 +218,8 @@ describe("golden fixtures", () => {
     );
 
     // The two bounds the result step prints for the probability-shift verdict.
-    //   .venv/bin/python -c "print(format(0.7193793134178188, '.1%'),
-    //                              format(0.9900056308153562, '.1%'))"
+    // .venv/bin/python -c "print(format(0.7193793134178188, '.1%'),
+    // format(0.9900056308153562, '.1%'))"
     expect(formatPercent(Math.min(...chances), "es")).toBe("71,9%");
     expect(formatPercent(Math.max(...chances), "es")).toBe("99,0%");
     expect(formatPercent(Math.max(...chances), "en")).toBe("99.0%");

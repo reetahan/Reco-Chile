@@ -2,7 +2,7 @@
 
 /**
  * The program-details list of a wish card — a port of
- * `ui_wish_builder._render_program_details`, same ten rows in the same order:
+ * The program-details table — ten rows, in order:
  * program details, commune, region, program type, school day, PIE, PACE,
  * enrollment fee, monthly fee, religious orientation.
  *
@@ -13,12 +13,12 @@
  *
  * The component renders bare content, no chrome — the caller puts it inside a
  * `Sheet` or a `Popover` and owns the trigger. The store holds only
- * `program_id`s (§4.2), so the row values are fetched here through the shared
+ * `program_id`s, so the row values are fetched here through the shared
  * program cache; a program that has vanished from the calibration data says so
  * instead of rendering ten blanks.
  *
  * Enumerated values are translated through `enums.*`; school, commune and
- * program names are shown verbatim (§4.3). A blank or `nan` column reads
+ * program names are shown verbatim. A blank or `nan` column reads
  * "No information", exactly like `_family_display_value`.
  */
 

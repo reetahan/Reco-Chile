@@ -26,13 +26,13 @@ import { RecommendationCard } from "./recommendation-card";
 import { ToneAlert } from "./tone-alert";
 
 /**
- * Step 4 — improve the preference list (MIGRATION.md §4.1 row 4, Phase 5).
+ * Step 4 — improve the preference list.
  *
- * Feedback round 2 reduced the page to three things, in this order:
+ * The page is three things, in this order:
  *
- *   1. how many suggestions do you want  (a slider, out in the open)
- *   2. improve distance estimates        (the optional home address)
- *   3. the suggestions themselves
+ * 1. how many suggestions do you want (a slider, out in the open)
+ * 2. improve distance estimates (the optional home address)
+ * 3. the suggestions themselves
  *
  * What went: the current-unmatched-risk card, the "adding at the end costs
  * nothing" note, the "How are these programs selected?" collapsible, and the
@@ -44,7 +44,7 @@ import { ToneAlert } from "./tone-alert";
  * opening question, and its default dropped from 5 to 3.
  *
  * Nothing on this page computes a number: `/recommend` returns every figure
- * raw (§3), including `final_chance_if_appended`, which is what each card
+ * raw, including `final_chance_if_appended`, which is what each card
  * shows.
  */
 export function ImproveStep() {
@@ -95,7 +95,7 @@ export function ImproveStep() {
     const existing = new Set(wishes.map((wish) => wish.programId));
     // `selectedVisible` is already in recommendation order, which is the ranking
     // the engine produced — a checkbox records *which* programs were chosen, not
-    // an order the family stated (`ui_recommendations.py` preserves it the same
+    // an order the family stated (preserved the same
     // way).
     const newIds = selectedVisible.filter((id) => !existing.has(id));
 
@@ -104,7 +104,7 @@ export function ImproveStep() {
       return;
     }
 
-    // `MAX_WISHES` is a hard server cap (§3): a longer list is refused by
+    // `MAX_WISHES` is a hard server cap: a longer list is refused by
     // `/simulate`, so the ones that do not fit are dropped here — with the same
     // sentence step 2 shows when the family adds one program too many — instead
     // of being appended into a list that can no longer be analysed. The store
@@ -116,7 +116,7 @@ export function ImproveStep() {
     }
     if (accepted.length === 0) return;
 
-    // §4.2: append, invalidate, "navigate to step 2". The order matters: the
+    // Append, invalidate, navigate to step 2. The order matters: the
     // append invalidates the simulation and instantly locks this step, so the
     // guard is told where the wizard is going *before* the state that would
     // make it redirect elsewhere. `ListStep` clears the flag when it mounts and
@@ -130,9 +130,9 @@ export function ImproveStep() {
 
   const hasResponse = data !== null;
   const showSkeleton = loading && !hasResponse;
-  // `risk_values_missing` in `ui_recommendations.py`: the candidates were
+  // Portfolio-risk values missing: the candidates were
   // scored, but not one of them came back with a conditional chance, which is
-  // what the prototype reads as "the portfolio-risk pass did not run". Same
+  // i.e. "the portfolio-risk pass did not run". Same
   // condition (every value blank, over a non-empty table) and the same warning.
   const riskValuesMissing =
     items.length > 0 &&
@@ -140,7 +140,7 @@ export function ImproveStep() {
 
   return (
     // No lead sentence: it was `improve.methodBody`, the "how are these
-    // programs selected" paragraph, and round 2 asked for the page not to open
+    // programs selected" paragraph, and the page should not open
     // on a block of text. The slider is the first thing now.
     <StepPage slug="improve" lead={null}>
       {/* 1. How many suggestions? The page's opening question, so it is not
@@ -257,7 +257,7 @@ export function ImproveStep() {
 }
 
 /**
- * The three "nothing to suggest" cases of `ui_recommendations.py`, in its order:
+ * The three "nothing to suggest" cases, in order:
  * candidates that could not be evaluated at all beat the distance explanation,
  * which in turn beats the generic scoring message.
  */

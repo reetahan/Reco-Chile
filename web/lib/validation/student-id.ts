@@ -1,28 +1,19 @@
 /**
- * Client-side RUN/IPE pre-check — a display-only mirror of the engine.
+ * Client-side RUN/IPE pre-check — a display-only mirror of
+ * `sae_app/mtb_engine.py`, so the wizard can give inline feedback and gate
+ * "Continue" without a round trip.
  *
- * Ported 1:1 from `sae_app/mtb_engine.py` (`_clean_identifier_input`,
- * `_run_check_digit`, `normalize_run`, `normalize_ipe`,
- * `normalize_student_identifier`) so the wizard can give inline feedback and
- * enable/disable "Continue" without a round trip.
- *
- * THE SERVER REMAINS AUTHORITATIVE. Nothing here is used to compute anything:
- * the identifier is sent to `/simulate` and `/recommend` as typed, the API
- * re-validates it with the Python implementation, and the API's 422
- * `error_key`/`message` is what the user finally sees. If this mirror and the
- * engine ever disagree, the engine wins — keep this file in sync with
- * `mtb_engine.py` (the golden fixtures in `tests/fixtures/golden/identifier_*.json`
- * are asserted against it in `student-id.test.ts`).
- *
- * Privacy: the identifier stays in memory. This module never logs it, never
- * writes it to storage, and never puts it in a URL (MIGRATION.md §4.5).
+ * THE SERVER REMAINS AUTHORITATIVE: the identifier is sent to `/simulate` and
+ * `/recommend` as typed and re-validated in Python; on any disagreement the
+ * engine wins. Keep this in sync with `mtb_engine.py` — `student-id.test.ts`
+ * checks it against the `identifier_*` golden fixtures.
  */
 
 export type StudentIdKind = "run" | "ipe";
 
 /**
- * `empty`       — nothing to validate yet (engine: "Enter the student RUN/IPE …")
- * `format`      — neither a RUN nor an IPE shape (engine: "Invalid RUN/IPE format …")
+ * `empty` — nothing to validate yet (engine: "Enter the student RUN/IPE …")
+ * `format` — neither a RUN nor an IPE shape (engine: "Invalid RUN/IPE format …")
  * `check_digit` — RUN body is fine but the modulo-11 verifier does not match
  */
 export type StudentIdFailureReason = "empty" | "format" | "check_digit";

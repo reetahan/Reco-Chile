@@ -1,4 +1,4 @@
-"""API contract v1 tests (MIGRATION.md §3 and §6.3).
+"""API contract v1 tests.
 
 Every number the HTTP layer returns is compared against the committed golden
 fixtures — the same files ``test_engine_golden.py`` replays through the engine
@@ -611,7 +611,7 @@ def test_simulate_reproduces_equivalence_fixture(client, fixture):
     _assert_close(sensitivity["predicted_chance_min"], min(chances), "predicted_chance_min")
     _assert_close(sensitivity["predicted_chance_max"], max(chances), "predicted_chance_max")
 
-    # The reference order is the first variant, exactly as in app.py.
+    # The reference order is the first variant.
     first = expected_variants[0]
     _assert_close(payload["unmatched_risk"], first["unmatched_risk"], "unmatched_risk")
     assert payload["predicted_outcome"] == first["predicted_outcome"]
@@ -619,7 +619,7 @@ def test_simulate_reproduces_equivalence_fixture(client, fixture):
 
 
 def test_tied_order_reports_only_genuinely_tied_groups(client):
-    """`tied_order` is the structured compact_tied_order_label: ties only."""
+    """`tied_order` is structured and lists genuinely tied groups only."""
     fixture = next(
         item for item in ACCEPTED_EQUIVALENCE_FIXTURES
         if item["name"] == "equiv_01_two_tied_stable_outcome"
@@ -801,7 +801,7 @@ def test_recommend_reports_the_chance_of_the_appended_wish(client, fixture):
     through, so its final assignment probability is
     ``current_unmatched_risk * chance_if_considered`` — the equality
     ``candidate_portfolio_metrics`` documents. It is exposed so ``web/`` can
-    print the number without multiplying two probabilities itself (§0), and
+    print the number without multiplying two probabilities itself, and
     ``appended_wish_rank`` names the position it assumes.
     """
     inputs = fixture["inputs"]
@@ -1008,8 +1008,7 @@ def test_geocode_rate_limit_buckets_by_forwarded_client(client, monkeypatch):
     """Behind the Next.js proxy the budget is per browser, not per proxy.
 
     ``request.client.host`` is the proxy for every request, so without
-    X-Forwarded-For one family would exhaust the limit for all of them
-    (MIGRATION.md §9, Phase 2 open item).
+    X-Forwarded-For one family would exhaust the limit for all of them.
     """
     monkeypatch.setattr(
         api, "geocode_chilean_address", lambda address: dict(FAKE_GEOCODE_OK)
@@ -1118,7 +1117,7 @@ def _cors_probe(app: FastAPI) -> httpx.Response:
 
 
 def test_no_cors_headers_by_default(client):
-    """The Next.js proxy makes every browser call same-origin (MIGRATION.md §2).
+    """The Next.js proxy makes every browser call same-origin.
 
     With SAE_CORS_ORIGINS unset the middleware is not installed at all, so no
     response ever carries an Access-Control-Allow-Origin a foreign page could
@@ -1214,7 +1213,7 @@ def _live_uvicorn_server(app):
 
 
 def test_access_log_never_carries_the_student_identifier(caplog):
-    """MIGRATION.md §4.5: the RUN reaches no log, uvicorn's access log included.
+    """The RUN reaches no log, uvicorn's access log included.
 
     Uvicorn logs ``client - "METHOD path HTTP/1.1" status`` — method, path and
     query string only. The RUN only ever travels in a POST body, so this holds

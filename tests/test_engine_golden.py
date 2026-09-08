@@ -1,8 +1,7 @@
 """Reproduce every committed golden fixture with the current engine.
 
-These tests pass trivially against the pre-migration engine — that is the point
-(MIGRATION.md §6.2): they freeze the numbers so the Streamlit-free engine of
-Phase 1 and the API of Phase 3 can be proven to compute exactly the same thing.
+They freeze the engine's numerical output so any refactor of the engine, and
+the API on top of it, can be proven to compute exactly the same thing.
 
 Comparison rules:
 

@@ -2,17 +2,17 @@
 
 /**
  * One card per wish — the port of the bordered container
- * `ui_wish_builder.render_wish_list_builder` draws for every row of the
+ * One row of the wish list.
  * preference list.
  *
- * Same anatomy as the prototype, in the same order: the rank badge (strict) or
+ * Anatomy, in order: the rank badge (strict) or
  * the group number input (ties), the compact program label, the
  * `program_display_name · commune · region` detail line, the program-details
  * popover — a `Sheet` here, because the detail table is too tall for a popover
  * on a phone — the declared-priorities caption, Remove, and (strict mode only)
  * the Move up / Move down buttons.
  *
- * The commune and the region are not optional (MIGRATION.md §9b.4): the label
+ * The commune and the region are not optional: the label
  * alone repeats across communes — "Liceo Ignacio Carrera Pinto" is a school in
  * San Vicente and a different one in Frutillar — so the location is always
  * rendered, with or without a program display name in front of it. While the
@@ -21,7 +21,7 @@
  *
  * The card holds no program data of its own: it only knows a `program_id` and
  * asks `useProgram()` for everything else, so a label rule that changes
- * server-side (MIGRATION.md §10) can never leave a stale name on screen. It
+ * server-side can never leave a stale name on screen. It
  * says so when the program has vanished from the data; dropping such a wish is
  * the step's job (`dropMissingPrograms` plus one toast), not the card's.
  */
@@ -279,7 +279,7 @@ export function WishCard({
             </Button>
             {ties ? null : (
               // Keyboard and screen-reader path to the same reordering the drag
-              // handle offers (MIGRATION.md §4.1).
+              // handle offers.
               <div className="flex gap-1">
                 <Button
                   variant="outline"

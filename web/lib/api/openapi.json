@@ -1235,7 +1235,7 @@
     },
     "/programs": {
       "get": {
-        "description": "Programs in mapping order (region, rbd, program code), filtered and paged.\n\nFilter semantics are data_loading.program_matches_filters, so the API and\nthe prototype's filter panel can never drift apart.",
+        "description": "Programs in mapping order (region, rbd, program code), filtered and paged.\n\nFilter semantics are ``data_loading.program_matches_filters``, so the API\nand the web filter panel can never drift apart.",
         "operationId": "get_programs_programs_get",
         "parameters": [
           {
@@ -1588,7 +1588,7 @@
     },
     "/recommend": {
       "post": {
-        "description": "Suggest acceptable programs to append, with the same weights as the prototype.\n\nThe current unmatched risk is recomputed server-side from the submitted\nlist; a client-supplied risk would let the frontend steer the ranking.",
+        "description": "Suggest acceptable programs to append.\n\nThe current unmatched risk is recomputed server-side from the submitted\nlist; a client-supplied risk would let the frontend steer the ranking.",
         "operationId": "recommend_recommend_post",
         "parameters": [
           {

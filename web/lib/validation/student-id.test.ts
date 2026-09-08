@@ -14,7 +14,7 @@ import {
 
 /**
  * The golden fixtures are the contract with the Python engine
- * (`tests/fixtures/golden/identifier_*.json`, generated in Phase 0 from
+ * (`tests/fixtures/golden/identifier_*.json`, from
  * `normalize_student_identifier`). They are read at test time — never copied —
  * so a change on either side breaks this test instead of drifting silently.
  */
@@ -60,7 +60,7 @@ function expectedReason(messageKey: string): StudentIdFailureReason {
 const fixtures = loadIdentifierFixtures();
 
 describe("golden identifier fixtures", () => {
-  it("finds the five Phase 0 fixtures", () => {
+  it("finds the five identifier fixtures", () => {
     expect(fixtures.map((fixture) => fixture.name)).toEqual([
       "identifier_01_valid_run",
       "identifier_02_dotted_run",
@@ -158,7 +158,7 @@ describe("checkStudentIdentifier", () => {
 
   it("reports empty input separately from a format error", () => {
     expect(checkStudentIdentifier("")).toEqual({ ok: false, reason: "empty" });
-    expect(checkStudentIdentifier("   ")).toEqual({
+    expect(checkStudentIdentifier(" ")).toEqual({
       ok: false,
       reason: "empty",
     });

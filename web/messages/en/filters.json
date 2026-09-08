@@ -64,7 +64,6 @@
   },
   "matchCount": "Showing {n} matching program option(s) for {region}.",
   "keptOutside": "Existing selected program(s) outside the current filters are also kept available: {n}.",
-  "counting": "Counting matching programs…",
   "search": {
     "title": "Search and add programs",
     "label": "Search for a program",

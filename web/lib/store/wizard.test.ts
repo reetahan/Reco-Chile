@@ -59,7 +59,7 @@ const store = () => useWizardStore.getState();
 function seed(options: { ties?: boolean; programIds?: string[] } = {}) {
   const { ties = false, programIds = ["1001:A", "1002:B", "1003:C"] } = options;
   store().reset();
-  // The welcome answer and the consent checkbox (§9b item 2) are what unlocks
+  // The welcome answer and the consent checkbox are what unlocks
   // step 1 now, so every "reachable" fixture has to include both.
   store().setListExists(true);
   store().setDisclaimerAcknowledged(true);
@@ -87,7 +87,7 @@ describe("initial state", () => {
   });
 });
 
-describe("invalidation table §4.2 — studentId", () => {
+describe("invalidation table — studentId", () => {
   it("drops the simulation when the identifier changes", () => {
     seed();
     expect(store().simulation).not.toBeNull();
@@ -103,7 +103,7 @@ describe("invalidation table §4.2 — studentId", () => {
   });
 });
 
-describe("invalidation table §4.2 — mode toggle", () => {
+describe("invalidation table — mode toggle", () => {
   it("keeps the wishes and numbers the groups by position in ties mode", () => {
     seed();
     expect(store().wishes.map((wish) => wish.equivalenceGroup)).toEqual([
@@ -165,7 +165,7 @@ describe("invalidation table §4.2 — mode toggle", () => {
   });
 });
 
-describe("invalidation table §4.2 — wish changes", () => {
+describe("invalidation table — wish changes", () => {
   it("invalidates on add, and ignores duplicates", () => {
     seed();
     store().addWish("1004:D");
@@ -186,7 +186,7 @@ describe("invalidation table §4.2 — wish changes", () => {
     store().addWish("1004:D");
     expect(store().wishes[3].equivalenceGroup).toBe(4);
 
-    // max(group) + 1, not len + 1 (mirrors ui_wish_builder).
+    // max(group) + 1, not len + 1.
     store().setWishGroup("1004:D", 9);
     store().addWish("1005:E");
     expect(store().wishes[4].equivalenceGroup).toBe(10);
@@ -288,7 +288,7 @@ describe("invalidation table §4.2 — wish changes", () => {
   });
 });
 
-describe("invalidation table §4.2 — programs that vanished from the data", () => {
+describe("invalidation table — programs that vanished from the data", () => {
   it("drops them, reports them, and invalidates", () => {
     seed();
     const dropped = store().dropMissingPrograms(["1002:B", "9999:X"]);
@@ -307,7 +307,7 @@ describe("invalidation table §4.2 — programs that vanished from the data", ()
   });
 });
 
-describe("invalidation table §4.2 — appended recommendations", () => {
+describe("invalidation table — appended recommendations", () => {
   it("appends trailing ranks in strict mode", () => {
     seed();
     store().appendRecommendations(["2001:R", "2002:S"]);
@@ -520,7 +520,7 @@ describe("nextEquivalenceGroup", () => {
   });
 });
 
-describe("step gates §4.1", () => {
+describe("step gates", () => {
   const MAX_ORDERS = 10000;
   const state = (): WizardState => store();
 
@@ -534,7 +534,7 @@ describe("step gates §4.1", () => {
     expect(canContinue(state(), 1)).toBe(true);
   });
 
-  it("step 1 needs the welcome answer; step 2 needs step 1 (§9b item 2)", () => {
+  it("step 1 needs the welcome answer; step 2 needs step 1", () => {
     // Nothing answered: the guard's target is the welcome page, not step 1.
     expect(hasListChoice(state())).toBe(false);
     expect(canEnterStep(state(), 1)).toBe(false);
@@ -635,7 +635,7 @@ describe("step gates §4.1", () => {
   });
 });
 
-describe("§4.2 — the recommendations-added notice", () => {
+describe("the recommendations-added notice", () => {
   it("starts at zero and counts what was actually appended", () => {
     seed();
     expect(store().recommendationsAddedNotice).toBe(0);
@@ -654,7 +654,7 @@ describe("§4.2 — the recommendations-added notice", () => {
     expect(store().recommendationsAddedNotice).toBe(1);
   });
 
-  it("is cleared by the step that showed it, like Streamlit's pop", () => {
+  it("is cleared by the step that showed it", () => {
     seed();
     store().appendRecommendations(["2001:R"]);
     store().clearRecommendationsNotice();
@@ -717,7 +717,7 @@ describe("the wizard's own navigations and the busy flag", () => {
   });
 });
 
-describe("§4.1 — the /meta.max_wishes gate on step 2", () => {
+describe("the /meta.max_wishes gate on step 2", () => {
   const fill = (n: number) => {
     store().setListExists(true);
     store().setStudentId(VALID_RUN);
@@ -786,7 +786,7 @@ describe("§4.1 — the /meta.max_wishes gate on step 2", () => {
   });
 });
 
-describe("sessionStorage persistence §4.2", () => {
+describe("sessionStorage persistence", () => {
   const persisted = () => {
     const raw = window.sessionStorage.getItem(WIZARD_PERSIST_KEY);
     expect(raw).not.toBeNull();
@@ -875,7 +875,7 @@ describe("sessionStorage persistence §4.2", () => {
   });
 
   it("flags the store as hydrated, and keeps that flag across a reset", async () => {
-    // The step guard waits for this before it redirects (§9b item 2): without
+    // The step guard waits for this before it redirects: without
     // it, a reload of a legitimately reachable step would bounce to the welcome
     // page because the persisted `listExists` had not landed yet.
     expect(store().hydrated).toBe(false);

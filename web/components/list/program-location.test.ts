@@ -22,12 +22,12 @@ describe("formatProgramLocation", () => {
 
   it("treats pandas' 'nan' and whitespace as no information", () => {
     expect(formatProgramLocation("nan", "NaN")).toBe("");
-    expect(formatProgramLocation("  ", null)).toBe("");
+    expect(formatProgramLocation(" ", null)).toBe("");
     expect(formatProgramLocation(undefined, undefined)).toBe("");
   });
 
   it("trims the parts it keeps", () => {
-    expect(formatProgramLocation("  Recoleta ", " RM ")).toBe(
+    expect(formatProgramLocation(" Recoleta ", " RM ")).toBe(
       `Recoleta${PROGRAM_LOCATION_SEPARATOR}RM`,
     );
   });

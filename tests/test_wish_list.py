@@ -1,7 +1,7 @@
 """Wish-list normalization, equivalence counting, and strict-order preparation.
 
 These are the pure functions the whole equivalence-class pipeline rests on
-(CLAUDE.md, "Equivalence-class pipeline"), so they are tested directly rather
+(CONTRIBUTING.md, "Equivalence-class pipeline"), so they are tested directly rather
 than only through the golden fixtures. Real program labels are used, because the
 display label is the join key into the program mapping.
 """

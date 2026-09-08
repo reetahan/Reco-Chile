@@ -64,7 +64,6 @@
   },
   "matchCount": "Mostrando {n} programa(s) coincidente(s) para {region}.",
   "keptOutside": "También se mantienen disponibles {n} programa(s) ya seleccionado(s) fuera de los filtros actuales.",
-  "counting": "Contando programas coincidentes…",
   "search": {
     "title": "Buscar y agregar programas",
     "label": "Buscar un programa",

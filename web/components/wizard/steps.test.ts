@@ -23,7 +23,7 @@ import {
 } from "./steps";
 
 describe("step identity", () => {
-  it("orders the four steps as the prototype numbers them", () => {
+  it("orders the four steps", () => {
     expect(STEP_SLUGS).toEqual(["student", "list", "result", "improve"]);
     expect(STEP_SLUGS.map(stepNumber)).toEqual([1, 2, 3, 4]);
   });
@@ -41,7 +41,7 @@ describe("step identity", () => {
   });
 
   it("keeps the welcome and completion pages out of the four steps", () => {
-    // §9b: the rail still shows four steps. The welcome page opens the wizard
+    // The rail still shows four steps. The welcome page opens the wizard
     // and the completion page ends it; neither is a `StepSlug`.
     expect(isStepSlug(FINISH_SLUG)).toBe(false);
     expect(STEP_SLUGS).not.toContain(FINISH_SLUG);
@@ -85,7 +85,7 @@ describe("routing", () => {
   });
 
   it("gives the generic Continue only to the steps without their own choice", () => {
-    // §9b item 6: step 3 ends with the explicit finish / improve pair, so the
+    // step 3 ends with the explicit finish / improve pair, so the
     // shell's bar must not offer a third, unlabelled way forward.
     expect(STEP_SLUGS.filter(ownsForwardChoice)).toEqual(["result"]);
   });
@@ -161,8 +161,6 @@ describe("message ids resolve in both locales", () => {
     "errors.invalidStudentId",
     "errors.invalidRunCheckDigit",
     "filters.region.label",
-    "result.explain.chanceShort",
-    "improve.methodNote",
   ])("the step bodies have %s", (key) => {
     for (const [locale, messages] of Object.entries(catalogues)) {
       expect(lookup(messages, key), `${locale}: ${key}`).toBeTypeOf("string");

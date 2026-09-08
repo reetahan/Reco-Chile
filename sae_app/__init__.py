@@ -3,8 +3,8 @@
 Every number the product shows is computed here. The package has no UI
 dependency of any kind: `api.py` at the project root is a thin HTTP adapter over
 these modules, and the Next.js wizard in `web/` only formats what the API
-returns. CI asserts the Streamlit-free property by importing `api` with the
-`streamlit` module blocked.
+returns. CI guards the no-UI-dependency property with an import-isolation check
+on `api`.
 
 - constants:        static configuration (columns, thresholds, file paths, dropdown options)
 - cache:            stdlib memoisation for the CSV loaders and the geocoder
