@@ -403,7 +403,7 @@ for (const locale of LOCALES) {
       });
       await page.getByTestId("result-finish").click();
       await page.waitForURL(`**/${locale}/finish`);
-      await expect(page.getByTestId("finish-chance")).toBeVisible();
+      await expect(page.getByTestId("finish-list")).toBeVisible();
 
       await scan(page, info, `finish (${locale})`);
     });
@@ -412,7 +412,6 @@ for (const locale of LOCALES) {
       await seedList(page, EQUIV_RESULT, true);
       await identify(page, locale, EQUIV_RESULT.inputs.student_id);
       await goToStep(page, locale, 3, "result");
-
 
       await expect(page.getByTestId("result-outcome")).toBeVisible({
         timeout: 60_000,

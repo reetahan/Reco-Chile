@@ -151,7 +151,6 @@ describe("message ids resolve in both locales", () => {
     "app.finish.lead",
     "app.finish.studentIdLabel",
     "app.finish.print",
-    "app.finish.chanceLabel",
     "app.finish.staleNote",
     "app.finish.listTitle",
     "app.finish.listEmpty",

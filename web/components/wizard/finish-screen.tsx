@@ -14,8 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatProgramLocation } from "@/components/list/program-location";
+import { OutcomeBox } from "@/components/result/outcome-box";
 import { Link, useRouter } from "@/i18n/navigation";
-import { formatPercent, maskStudentId } from "@/lib/format";
+import { maskStudentId } from "@/lib/format";
 import { useMetaOptional } from "@/lib/meta";
 import { usePrograms } from "@/lib/programs";
 import { hasFreshSimulation, useWizardStore } from "@/lib/store/wizard";
@@ -23,10 +24,11 @@ import { hasFreshSimulation, useWizardStore } from "@/lib/store/wizard";
 import { stepPath, WELCOME_PATH } from "./steps";
 
 /**
- * The read-only takeaway reached from the result step's "Finish". "Save as PDF"
- * is `window.print()` against the `@media print` block in globals.css; the
- * wizard is cleared only here, by "back to the start". Guarded on a fresh
- * simulation, so a stale result shows the prompt instead of a number.
+ * The read-only takeaway reached from the result step's "Finish": the same
+ * outcome box shown on step 3, then the final ordered list. "Save as PDF" is
+ * `window.print()` against the `@media print` block in globals.css; the wizard
+ * is cleared only here, by "back to the start". Guarded on a fresh simulation,
+ * so a stale result shows the prompt instead of the box.
  *
  * The RUN/IPE is shown masked so a printout never carries the full identifier.
  */
@@ -48,7 +50,6 @@ export function FinishScreen() {
   );
   const { programs } = usePrograms(programIds);
 
-  const chance = fresh && simulation ? 1 - simulation.unmatched_risk : null;
   const maskedId = maskStudentId(studentId);
 
   // Differs between the server render and the reader's clock, hence suppressed.
@@ -98,23 +99,17 @@ export function FinishScreen() {
         </Button>
       </div>
 
-      <Card>
-        <CardContent className="flex flex-col gap-1">
-          <p className="text-sm text-muted-foreground">{t("chanceLabel")}</p>
-          {chance === null ? (
-            <p className="text-sm" data-testid="finish-chance-stale">
+      {fresh && simulation ? (
+        <OutcomeBox simulation={simulation} />
+      ) : (
+        <Card>
+          <CardContent>
+            <p className="text-sm" data-testid="finish-result-stale">
               {t("staleNote")}
             </p>
-          ) : (
-            <p
-              className="text-3xl font-semibold tracking-tight tabular-nums"
-              data-testid="finish-chance"
-            >
-              {formatPercent(chance, locale)}
-            </p>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

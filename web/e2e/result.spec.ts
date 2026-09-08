@@ -392,11 +392,11 @@ test.describe("result step — the outcome box", () => {
     await page.waitForURL("**/es/improve");
   });
 
-  test("finish opens a saveable summary with the final list intact", async ({
+  test("finish opens a saveable summary: the outcome box and the list intact", async ({
     page,
   }) => {
-    await openResult(page, STRICT);
-    await expect(page.getByTestId("result-outcome")).toBeVisible();
+    await openResult(page, MID_BAND);
+    const top = topProgram(MID_BAND);
 
     await page.getByTestId("result-finish").click();
     await page.waitForURL("**/es/finish");
@@ -404,9 +404,16 @@ test.describe("result step — the outcome box", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: es.app.finish.title }),
     ).toBeVisible();
-    await expect(page.getByTestId("finish-chance")).toBeVisible();
+    // The same outcome box step 3 shows — the school the student is likely to
+    // match to, not just the list.
+    await expect(page.getByTestId("predicted-school")).toHaveText(top.program);
+    await expect(page.getByTestId("predicted-chance")).toHaveText(
+      copy(es.result.outcome.chance, {
+        chance: formatPercent(top.choice_assignment_probability, "es"),
+      }),
+    );
     await expect(page.getByTestId("finish-wish")).toHaveCount(
-      STRICT.inputs.wishes.length,
+      MID_BAND.inputs.wishes.length,
     );
     await expect(page.getByTestId("finish-print")).toContainText(
       es.app.finish.print,
@@ -415,14 +422,14 @@ test.describe("result step — the outcome box", () => {
     // Masked identifier only — never the full RUN typed on step 1.
     await expect(page.getByTestId("finish-student-id")).toContainText("…");
     await expect(page.getByTestId("finish-student-id")).not.toContainText(
-      STRICT.inputs.student_id,
+      MID_BAND.inputs.student_id,
     );
 
     // Nothing was cleared.
     const stored = await page.evaluate(() =>
       JSON.stringify(window.sessionStorage),
     );
-    expect(stored).toContain(STRICT.inputs.wishes[0].program_id);
+    expect(stored).toContain(MID_BAND.inputs.wishes[0].program_id);
   });
 
   test("back to the start clears the wizard and returns to the welcome page", async ({
