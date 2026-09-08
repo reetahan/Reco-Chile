@@ -25,7 +25,7 @@ pnpm install
 pnpm dev
 ```
 
-Then open <http://localhost:3000/es>.
+Then open [http://localhost:3000/es](http://localhost:3000/es).
 
 Alternatively, run both in containers:
 
@@ -168,12 +168,12 @@ The engine first infers a revealed-preference profile from the current wish list
 
 Candidates are evaluated on four components:
 
-| Component | What it captures |
-| --- | --- |
-| Preference similarity | Track, specialty, gender composition, school day, rurality, PIE, PACE, fees, and religious orientation |
-| Proximity | Straight-line distance from the geocoded home address or the weighted centroid of the current wish list |
-| Accessibility | Historical applicants per seat |
-| Portfolio-risk improvement | The candidate's estimated availability using the student's actual MTB hash for that school |
+| Component                  | What it captures                                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Preference similarity      | Track, specialty, gender composition, school day, rurality, PIE, PACE, fees, and religious orientation  |
+| Proximity                  | Straight-line distance from the geocoded home address or the weighted centroid of the current wish list |
+| Accessibility              | Historical applicants per seat                                                                          |
+| Portfolio-risk improvement | The candidate's estimated availability using the student's actual MTB hash for that school              |
 
 Similarity weights adapt to the dominance, coverage, and reliability of each criterion in the current list. Candidates below the configured similarity floor are excluded when the list provides a usable preference signal.
 
@@ -334,17 +334,17 @@ The application expects a `data/` directory next to `api.py`.
 
 ### Required files
 
-| File | Purpose |
-| --- | --- |
+| File                                              | Purpose                                                                                                                    |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `capacities_2025_wta_with_2024_calibration.csv` | Capacities, true applicants, lottery reference populations, priority shares, and calibration fields used by the risk model |
-| `programmes_chili_criteres_recommandation.csv` | School and program names, communes, recommendation criteria, and program/school coordinates when available |
-| `rbd_region_map.csv` | RBD-to-region mapping |
-| `program_filters.csv` | Program track, specialty, gender composition, and school-day metadata used by the search filters |
+| `programmes_chili_criteres_recommandation.csv`  | School and program names, communes, recommendation criteria, and program/school coordinates when available                 |
+| `rbd_region_map.csv`                            | RBD-to-region mapping                                                                                                      |
+| `program_filters.csv`                           | Program track, specialty, gender composition, and school-day metadata used by the search filters                           |
 
 ### Optional file
 
-| File | Expected columns | Purpose |
-| --- | --- | --- |
+| File                        | Expected columns                                                                                                                                 | Purpose                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
 | `commune_coordinates.csv` | `commune`, optional `region`, latitude (`latitude`, `lat`, or `latitud`), longitude (`longitude`, `lon`, `lng`, or `longitud`) | Improves distance estimates when program-level coordinates are unavailable |
 
 At startup, the app checks required columns, core numeric fields, positive lottery populations, and the internal consistency of cumulative priority shares. Programs with mean-imputed 2024 calibration values remain usable but are flagged as less reliable.
