@@ -25,7 +25,7 @@ pnpm install
 pnpm dev
 ```
 
-Then open <http://localhost:3000/es/student>.
+Then open <http://localhost:3000/es>.
 
 Alternatively, run both in containers:
 
@@ -52,8 +52,8 @@ Full details — Python version pinning, Windows, Docker specifics — are under
 
 ## Application workflow
 
-1. Enter the student's RUN or IPE and indicate whether the wish list already exists.
-2. Add programs in the family's genuine order of preference. An optional planning toggle can compare undecided internal orders.
+1. On the welcome screen, indicate whether the wish list already exists; acknowledge the disclaimer, then enter the student's RUN or IPE.
+2. Add programs in the family's genuine order of preference. An optional toggle groups programs whose internal order is undecided so every compatible ordering is tested.
 3. Mark every applicable priority for each establishment and analyze the list.
 4. Review the estimated chance of assignment and the single most likely program, named with its commune and region.
 5. Inspect suggested backup programs, compare the projected chance after appending each one, and add only acceptable options.
@@ -156,11 +156,7 @@ The app enumerates every compatible strict order inside the tied groups. If grou
 m_1! × m_2! × ... × m_g!
 ```
 
-Availability is computed once per program and reused across permutations. The app then reports whether internal ordering changes:
-
-- the most likely assigned school;
-- the final probability attached to that predicted school;
-- the distribution of outcomes across compatible strict orders.
+Availability is computed once per program and reused across permutations. `/simulate` returns an `equivalence_sensitivity` verdict — whether the internal ordering changes the most likely assigned school, only its final probability, or nothing — with the per-order breakdown. (The current interface computes this but does not surface it; it remains part of the API contract.)
 
 Because the same set of programs is used in every variant, the overall unmatched risk is invariant to internal ordering under the current model. Exact enumeration is capped at `10,000` compatible orders by default.
 
@@ -294,7 +290,7 @@ Two processes, in two terminals — the API above, and:
 ```bash
 cd web
 pnpm install
-pnpm dev                                         # http://localhost:3000/es/student
+pnpm dev                                         # http://localhost:3000/es
 ```
 
 The browser only ever talks to the Next.js origin: `web/app/api/[...path]/`
@@ -310,7 +306,7 @@ Two containers — the FastAPI service and the Next.js server — described by
 `docker-compose.yml`:
 
 ```bash
-docker compose up --build       # http://localhost:3000/es/student
+docker compose up --build       # http://localhost:3000/es
 docker compose down
 ```
 

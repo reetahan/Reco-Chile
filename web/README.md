@@ -189,7 +189,7 @@ Normally both halves are started together from the repository root, where
 `API_BASE_URL=http://api:8000`:
 
 ```bash
-cd .. && docker compose up --build      # http://localhost:3000/es/student
+cd .. && docker compose up --build      # http://localhost:3000/es
 ```
 
 `API_BASE_URL` is read at request time, not baked into the image, so the same
