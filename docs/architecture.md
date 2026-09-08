@@ -162,6 +162,12 @@ highlights:
 - **Explanations live behind an info affordance**, never as a standing
   paragraph. Every program is named with its commune and region everywhere it is
   listed.
+- **"I'm happy — finish" opens a takeaway summary** at `/[locale]/finish`
+  (`components/wizard/finish-screen.tsx`) rather than ending the session: the
+  estimated chance, the final list, and the RUN/IPE masked to its last five body
+  digits. "Save as PDF" is plain `window.print()` against the `@media print`
+  block in `app/globals.css`. The wizard is cleared only by that page's "back to
+  the start"; a stale result still redirects to step 3.
 
 ## Intentional deviations from a naive port
 

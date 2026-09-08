@@ -419,9 +419,9 @@ for (const viewport of VIEWPORTS) {
         ).toBeGreaterThanOrEqual(32);
       }
 
-      // Step 3 has no tables, and so no
-      // completion page this walkthrough used to visit: the outcome box is now
-      // the widest thing here, and "finish" ends the session at the front door.
+      // Step 3 has no tables: the outcome box is the widest thing here. "finish"
+      // opens the completion page (covered in result.spec.ts); this walkthrough
+      // follows the "improve" branch to step 4.
 
       // --- step 4 --------------------------------------------------------
       await page.getByTestId("result-improve").click();

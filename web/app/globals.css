@@ -189,3 +189,27 @@
     @apply bg-background text-base text-foreground;
   }
 }
+
+/* Print — only the finish page is printed (its "Save as PDF" button); strip the
+   app chrome. The page's own controls carry `print:hidden`. */
+@page {
+  margin: 16mm;
+}
+
+@media print {
+  body > header,
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  [data-slot="card"],
+  [data-testid="finish-wish"] {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}

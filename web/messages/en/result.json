@@ -14,7 +14,7 @@
   "next": {
     "title": "What would you like to do now?",
     "finish": "I'm happy — finish",
-    "finishHint": "You return to the start. Nothing is saved and nothing is submitted.",
+    "finishHint": "See your final list and save a copy. Nothing is submitted.",
     "improve": "Not happy — help me improve my list",
     "improveHint": "We suggest additional schools you can add at the end of your list."
   },

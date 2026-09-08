@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ArrowLeftIcon, CheckCircle2Icon, RotateCcwIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  CheckCircle2Icon,
+  PrinterIcon,
+  RotateCcwIcon,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -10,36 +15,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatProgramLocation } from "@/components/list/program-location";
 import { Link, useRouter } from "@/i18n/navigation";
-import { formatPercent } from "@/lib/format";
+import { formatPercent, maskStudentId } from "@/lib/format";
+import { useMetaOptional } from "@/lib/meta";
 import { usePrograms } from "@/lib/programs";
 import { hasFreshSimulation, useWizardStore } from "@/lib/store/wizard";
 
 import { stepPath, WELCOME_PATH } from "./steps";
 
 /**
- * The completion page — "Finish" from the result step.
+ * The read-only takeaway reached from the result step's "Finish". "Save as PDF"
+ * is `window.print()` against the `@media print` block in globals.css; the
+ * wizard is cleared only here, by "back to the start". Guarded on a fresh
+ * simulation, so a stale result shows the prompt instead of a number.
  *
- * It is an ending, not a fifth step: no stepper marker, no Continue, and the
- * only ways on from here are back to the result or a clean start. What it shows
- * is what a family needs to carry away — the list they settled on, the one
- * number that matters, and the reminder that nothing here was submitted.
- *
- * Read-only throughout: the wish list is rendered from the store's wishes with
- * labels resolved through `usePrograms` (the store holds only `program_id`s,
- *), and no control on this page can reorder or remove anything.
- *
- * The chance is `1 − unmatched_risk`, formatted by `@/lib/format` exactly like
- * the result step formats it — the engine stays the only source of the number
- *, and this page recomputes nothing but that one subtraction. It is shown
- * only while the stored simulation still matches the current inputs; a stale
- * one would print a number for a list the family has since changed.
+ * The RUN/IPE is shown masked so a printout never carries the full identifier.
  */
 export function FinishScreen() {
   const t = useTranslations("app.finish");
   const locale = useLocale();
   const router = useRouter();
+  const meta = useMetaOptional();
 
   const wishes = useWizardStore((state) => state.wishes);
+  const studentId = useWizardStore((state) => state.studentId);
   const simulation = useWizardStore((state) => state.simulation);
   const fresh = useWizardStore(hasFreshSimulation);
   const reset = useWizardStore((state) => state.reset);
@@ -51,12 +49,17 @@ export function FinishScreen() {
   const { programs } = usePrograms(programIds);
 
   const chance = fresh && simulation ? 1 - simulation.unmatched_risk : null;
+  const maskedId = maskStudentId(studentId);
+
+  // Differs between the server render and the reader's clock, hence suppressed.
+  const generatedOn = new Intl.DateTimeFormat(locale, {
+    dateStyle: "long",
+  }).format(new Date());
+  const dataVersion = meta?.data_fingerprint.slice(0, 8) ?? null;
 
   function startOver() {
     reset();
-    // `replace`, not `push`: the wizard the family just cleared must not be one
-    // Back press away. The guard would send them here anyway — `reset()` clears
-    // `listExists` — but doing it explicitly keeps the history clean.
+    // `replace` so the cleared wizard is not one Back press away.
     router.replace(WELCOME_PATH);
   }
 
@@ -71,7 +74,29 @@ export function FinishScreen() {
           {t("title")}
         </h1>
         <p className="text-sm text-pretty text-muted-foreground">{t("lead")}</p>
+        {maskedId === "" ? null : (
+          <p
+            className="text-sm text-muted-foreground"
+            data-testid="finish-student-id"
+          >
+            {t("studentIdLabel")}:{" "}
+            <span className="tabular-nums">{maskedId}</span>
+          </p>
+        )}
       </header>
+
+      <div className="flex flex-wrap gap-3 print:hidden">
+        <Button
+          size="lg"
+          onClick={() => {
+            window.print();
+          }}
+          data-testid="finish-print"
+        >
+          <PrinterIcon aria-hidden="true" data-icon="inline-start" />
+          {t("print")}
+        </Button>
+      </div>
 
       <Card>
         <CardContent className="flex flex-col gap-1">
@@ -147,7 +172,20 @@ export function FinishScreen() {
         <AlertDescription>{t("official")}</AlertDescription>
       </Alert>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <p
+        className="text-xs text-muted-foreground"
+        data-testid="finish-generated"
+        suppressHydrationWarning
+      >
+        {dataVersion === null
+          ? t("generatedOn", { date: generatedOn })
+          : t("generatedOnWithVersion", {
+              date: generatedOn,
+              version: dataVersion,
+            })}
+      </p>
+
+      <div className="flex flex-col gap-3 sm:flex-row print:hidden">
         <Button size="lg" asChild data-testid="finish-back">
           <Link href={stepPath("result")}>
             <ArrowLeftIcon aria-hidden="true" data-icon="inline-start" />
@@ -161,7 +199,7 @@ export function FinishScreen() {
           data-testid="finish-start-over"
         >
           <RotateCcwIcon aria-hidden="true" data-icon="inline-start" />
-          {t("startOver")}
+          {t("backToStart")}
         </Button>
       </div>
     </section>

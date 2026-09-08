@@ -392,15 +392,47 @@ test.describe("result step — the outcome box", () => {
     await page.waitForURL("**/es/improve");
   });
 
-  test("finish clears the wizard and returns to the welcome page", async ({
+  test("finish opens a saveable summary with the final list intact", async ({
     page,
   }) => {
-    // "I'm happy — finish" no longer opens the completion
-    // page, it ends the session where it began.
     await openResult(page, STRICT);
     await expect(page.getByTestId("result-outcome")).toBeVisible();
 
     await page.getByTestId("result-finish").click();
+    await page.waitForURL("**/es/finish");
+
+    await expect(
+      page.getByRole("heading", { level: 1, name: es.app.finish.title }),
+    ).toBeVisible();
+    await expect(page.getByTestId("finish-chance")).toBeVisible();
+    await expect(page.getByTestId("finish-wish")).toHaveCount(
+      STRICT.inputs.wishes.length,
+    );
+    await expect(page.getByTestId("finish-print")).toContainText(
+      es.app.finish.print,
+    );
+
+    // Masked identifier only — never the full RUN typed on step 1.
+    await expect(page.getByTestId("finish-student-id")).toContainText("…");
+    await expect(page.getByTestId("finish-student-id")).not.toContainText(
+      STRICT.inputs.student_id,
+    );
+
+    // Nothing was cleared.
+    const stored = await page.evaluate(() =>
+      JSON.stringify(window.sessionStorage),
+    );
+    expect(stored).toContain(STRICT.inputs.wishes[0].program_id);
+  });
+
+  test("back to the start clears the wizard and returns to the welcome page", async ({
+    page,
+  }) => {
+    await openResult(page, STRICT);
+    await page.getByTestId("result-finish").click();
+    await page.waitForURL("**/es/finish");
+
+    await page.getByTestId("finish-start-over").click();
     await page.waitForURL(/\/es$/);
     await expect(
       page.getByRole("heading", { level: 1, name: es.app.welcome.headline }),
@@ -415,7 +447,7 @@ test.describe("result step — the outcome box", () => {
 
     // `replace`, not `push`: Back does not lead into the finished wizard.
     await page.goBack();
-    await expect(page).not.toHaveURL(/\/es\/result$/);
+    await expect(page).not.toHaveURL(/\/es\/finish$/);
   });
 
   test("formats the same number in English", async ({ page }) => {

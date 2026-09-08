@@ -1,34 +1,18 @@
 "use client";
 
 /**
- * "Finish" vs "improve my list", item 6.
- *
- * An earlier design let step 3 flow into step 4 through
- * one anonymous Continue, which reads as "you are not done yet" even for a list
- * the family is happy with. The step now makes the choice
- * explicit: a primary *I'm happy — finish*, and a secondary *not happy — help
- * me improve my list* that goes to step 4.
- *
- * "Finish" ends the session: it used to open the completion
- * page at `FINISH_PATH`; it now clears the wizard and returns to the welcome
- * page, the same thing that page's own "start over" did. `/finish` is
- * consequently unreachable from the UI.
- *
- * Finish is therefore a button, not a link — it has to clear the store before
- * it navigates. `router.replace`, not `push`: the wizard the family just
- * finished must not be one Back press away, and `reset()` clears `listExists`,
- * so the guard would bounce a Back into the wizard here anyway. Improve stays a
- * link: it is a plain navigation, so it is focusable, opens in a new tab and
- * works before hydration.
+ * The result step's forward choice: "Finish" opens the read-only summary at
+ * `FINISH_PATH` (store kept), "improve" goes to step 4. Finish is a button so
+ * Back from the summary returns here; improve stays a link so it is focusable
+ * and works before hydration.
  */
 
 import { ArrowRightIcon, CheckIcon, SparklesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-import { stepPath, WELCOME_PATH } from "@/components/wizard/steps";
+import { FINISH_PATH, stepPath } from "@/components/wizard/steps";
 import { Link, useRouter } from "@/i18n/navigation";
-import { useWizardStore } from "@/lib/store/wizard";
 
 // Both destinations are locale-free paths — `Link` and `useRouter` from
 // `@/i18n/navigation` add the `[locale]` segment.
@@ -36,11 +20,9 @@ import { useWizardStore } from "@/lib/store/wizard";
 export function ResultActions() {
   const t = useTranslations("result.next");
   const router = useRouter();
-  const reset = useWizardStore((state) => state.reset);
 
   function finish() {
-    reset();
-    router.replace(WELCOME_PATH);
+    router.push(FINISH_PATH);
   }
 
   return (

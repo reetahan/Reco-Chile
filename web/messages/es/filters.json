@@ -67,7 +67,7 @@
   "search": {
     "title": "Buscar y agregar programas",
     "label": "Buscar un programa",
-    "help": "Busca por nombre del establecimiento, comuna o programa.",
+    "help": "Busca por provincia, comuna o programa.",
     "placeholder": "Selecciona un programa",
     "inputPlaceholder": "Establecimiento, comuna o detalles del programa",
     "add": "Agregar",

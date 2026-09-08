@@ -26,14 +26,18 @@
   "finish": {
     "title": "You're done",
     "lead": "You have reviewed your chances. This is the list you ended up with.",
+    "studentIdLabel": "Student ID",
+    "print": "Save as PDF",
     "chanceLabel": "Your estimated chance of being assigned",
     "staleNote": "Go back to the result to calculate your chances with the current list.",
     "listTitle": "Your preference list",
     "listEmpty": "You have not added any programs to your list yet.",
     "locationUnknown": "Commune and region not available",
     "official": "Remember: this tool submits nothing. To apply for real, enter your list on the official SAE website before the deadline.",
+    "generatedOn": "Prepared on {date}.",
+    "generatedOnWithVersion": "Prepared on {date} · data version {version}.",
     "backToResult": "Back to my results",
-    "startOver": "Start over"
+    "backToStart": "Back to the start"
   },
   "aboutEstimate": {
     "body": "The model uses historical 2024 calibration data and 2025 capacity data. Results are estimates, not official admission guarantees."

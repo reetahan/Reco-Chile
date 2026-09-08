@@ -107,6 +107,8 @@ beforeEach(() => {
   window.sessionStorage.clear();
   useWizardStore.getState().reset();
   replace.mockClear();
+  // jsdom has no real print dialog; the button only needs to reach it.
+  window.print = vi.fn();
 });
 
 describe("FinishScreen", () => {
@@ -118,6 +120,28 @@ describe("FinishScreen", () => {
       screen.getByRole("heading", { level: 1, name: copy.title }),
     ).toBeInTheDocument();
     expect(screen.getByTestId("finish")).toHaveTextContent(copy.lead);
+  });
+
+  it("shows the student identifier masked to its last four body digits", () => {
+    seed();
+    renderFinish();
+
+    // Seeded RUN is 12.345.678-5.
+    expect(screen.getByTestId("finish-student-id")).toHaveTextContent(
+      "…5678-5",
+    );
+    expect(screen.getByTestId("finish-student-id")).not.toHaveTextContent(
+      "12.345.678",
+    );
+  });
+
+  it("saves a copy through the browser print dialog", async () => {
+    const user = userEvent.setup();
+    seed();
+    renderFinish();
+
+    await user.click(screen.getByTestId("finish-print"));
+    expect(window.print).toHaveBeenCalledTimes(1);
   });
 
   it("repeats the chance of being assigned — 1 − unmatched risk", () => {
@@ -162,12 +186,14 @@ describe("FinishScreen", () => {
     expect(back).toHaveAttribute("href", "/result");
   });
 
-  it("starts over by clearing the store and returning to the welcome page", async () => {
+  it("goes back to the start by clearing the store and returning to the welcome page", async () => {
     const user = userEvent.setup();
     seed();
     renderFinish();
 
-    await user.click(screen.getByTestId("finish-start-over"));
+    const backToStart = screen.getByTestId("finish-start-over");
+    expect(backToStart).toHaveTextContent(copy.backToStart);
+    await user.click(backToStart);
 
     const state = useWizardStore.getState();
     expect(state.wishes).toEqual([]);

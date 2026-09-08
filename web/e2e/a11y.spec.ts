@@ -393,14 +393,27 @@ for (const locale of LOCALES) {
       await scan(page, info, `step 3 (${locale}) — strict`);
     });
 
+    test("the finish summary", async ({ page }, info) => {
+      await seedList(page, STRICT_RESULT, false);
+      await identify(page, locale, STRICT_RESULT.inputs.student_id);
+      await goToStep(page, locale, 3, "result");
+
+      await expect(page.getByTestId("result-outcome")).toBeVisible({
+        timeout: 60_000,
+      });
+      await page.getByTestId("result-finish").click();
+      await page.waitForURL(`**/${locale}/finish`);
+      await expect(page.getByTestId("finish-chance")).toBeVisible();
+
+      await scan(page, info, `finish (${locale})`);
+    });
+
     test("step 3, an equivalence result", async ({ page }, info) => {
       await seedList(page, EQUIV_RESULT, true);
       await identify(page, locale, EQUIV_RESULT.inputs.student_id);
       await goToStep(page, locale, 3, "result");
 
-      // The mode no longer changes what step 3 draws —
-      // the box is the same — but the /simulate call behind it is not, so the
-      // ties path still gets its own scan.
+
       await expect(page.getByTestId("result-outcome")).toBeVisible({
         timeout: 60_000,
       });
