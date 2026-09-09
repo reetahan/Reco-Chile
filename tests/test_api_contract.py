@@ -35,6 +35,7 @@ import api  # noqa: E402
 from sae_app.constants import (  # noqa: E402
     MAX_WISHES,
     MAX_EXACT_EQUIV_PERMUTATIONS,
+    PAYMENT_FILTER_OPTIONS,
     PIE_FILTER_OPTIONS,
 )
 
@@ -733,6 +734,8 @@ def test_recommend_reproduces_fixture(client, fixture):
         == expected["home_supports_hard_distance_filter"]
     )
     assert len(payload["items"]) == expected["recommendation_count"]
+    # The fixtures send no sidebar filters, so nothing is ever cut.
+    assert payload["limited_by_filters"] is False
     assert payload["diagnostics"]["failed_candidates"] == (
         expected["diagnostics"]["failed_candidates"]
     )
@@ -848,6 +851,43 @@ def test_recommend_rejects_invalid_student_id(client):
     )
     assert response.status_code == 422
     assert response.json()["error_key"] == "The RUN check digit is invalid."
+
+
+def test_recommend_filters_restrict_the_candidate_pool(client):
+    """The step-2 sidebar filters, reused on step 4: recommendations are limited
+    to the programs that match, and a short result says so."""
+    fixture = RECOMMENDATION_FIXTURES[0]
+    inputs = fixture["inputs"]
+    base_body = {
+        "student_id": inputs["student_id"],
+        "wishes": _wire_wishes(fixture, explicit_groups=False),
+        "max_recommendations": inputs["max_recommendations"],
+    }
+
+    unfiltered = client.post("/recommend", json=base_body).json()
+    assert unfiltered["limited_by_filters"] is False
+    assert len(unfiltered["items"]) >= 1
+
+    # Confine the pool to one region: every recommendation moves there, and the
+    # count never grows.
+    regions = client.get("/meta").json()["regions"]
+    other_region = next(
+        region for region in regions if region != unfiltered["items"][0]["region"]
+    )
+    scoped = client.post(
+        "/recommend", json={**base_body, "filters": {"region": other_region}}
+    ).json()
+    assert all(item["region"] == other_region for item in scoped["items"])
+    assert len(scoped["items"]) <= len(unfiltered["items"])
+
+    # The rarest enrollment-fee band nationally holds far fewer programs than the
+    # requested five, so the result is short and the response says why.
+    rare_band = PAYMENT_FILTER_OPTIONS[3]  # "$25,001–$50,000"
+    limited = client.post(
+        "/recommend", json={**base_body, "filters": {"enrollment_fee": [rare_band]}}
+    ).json()
+    assert len(limited["items"]) < base_body["max_recommendations"]
+    assert limited["limited_by_filters"] is True
 
 
 @pytest.mark.parametrize("count", [1, 11])

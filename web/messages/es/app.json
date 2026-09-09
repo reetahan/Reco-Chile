@@ -26,14 +26,17 @@
   "finish": {
     "title": "¡Listo!",
     "lead": "Ya revisaste tus posibilidades. Esta es la lista con la que terminaste.",
-    "chanceLabel": "Tu posibilidad estimada de quedar asignado",
+    "studentIdLabel": "RUN/IPE del estudiante",
+    "print": "Guardar como PDF",
     "staleNote": "Vuelve al resultado para calcular tus posibilidades con la lista actual.",
     "listTitle": "Tu lista de preferencias",
     "listEmpty": "Todavía no agregaste programas a tu lista.",
     "locationUnknown": "Comuna y región sin información",
     "official": "Recuerda: esta herramienta no envía nada. Para postular de verdad, ingresa tu lista en el sitio oficial del SAE dentro del plazo.",
+    "generatedOn": "Preparado el {date}.",
+    "generatedOnWithVersion": "Preparado el {date} · versión de datos {version}.",
     "backToResult": "Volver a mis resultados",
-    "startOver": "Empezar de nuevo"
+    "backToStart": "Volver al inicio"
   },
   "aboutEstimate": {
     "body": "El modelo usa datos históricos de calibración 2024 y datos de cupos 2025. Los resultados son estimaciones, no garantías oficiales de admisión."

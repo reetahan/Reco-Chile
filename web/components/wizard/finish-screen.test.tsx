@@ -77,10 +77,32 @@ const SIMULATION = {
   at_risk: false,
   attention_level: "low",
   thresholds: { hard: 0.5, soft: 0.25 },
-  predicted_outcome: "Liceo Uno",
+  predicted_outcome: "Liceo Uno · Científico-Humanista",
   predicted_outcome_program_id: "1001:A",
-  outcomes: [],
-  wishes: [],
+  outcomes: [
+    {
+      label: "Liceo Uno · Científico-Humanista",
+      probability: 0.62,
+      program_id: "1001:A",
+    },
+    { label: "Unmatched", probability: 0.12, program_id: null },
+  ],
+  wishes: [
+    {
+      program_id: "1001:A",
+      program_label: "Liceo Uno · Científico-Humanista",
+      wish_rank: 1,
+      availability_probability: 0.7,
+      choice_assignment_probability: 0.62,
+      cumulative_unavailable_before_choice: 0,
+      calibration_imputed: false,
+      capacity: 80,
+      lottery_number: 0.3,
+      lottery_population_used: 500,
+      priority_tier: "no_priority",
+      true_applicants_last_year: 200,
+    },
+  ],
 } satisfies SimulationResponse;
 
 const copy = es.app.finish;
@@ -107,6 +129,8 @@ beforeEach(() => {
   window.sessionStorage.clear();
   useWizardStore.getState().reset();
   replace.mockClear();
+  // jsdom has no real print dialog; the button only needs to reach it.
+  window.print = vi.fn();
 });
 
 describe("FinishScreen", () => {
@@ -120,14 +144,39 @@ describe("FinishScreen", () => {
     expect(screen.getByTestId("finish")).toHaveTextContent(copy.lead);
   });
 
-  it("repeats the chance of being assigned — 1 − unmatched risk", () => {
+  it("shows the student identifier masked to its last five body digits", () => {
     seed();
     renderFinish();
 
-    expect(screen.getByTestId("finish-chance")).toHaveTextContent(
-      formatPercent(1 - SIMULATION.unmatched_risk, "es"),
+    // Seeded RUN is 12.345.678-5.
+    expect(screen.getByTestId("finish-student-id")).toHaveTextContent(
+      "…45678-5",
     );
-    expect(screen.queryByTestId("finish-chance-stale")).toBeNull();
+    expect(screen.getByTestId("finish-student-id")).not.toHaveTextContent(
+      "12.345.678",
+    );
+  });
+
+  it("saves a copy through the browser print dialog", async () => {
+    const user = userEvent.setup();
+    seed();
+    renderFinish();
+
+    await user.click(screen.getByTestId("finish-print"));
+    expect(window.print).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows the predicted school and its chance (the step-3 outcome box)", () => {
+    seed();
+    renderFinish();
+
+    expect(screen.getByTestId("predicted-school")).toHaveTextContent(
+      PROGRAMS["1001:A"].program_label,
+    );
+    expect(screen.getByTestId("predicted-chance")).toHaveTextContent(
+      formatPercent(SIMULATION.outcomes[0].probability, "es"),
+    );
+    expect(screen.queryByTestId("finish-result-stale")).toBeNull();
   });
 
   it("shows the final list in order, with commune and region", () => {
@@ -162,12 +211,14 @@ describe("FinishScreen", () => {
     expect(back).toHaveAttribute("href", "/result");
   });
 
-  it("starts over by clearing the store and returning to the welcome page", async () => {
+  it("goes back to the start by clearing the store and returning to the welcome page", async () => {
     const user = userEvent.setup();
     seed();
     renderFinish();
 
-    await user.click(screen.getByTestId("finish-start-over"));
+    const backToStart = screen.getByTestId("finish-start-over");
+    expect(backToStart).toHaveTextContent(copy.backToStart);
+    await user.click(backToStart);
 
     const state = useWizardStore.getState();
     expect(state.wishes).toEqual([]);
@@ -186,8 +237,8 @@ describe("FinishScreen", () => {
     useWizardStore.getState().addWish("1003:C");
     renderFinish();
 
-    expect(screen.queryByTestId("finish-chance")).toBeNull();
-    expect(screen.getByTestId("finish-chance-stale")).toHaveTextContent(
+    expect(screen.queryByTestId("result-outcome")).toBeNull();
+    expect(screen.getByTestId("finish-result-stale")).toHaveTextContent(
       copy.staleNote,
     );
   });

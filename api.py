@@ -644,11 +644,29 @@ class HomeLocation(BaseModel):
     precision: str = "approximate"
 
 
+class RecommendationFilters(BaseModel):
+    """The step-2 sidebar filters, reused on step 4 to restrict the candidate
+    pool. Same names and semantics as the ``GET /programs`` query parameters."""
+
+    region: str | None = None
+    track: list[str] | None = None
+    specialty_sector: list[str] | None = None
+    gender: list[str] | None = None
+    school_day: list[str] | None = None
+    rurality: list[str] | None = None
+    pie: list[str] | None = None
+    pace: list[str] | None = None
+    enrollment_fee: list[str] | None = None
+    monthly_fee: list[str] | None = None
+    religious_orientation: list[str] | None = None
+
+
 class RecommendationRequest(BaseModel):
     student_id: str = Field(..., description="Student RUN/IPE, e.g. 12.345.678-9")
     wishes: list[WishItem] = Field(..., min_length=1, max_length=MAX_WISHES)
     max_recommendations: int = Field(default=5, ge=2, le=10)
     home: HomeLocation | None = None
+    filters: RecommendationFilters | None = None
 
 
 class RecommendationItem(BaseModel):
@@ -688,6 +706,9 @@ class RecommendationResponse(BaseModel):
     distance_reference: str
     hard_distance_filter_applied: bool
     similarity_fallback_mode: bool
+    # True when the sidebar filters removed viable candidates and the result is
+    # consequently shorter than `max_recommendations` — the caller says so.
+    limited_by_filters: bool
     items: list[RecommendationItem]
     diagnostics: RecommendationDiagnostics
 
@@ -1221,6 +1242,31 @@ def recommend(
 
     home_geo_reference = payload.home.model_dump() if payload.home else None
 
+    # The step-2 sidebar filters, in the dict shape `program_matches_filters`
+    # reads; region is tested separately, exactly as `GET /programs` does.
+    filters = payload.filters or RecommendationFilters()
+    active_filters = {
+        "tracks": filters.track,
+        "specialty_sectors": filters.specialty_sector,
+        "genders": filters.gender,
+        "school_days": filters.school_day,
+        "rurality": filters.rurality,
+        "pie": filters.pie,
+        "pace": filters.pace,
+        "enrollment_fee": filters.enrollment_fee,
+        "monthly_fee": filters.monthly_fee,
+        "religious_orientation": filters.religious_orientation,
+    }
+    filter_region = (filters.region or "").strip() or None
+    filters_active = filter_region is not None or any(active_filters.values())
+
+    candidate_filter = None
+    if filters_active:
+        def candidate_filter(row: pd.Series) -> bool:
+            if filter_region and _text(row, REGION) != filter_region:
+                return False
+            return program_matches_filters(row, active_filters)
+
     # Recommendation behavior is intentionally not client-configurable; these
     # are the frozen recommendation constants, in the order the engine expects.
     competition_weight = (
@@ -1248,6 +1294,7 @@ def recommend(
             min_similarity_score=RECOMMENDATION_MIN_SIMILARITY_SCORE,
             diversify=RECOMMENDATION_DIVERSIFY,
             diversity_strength=diversity_strength,
+            candidate_filter=candidate_filter,
         )
     except MtbEngineError as exc:
         raise _engine_error(exc, lang) from exc
@@ -1303,6 +1350,8 @@ def recommend(
             score=float(row.get("_recommendation_score_raw", 0.0)),
         ))
 
+    dropped_by_filter = int(diagnostics_raw.get("dropped_by_filter", 0) or 0)
+
     return RecommendationResponse(
         current_unmatched_risk=current_unmatched_risk,
         appended_wish_rank=len(payload.wishes) + 1,
@@ -1312,6 +1361,11 @@ def recommend(
             and home_geocoding_supports_hard_filter(home_geo_reference)
         ),
         similarity_fallback_mode=similarity_fallback_mode,
+        limited_by_filters=bool(
+            filters_active
+            and dropped_by_filter > 0
+            and len(items) < payload.max_recommendations
+        ),
         items=items,
         diagnostics=diagnostics,
     )

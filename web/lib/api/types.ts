@@ -32,6 +32,7 @@ export type RecommendationRequest = Schemas["RecommendationRequest"];
 export type RecommendationResponse = Schemas["RecommendationResponse"];
 export type RecommendationItem = Schemas["RecommendationItem"];
 export type RecommendationDiagnostics = Schemas["RecommendationDiagnostics"];
+export type RecommendationFilters = Schemas["RecommendationFilters"];
 export type HomeLocation = Schemas["HomeLocation"];
 
 /** Geocoding. */

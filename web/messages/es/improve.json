@@ -27,6 +27,10 @@
   "count": {
     "question": "¿Cuántas recomendaciones quieres?"
   },
+  "filters": {
+    "title": "Acota las sugerencias — opcional",
+    "intro": "Los mismos filtros de la página de búsqueda. Ajústalos y las sugerencias de abajo se actualizan para coincidir."
+  },
   "card": {
     "add": "Agregar este programa al final de mi lista",
     "chanceAppended": "Probabilidad de quedar como tu preferencia #{rank}",
@@ -41,6 +45,7 @@
   },
   "warning": {
     "similarityFallback": "La lista actual no contiene suficiente información utilizable para inferir preferencias claras de programas similares. Por eso, las sugerencias de abajo se basan principalmente en la distancia y la seguridad estimada de admisión.",
-    "failedCandidates": "Algunos programas no se pudieron evaluar debido a datos de origen inválidos y no se produjo ninguna recomendación."
+    "failedCandidates": "Algunos programas no se pudieron evaluar debido a datos de origen inválidos y no se produjo ninguna recomendación.",
+    "limitedByFilters": "Estas son todas las sugerencias que coinciden con tus filtros. Amplía los filtros para ver más."
   }
 }

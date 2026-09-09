@@ -6,3 +6,4 @@ export {
   formatPercent,
   MISSING_NUMBER,
 } from "./number";
+export { maskStudentId } from "./mask-student-id";

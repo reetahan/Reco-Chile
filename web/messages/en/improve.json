@@ -27,6 +27,10 @@
   "count": {
     "question": "How many recommendations do you want?"
   },
+  "filters": {
+    "title": "Narrow the suggestions — optional",
+    "intro": "The same filters as the search page. Set any of them and the suggestions below update to match."
+  },
   "card": {
     "add": "Add this program to the end of my list",
     "chanceAppended": "Chance of getting in as your preference #{rank}",
@@ -41,6 +45,7 @@
   },
   "warning": {
     "similarityFallback": "The current list does not contain enough usable information to infer clear similar-program preferences. The suggestions below are therefore based mainly on distance and estimated admission safety.",
-    "failedCandidates": "Some programs could not be evaluated because of invalid source data, and no recommendation was produced."
+    "failedCandidates": "Some programs could not be evaluated because of invalid source data, and no recommendation was produced.",
+    "limitedByFilters": "These are all the suggestions that match your filters. Widen the filters to see more."
   }
 }
