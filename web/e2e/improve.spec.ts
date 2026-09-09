@@ -379,3 +379,31 @@ test.describe("improve step — feeding recommendations back into the list", () 
     await expect(page.getByTestId("recommendations-added")).toHaveCount(0);
   });
 });
+
+test.describe("improve step — filtering the suggestions", () => {
+  test("the sidebar filters restrict the suggestions and flag a short result", async ({
+    page,
+  }) => {
+    await openImprove(page);
+    await waitForRecommendations(page);
+
+    const cards = page.getByTestId("recommendation-card");
+    const before = await cards.count();
+    expect(before).toBeGreaterThanOrEqual(2);
+
+    // The shared step-2 filter panel. The rarest enrollment-fee band nationally
+    // holds only a couple of programs — far fewer than the default three.
+    await page.getByTestId("filter-more-trigger").click();
+    await page.getByTestId("filter-enrollmentFee").click();
+    const payment = es.enums.payment as Record<string, string>;
+    await page
+      .getByRole("option", { name: payment["$25,001–$50,000"], exact: true })
+      .click();
+    await page.keyboard.press("Escape");
+
+    const limited = page.getByTestId("recommendation-limited-by-filters");
+    await expect(limited).toBeVisible({ timeout: 30_000 });
+    await expect(limited).toHaveText(es.improve.warning.limitedByFilters);
+    await expect.poll(() => cards.count()).toBeLessThan(before);
+  });
+});

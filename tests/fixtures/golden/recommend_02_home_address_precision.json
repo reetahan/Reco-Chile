@@ -106,7 +106,8 @@
     ],
     "diagnostics": {
       "failed_candidates": 0,
-      "failed_candidate_examples": []
+      "failed_candidate_examples": [],
+      "dropped_by_filter": 0
     }
   }
 }

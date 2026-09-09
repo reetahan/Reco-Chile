@@ -8,6 +8,7 @@ improvement, and picks a diverse top-N with Maximal Marginal Relevance.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
@@ -571,6 +572,7 @@ def recommend_similar_programs(
     diversify: bool = RECOMMENDATION_DIVERSIFY,
     diversity_strength: float = RECOMMENDATION_DIVERSITY_STRENGTH,
     candidate_cache: CandidateRiskCache | None = None,
+    candidate_filter: Callable[[pd.Series], bool] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Recommend programs as a portfolio-risk optimization problem.
@@ -583,6 +585,10 @@ def recommend_similar_programs(
     ``candidate_cache`` lets a caller reuse candidate base metrics across calls
     for the same student. When omitted the call is stateless: a fresh
     :class:`CandidateRiskCache` lives only for the duration of this call.
+
+    ``candidate_filter`` drops any program whose row it rejects before scoring,
+    so the ranking is unchanged and only eligible programs can be recommended.
+    The diagnostics report ``dropped_by_filter``: viable candidates it removed.
     """
     if candidate_cache is None:
         candidate_cache = CandidateRiskCache()
@@ -638,6 +644,7 @@ def recommend_similar_programs(
     rows = []
     failed_candidates = 0
     failed_candidate_examples: list[tuple[str, str]] = []
+    dropped_by_filter = 0
 
     for candidate_label, row in program_mapping.items():
         if candidate_label in selected_programs:
@@ -650,6 +657,13 @@ def recommend_similar_programs(
 
             capacity = max(program.capacity, 0.0)
             if capacity <= 0:
+                continue
+
+            # The sidebar filters, applied here so the ranking sees only eligible
+            # programs. Counted so the caller can tell a short result apart from
+            # one the filters caused.
+            if candidate_filter is not None and not candidate_filter(row):
+                dropped_by_filter += 1
                 continue
 
             raw_similarity = 0.0
@@ -777,6 +791,7 @@ def recommend_similar_programs(
     diagnostics = {
         "failed_candidates": failed_candidates,
         "failed_candidate_examples": tuple(failed_candidate_examples),
+        "dropped_by_filter": dropped_by_filter,
     }
 
     if not rows:

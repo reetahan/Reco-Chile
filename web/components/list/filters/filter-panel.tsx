@@ -75,9 +75,24 @@ export type FilterPanelProps = {
    */
   preservedCount?: number;
   className?: string;
+  /** Heading and lead copy; defaults to the step-2 wording. */
+  title?: string;
+  intro?: string;
+  /**
+   * The "N matching program option(s)" caption and the query behind it. It
+   * counts the whole catalogue, so step 4 (where the filters narrow
+   * recommendations, not a program search) turns it off.
+   */
+  showMatchCount?: boolean;
 };
 
-export function FilterPanel({ preservedCount, className }: FilterPanelProps) {
+export function FilterPanel({
+  preservedCount,
+  className,
+  title,
+  intro,
+  showMatchCount = true,
+}: FilterPanelProps) {
   const t = useTranslations("filters");
   const meta = useMeta();
   const enumLabel = useEnumLabel();
@@ -95,6 +110,7 @@ export function FilterPanel({ preservedCount, className }: FilterPanelProps) {
   const { totalMatched, loading } = useProgramSearch({
     filters,
     limit: COUNT_ONLY_LIMIT,
+    enabled: showMatchCount,
   });
 
   // Only fetched when the caller did not already do the work.
@@ -137,10 +153,10 @@ export function FilterPanel({ preservedCount, className }: FilterPanelProps) {
     >
       <header className="flex flex-col gap-1">
         <h2 id="filter-panel-title" className="text-sm font-semibold">
-          {t("title")}
+          {title ?? t("title")}
         </h2>
         <p className="text-sm text-pretty text-muted-foreground">
-          {t("intro")}
+          {intro ?? t("intro")}
         </p>
       </header>
 
@@ -265,7 +281,7 @@ export function FilterPanel({ preservedCount, className }: FilterPanelProps) {
         </CollapsibleContent>
       </Collapsible>
 
-      {narrowed ? (
+      {showMatchCount && narrowed ? (
         <p
           className="text-xs text-pretty text-muted-foreground"
           data-testid="filter-match-count"

@@ -348,6 +348,35 @@ export interface components {
       /** Failed Candidates */
       failed_candidates: number;
     };
+    /**
+     * RecommendationFilters
+     * @description The step-2 sidebar filters, reused on step 4 to restrict the candidate
+     *     pool. Same names and semantics as the ``GET /programs`` query parameters.
+     */
+    RecommendationFilters: {
+      /** Enrollment Fee */
+      enrollment_fee?: string[] | null;
+      /** Gender */
+      gender?: string[] | null;
+      /** Monthly Fee */
+      monthly_fee?: string[] | null;
+      /** Pace */
+      pace?: string[] | null;
+      /** Pie */
+      pie?: string[] | null;
+      /** Region */
+      region?: string | null;
+      /** Religious Orientation */
+      religious_orientation?: string[] | null;
+      /** Rurality */
+      rurality?: string[] | null;
+      /** School Day */
+      school_day?: string[] | null;
+      /** Specialty Sector */
+      specialty_sector?: string[] | null;
+      /** Track */
+      track?: string[] | null;
+    };
     /** RecommendationItem */
     RecommendationItem: {
       /** Applicants Per Seat */
@@ -383,6 +412,7 @@ export interface components {
     };
     /** RecommendationRequest */
     RecommendationRequest: {
+      filters?: components["schemas"]["RecommendationFilters"] | null;
       home?: components["schemas"]["HomeLocation"] | null;
       /**
        * Max Recommendations
@@ -410,6 +440,8 @@ export interface components {
       hard_distance_filter_applied: boolean;
       /** Items */
       items: components["schemas"]["RecommendationItem"][];
+      /** Limited By Filters */
+      limited_by_filters: boolean;
       /** Similarity Fallback Mode */
       similarity_fallback_mode: boolean;
     };

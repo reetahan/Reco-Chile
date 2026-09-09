@@ -4,6 +4,7 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
+import { FilterPanel } from "@/components/list/filters/filter-panel";
 import { StepPage } from "@/components/wizard/step-page";
 import { stepNumber, stepPath } from "@/components/wizard/steps";
 import { Button } from "@/components/ui/button";
@@ -28,11 +29,12 @@ import { ToneAlert } from "./tone-alert";
 /**
  * Step 4 — improve the preference list.
  *
- * The page is three things, in this order:
+ * The page, in order:
  *
  * 1. how many suggestions do you want (a slider, out in the open)
  * 2. improve distance estimates (the optional home address)
- * 3. the suggestions themselves
+ * 3. restrict the suggestions (the step-2 filter panel, shared store slice)
+ * 4. the suggestions themselves
  *
  * What went: the current-unmatched-risk card, the "adding at the end costs
  * nothing" note, the "How are these programs selected?" collapsible, and the
@@ -184,6 +186,17 @@ export function ImproveStep() {
 
       <Separator />
 
+      {/* 3. Restrict the suggestions — the same filters as step 2, sharing the
+          same store slice, so a family that narrowed the search there sees
+          narrowed recommendations here. */}
+      <FilterPanel
+        title={t("improve.filters.title")}
+        intro={t("improve.filters.intro")}
+        showMatchCount={false}
+      />
+
+      <Separator />
+
       {error !== null ? (
         <ToneAlert tone="destructive" data-testid="recommendation-error">
           {apiErrorMessage(t, error)}
@@ -203,6 +216,12 @@ export function ImproveStep() {
       {riskValuesMissing ? (
         <ToneAlert tone="warning" data-testid="portfolio-risk-failed">
           {t("errors.portfolioRiskFailed")}
+        </ToneAlert>
+      ) : null}
+
+      {data?.limited_by_filters ? (
+        <ToneAlert tone="info" data-testid="recommendation-limited-by-filters">
+          {t("improve.warning.limitedByFilters")}
         </ToneAlert>
       ) : null}
 

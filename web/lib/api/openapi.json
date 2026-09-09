@@ -552,6 +552,164 @@
         "title": "RecommendationDiagnostics",
         "type": "object"
       },
+      "RecommendationFilters": {
+        "description": "The step-2 sidebar filters, reused on step 4 to restrict the candidate\npool. Same names and semantics as the ``GET /programs`` query parameters.",
+        "properties": {
+          "enrollment_fee": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enrollment Fee"
+          },
+          "gender": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gender"
+          },
+          "monthly_fee": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monthly Fee"
+          },
+          "pace": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pace"
+          },
+          "pie": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pie"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "religious_orientation": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Religious Orientation"
+          },
+          "rurality": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rurality"
+          },
+          "school_day": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "School Day"
+          },
+          "specialty_sector": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Specialty Sector"
+          },
+          "track": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track"
+          }
+        },
+        "title": "RecommendationFilters",
+        "type": "object"
+      },
       "RecommendationItem": {
         "properties": {
           "applicants_per_seat": {
@@ -686,6 +844,16 @@
       },
       "RecommendationRequest": {
         "properties": {
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RecommendationFilters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "home": {
             "anyOf": [
               {
@@ -753,6 +921,10 @@
             "title": "Items",
             "type": "array"
           },
+          "limited_by_filters": {
+            "title": "Limited By Filters",
+            "type": "boolean"
+          },
           "similarity_fallback_mode": {
             "title": "Similarity Fallback Mode",
             "type": "boolean"
@@ -764,6 +936,7 @@
           "distance_reference",
           "hard_distance_filter_applied",
           "similarity_fallback_mode",
+          "limited_by_filters",
           "items",
           "diagnostics"
         ],

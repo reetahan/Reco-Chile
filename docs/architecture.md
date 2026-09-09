@@ -57,7 +57,7 @@ special-case `error_key`.
 | `GET /programs` | `region`, `q`, `limit`, `offset`, plus repeatable filter params `track`, `specialty_sector`, `gender`, `school_day`, `rurality`, `pie`, `pace`, `enrollment_fee`, `monthly_fee`, `religious_orientation` | filter semantics = `program_matches_filters`; items carry `calibration_imputed: bool` and the program-detail fields |
 | `GET /programs/{program_id}` | one program with all display fields | used by wish cards, so the store only holds `program_id`s |
 | `POST /simulate` | body: `student_id`, `wishes[]` (optional `equivalence_group` + 5 priority flags; at most `MAX_WISHES` = 30 wishes, exposed as `/meta.max_wishes`). Response: per-wish results, `attention_level`, `thresholds`, `outcomes[]` (sorted by probability, includes `Unmatched`), per-wish `lottery_number`, `priority_tier`, `lottery_population_used`, `calibration_imputed`; `equivalence_sensitivity` with `verdict: "stable"｜"stable_probability_shift"｜"outcome_changes"`, `predicted_chance_min/max`, and per-variant `tied_order: [[program_id, …], …]` | one code path covers strict and ties: a wish without an explicit `equivalence_group` becomes a singleton group |
-| `POST /recommend` | body: `student_id`, `wishes[]`, `max_recommendations` (2–10), optional `home: {lat, lon, precision}` | the server re-runs the simulation internally for the current unmatched risk (no client-supplied risk); response carries `distance_reference: "home"｜"list"`; items carry raw numbers (`chance_if_considered`, `projected_unmatched_risk`, `distance_km`, `capacity`, `applicants_per_seat`, `estimated_mtb_rank`, `score`, `risk_level`) plus `similarity_fallback_mode`, `hard_distance_filter_applied`, `diagnostics.failed_candidates` |
+| `POST /recommend` | body: `student_id`, `wishes[]`, `max_recommendations` (2–10), optional `home: {lat, lon, precision}`, optional `filters` (the `GET /programs` filter set: `region` + the ten repeatable lists) | the server re-runs the simulation internally for the current unmatched risk (no client-supplied risk); `filters` drops non-matching programs from the candidate pool before ranking (`program_matches_filters`), so the method is unchanged and only eligible programs are suggested; response carries `distance_reference: "home"｜"list"`, `limited_by_filters: bool` (the filters cut the result below `max_recommendations`); items carry raw numbers (`chance_if_considered`, `projected_unmatched_risk`, `distance_km`, `capacity`, `applicants_per_seat`, `estimated_mtb_rank`, `score`, `risk_level`) plus `similarity_fallback_mode`, `hard_distance_filter_applied`, `diagnostics.failed_candidates` |
 | `POST /geocode` | body: `address` | wraps `geocode_chilean_address`; response `{ok, lat, lon, precision, display_name, warning_key, error_key, params}`. Nominatim is throttled to 1 req/s per process server-side, with a per-IP rate limit in front |
 
 Contract rules:
@@ -162,6 +162,13 @@ highlights:
 - **Explanations live behind an info affordance**, never as a standing
   paragraph. Every program is named with its commune and region everywhere it is
   listed.
+- **The program filters also live on step 4.** `<FilterPanel>` renders on the
+  recommendations page against the same `filters` store slice as step 2, so a
+  family that narrowed the search there sees narrowed recommendations, and
+  either page edits both. The panel hides its catalogue match-count there
+  (`showMatchCount={false}`); the ranking method is untouched — the filters only
+  shrink the candidate pool — and `limited_by_filters` drives a "these are all
+  that match" note when fewer than the requested number qualify.
 - **"I'm happy — finish" opens a takeaway summary** at `/[locale]/finish`
   (`components/wizard/finish-screen.tsx`) rather than ending the session: the
   estimated chance, the final list, and the RUN/IPE masked to its last five body

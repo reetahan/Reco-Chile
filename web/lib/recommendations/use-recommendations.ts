@@ -67,6 +67,7 @@ export function useRecommendations(): UseRecommendationsResult {
   const studentId = useWizardStore((state) => state.studentId);
   const wishes = useWizardStore((state) => state.wishes);
   const home = useWizardStore((state) => state.home);
+  const filters = useWizardStore((state) => state.filters);
   const maxRecommendations = useWizardStore(
     (state) => state.recommendationCount,
   );
@@ -78,8 +79,9 @@ export function useRecommendations(): UseRecommendationsResult {
         wishes,
         maxRecommendations,
         home,
+        filters,
       }),
-    [studentId, wishes, maxRecommendations, home],
+    [studentId, wishes, maxRecommendations, home, filters],
   );
 
   // The effect keys off the *serialized* body, not the object: the store hands

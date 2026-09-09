@@ -9,9 +9,11 @@
  * (the address itself never leaves the browser except through the
  * explicit `/geocode` click, and only the resulting point is reused here).
  */
-import type { GeocodeResult, Wish } from "@/lib/store/wizard";
+import { filtersToQuery } from "@/lib/programs";
+import type { GeocodeResult, ProgramFilters, Wish } from "@/lib/store/wizard";
 import type {
   HomeLocation,
+  RecommendationFilters,
   RecommendationRequest,
   WishItem,
 } from "@/lib/api/types";
@@ -60,7 +62,19 @@ export type RecommendationInputs = {
   wishes: readonly Wish[];
   maxRecommendations: number;
   home: GeocodeResult | null;
+  /** The step-2 sidebar filters, reused on step 4 to restrict the candidates. */
+  filters?: ProgramFilters | null;
 };
+
+/** `filtersToQuery` output as the contract's `RecommendationFilters`, or `null`
+ * when nothing is set (the query object is `{}`). */
+function toRecommendationFilters(
+  filters: ProgramFilters | null | undefined,
+): RecommendationFilters | null {
+  if (!filters) return null;
+  const query = filtersToQuery(filters) as RecommendationFilters;
+  return Object.keys(query).length > 0 ? query : null;
+}
 
 /**
  * The request body, or `null` when there is nothing to ask for — no identifier
@@ -72,14 +86,18 @@ export function buildRecommendationRequest({
   wishes,
   maxRecommendations,
   home,
+  filters,
 }: RecommendationInputs): RecommendationRequest | null {
   const trimmedId = studentId.trim();
   if (trimmedId === "" || wishes.length === 0) return null;
 
-  return {
+  const request: RecommendationRequest = {
     student_id: trimmedId,
     wishes: wishes.map(toWishItem),
     max_recommendations: maxRecommendations,
     home: toHomeLocation(home),
   };
+  const activeFilters = toRecommendationFilters(filters);
+  if (activeFilters) request.filters = activeFilters;
+  return request;
 }

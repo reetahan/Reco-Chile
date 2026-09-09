@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { emptyFilters } from "@/lib/store/wizard";
 import type { GeocodeResult, Wish } from "@/lib/store/wizard";
 
 import {
@@ -107,6 +108,36 @@ describe("buildRecommendationRequest", () => {
       ],
       max_recommendations: 7,
       home: { lat: -33.45, lon: -70.66, precision: "address" },
+    });
+  });
+
+  it("includes the sidebar filters only when at least one is set", () => {
+    const base = {
+      studentId: "12.345.678-5",
+      wishes: [wish()],
+      maxRecommendations: 5,
+      home: null,
+    };
+
+    // No filters slice, or an empty one: the field is omitted entirely.
+    expect("filters" in buildRecommendationRequest(base)!).toBe(false);
+    expect(
+      "filters" in
+        buildRecommendationRequest({ ...base, filters: emptyFilters() })!,
+    ).toBe(false);
+
+    // Region plus one multi-select → the wire shape `/programs` uses.
+    const request = buildRecommendationRequest({
+      ...base,
+      filters: {
+        ...emptyFilters(),
+        region: "Región Metropolitana de Santiago",
+        pie: ["With PIE"],
+      },
+    });
+    expect(request?.filters).toEqual({
+      region: "Región Metropolitana de Santiago",
+      pie: ["With PIE"],
     });
   });
 
