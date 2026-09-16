@@ -408,9 +408,12 @@ for (const locale of LOCALES) {
       await expect(page.getByTestId("result-outcome")).toBeVisible({
         timeout: 60_000,
       });
-      // Step 3 is one box and the finish/improve
-      // choice: there is no disclosure to open, so this is the whole step.
       await scan(page, info, `step 3 (${locale}) — strict`);
+
+      // The "more odds" disclosure, opened — the family's second click.
+      await page.getByTestId("more-odds-trigger").click();
+      await expect(page.getByTestId("more-odds-content")).toBeVisible();
+      await scan(page, info, `step 3 (${locale}) — strict, more odds open`);
     });
 
     test("the finish summary", async ({ page }, info) => {
@@ -438,6 +441,11 @@ for (const locale of LOCALES) {
       });
       await expect(page.getByTestId("equivalence-verdict")).toHaveCount(0);
       await scan(page, info, `step 3 (${locale}) — ties`);
+
+      // The "more odds" disclosure, opened — its ties-mode third card included.
+      await page.getByTestId("more-odds-trigger").click();
+      await expect(page.getByTestId("equivalence-order-card")).toBeVisible();
+      await scan(page, info, `step 3 (${locale}) — ties, more odds open`);
     });
 
     test("step 4, recommendations and a geocoded home", async ({

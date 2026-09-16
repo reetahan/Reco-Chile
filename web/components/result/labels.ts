@@ -22,8 +22,11 @@ import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 
 import { formatProgramLocation } from "@/components/list/program-location";
-import type { SimulationResponse } from "@/lib/api/types";
+import type { SimulationResponse, WishResult } from "@/lib/api/types";
 import { usePrograms } from "@/lib/programs";
+
+/** The engine's outcome code for "none of the listed programs". */
+export const UNMATCHED = "Unmatched";
 
 export type ResultLabels = {
   /** An outcome label as the engine names it: a program label, or `Unmatched`. */
@@ -41,6 +44,12 @@ export type ResultLabels = {
    * returned instead — the same fallback the wish card shows.
    */
   location: (programId: string | null | undefined) => string;
+  /** The wish an outcome corresponds to (matched by id, falling back to the
+   * label) — `undefined` for `Unmatched` or a response carrying no id. */
+  wishFor: (outcome: {
+    label: string;
+    program_id: string | null;
+  }) => WishResult | undefined;
 };
 
 export function useResultLabels(simulation: SimulationResponse): ResultLabels {
@@ -77,7 +86,13 @@ export function useResultLabels(simulation: SimulationResponse): ResultLabels {
           tResult("locationUnknown")
         );
       },
+      wishFor: (outcome) =>
+        simulation.wishes.find((wish) =>
+          outcome.program_id
+            ? wish.program_id === outcome.program_id
+            : wish.program_label === outcome.label,
+        ),
     }),
-    [byId, programs, tOutcome, tTier, tResult],
+    [byId, programs, simulation, tOutcome, tTier, tResult],
   );
 }

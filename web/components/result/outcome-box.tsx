@@ -23,10 +23,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import type { SimulationResponse } from "@/lib/api/types";
 import { formatInt, formatPercent } from "@/lib/format";
 
-import { useResultLabels } from "./labels";
-
-/** The engine's outcome code for "none of the listed programs". */
-const UNMATCHED = "Unmatched";
+import { UNMATCHED, useResultLabels } from "./labels";
 
 export function OutcomeBox({ simulation }: { simulation: SimulationResponse }) {
   const t = useTranslations("result");
@@ -40,13 +37,7 @@ export function OutcomeBox({ simulation }: { simulation: SimulationResponse }) {
 
   // The wish the top school sits at — matched by id, the wire's join key; the
   // label is only a fallback for a response that carries no id.
-  const predictedWish = unmatched
-    ? undefined
-    : simulation.wishes.find((wish) =>
-        top.program_id
-          ? wish.program_id === top.program_id
-          : wish.program_label === top.label,
-      );
+  const predictedWish = unmatched ? undefined : labels.wishFor(top);
   // Only the program shape prints this; the fallback matters for the
   // impossible empty-outcomes case, which takes the unmatched branch anyway.
   const chance = top?.probability ?? simulation.unmatched_risk;

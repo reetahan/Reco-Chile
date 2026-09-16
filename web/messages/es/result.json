@@ -11,6 +11,14 @@
     "preferenceRank": "Tu preferencia n.º {rank}",
     "unmatchedBody": "Lo más probable es que no recibas ninguno de los programas de tu lista."
   },
+  "moreOdds": {
+    "trigger": "Mostrar más información sobre mis posibilidades",
+    "rankTitle": "N.º {rank} más probable",
+    "orderTitle": "El orden usado para este resultado",
+    "orderNote": "Algunas de tus preferencias están empatadas, así que era posible más de un orden. Este es el que se usó arriba.",
+    "ordersChecked": "Revisamos {n} orden(es) posible(s) de tus preferencias empatadas.",
+    "topChoiceShare": "{outcome} fue la primera opción en {share} de esos órdenes."
+  },
   "next": {
     "title": "¿Qué quieres hacer ahora?",
     "finish": "Estoy conforme — terminar",
