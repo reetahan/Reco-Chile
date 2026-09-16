@@ -1,9 +1,28 @@
 /**
- * How often each school was the top choice across the compatible strict
- * orders — the tied-preference breakdown on the result step.
+ * Pure probability math for the result step's "more odds" section: which
+ * outcomes are still worth showing, and how often each school was the top
+ * choice across the compatible strict orders.
  */
 
-import type { SimulationVariant } from "@/lib/api/types";
+import type { EstimatedOutcome, SimulationVariant } from "@/lib/api/types";
+
+/** How close to 1 counts as "nothing left to show" — half of the smallest
+ * unit `formatPercent` displays (one decimal place). */
+const FULLY_COVERED = 1 - 0.0005;
+
+/**
+ * The #2 and #3 outcomes, dropping either once the outcomes already shown
+ * cover ~100% of the probability — a #2 that would show 0.0% is not
+ * information.
+ */
+export function otherOutcomes(
+  outcomes: readonly EstimatedOutcome[],
+): EstimatedOutcome[] {
+  const top1 = outcomes[0]?.probability ?? 0;
+  if (top1 >= FULLY_COVERED) return [];
+  const top2 = top1 + (outcomes[1]?.probability ?? 0);
+  return outcomes.slice(1, top2 >= FULLY_COVERED ? 2 : 3);
+}
 
 export type OutcomeShare = {
   label: string;

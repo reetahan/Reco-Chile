@@ -16,6 +16,7 @@
  * them" over "Estimated chance: 100.0%" reads as a 100% chance of a place.
  */
 
+import type { ReactNode } from "react";
 import { CircleCheckIcon, InfoIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -25,7 +26,15 @@ import { formatInt, formatPercent } from "@/lib/format";
 
 import { UNMATCHED, useResultLabels } from "./labels";
 
-export function OutcomeBox({ simulation }: { simulation: SimulationResponse }) {
+export function OutcomeBox({
+  simulation,
+  moreOddsTrigger,
+}: {
+  simulation: SimulationResponse;
+  /** The "more odds" disclosure trigger, attached to the bottom of this card
+   * (see `more-odds.tsx`) — omitted when there is nothing more to show. */
+  moreOddsTrigger?: ReactNode;
+}) {
   const t = useTranslations("result");
   const locale = useLocale();
   const labels = useResultLabels(simulation);
@@ -103,6 +112,8 @@ export function OutcomeBox({ simulation }: { simulation: SimulationResponse }) {
         <InfoIcon aria-hidden="true" className="size-4 shrink-0" />
         <span data-testid="estimate-note">{t("outcome.disclaimer")}</span>
       </CardFooter>
+
+      {moreOddsTrigger}
     </Card>
   );
 }

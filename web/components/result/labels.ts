@@ -50,6 +50,7 @@ export type ResultLabels = {
     label: string;
     program_id: string | null;
   }) => WishResult | undefined;
+  schoolName: (programId: string) => string;
 };
 
 export function useResultLabels(simulation: SimulationResponse): ResultLabels {
@@ -92,6 +93,10 @@ export function useResultLabels(simulation: SimulationResponse): ResultLabels {
             ? wish.program_id === outcome.program_id
             : wish.program_label === outcome.label,
         ),
+      schoolName: (programId) =>
+        programs.get(programId)?.school_name ??
+        byId.get(programId) ??
+        programId,
     }),
     [byId, programs, simulation, tOutcome, tTier, tResult],
   );

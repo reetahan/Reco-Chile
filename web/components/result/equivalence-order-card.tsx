@@ -67,7 +67,9 @@ export function EquivalenceOrderCard({
               data-testid="outcome-share-row"
             >
               {t("topChoiceShare", {
-                outcome: labels.outcome(row.label),
+                outcome: row.programId
+                  ? labels.schoolName(row.programId)
+                  : labels.outcome(row.label),
                 share: formatPercent(row.share, locale),
               })}
             </li>

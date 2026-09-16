@@ -21,7 +21,6 @@ import type { SimulationError } from "@/lib/simulation/use-simulation";
 import { useWizardStore } from "@/lib/store/wizard";
 
 import { MoreOdds } from "./more-odds";
-import { OutcomeBox } from "./outcome-box";
 import { ResultActions } from "./result-actions";
 
 export function ResultStep() {
@@ -41,7 +40,6 @@ export function ResultStep() {
         <ResultSkeleton />
       ) : simulation ? (
         <div className="flex flex-col gap-8">
-          <OutcomeBox simulation={simulation} />
           <MoreOdds simulation={simulation} />
           <ResultActions />
         </div>

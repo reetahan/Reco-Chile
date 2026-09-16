@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import type { SimulationVariant } from "@/lib/api/types";
+import type { EstimatedOutcome, SimulationVariant } from "@/lib/api/types";
 
-import { topOutcomeShares } from "./outcome-shares";
+import { otherOutcomes, topOutcomeShares } from "./outcome-shares";
+
+function outcome(overrides: Partial<EstimatedOutcome> = {}): EstimatedOutcome {
+  return { label: "Liceo A", probability: 0, program_id: "1:A", ...overrides };
+}
 
 function variant(
   overrides: Partial<SimulationVariant> = {},
@@ -79,5 +83,47 @@ describe("topOutcomeShares", () => {
 
   it("returns an empty list for no variants", () => {
     expect(topOutcomeShares([])).toEqual([]);
+  });
+});
+
+describe("otherOutcomes", () => {
+  it("returns #2 and #3 when the top choice leaves room for both", () => {
+    const outcomes = [
+      outcome({ label: "A", probability: 0.5 }),
+      outcome({ label: "B", probability: 0.3 }),
+      outcome({ label: "C", probability: 0.2 }),
+    ];
+    expect(otherOutcomes(outcomes).map((o) => o.label)).toEqual(["B", "C"]);
+  });
+
+  it("drops #2 and #3 once the top choice alone is ~100%", () => {
+    const outcomes = [
+      outcome({ label: "A", probability: 1 }),
+      outcome({ label: "B", probability: 0 }),
+    ];
+    expect(otherOutcomes(outcomes)).toEqual([]);
+  });
+
+  it("keeps #2 but drops #3 once the top two together are ~100%", () => {
+    const outcomes = [
+      outcome({ label: "A", probability: 0.6 }),
+      outcome({ label: "B", probability: 0.4 }),
+      outcome({ label: "C", probability: 0 }),
+    ];
+    expect(otherOutcomes(outcomes).map((o) => o.label)).toEqual(["B"]);
+  });
+
+  it("treats a rounding-distance-from-100% top choice as fully covered", () => {
+    // Would display as 100.0%, so a #2 would only ever show 0.0%.
+    const outcomes = [
+      outcome({ label: "A", probability: 0.99991 }),
+      outcome({ label: "B", probability: 0.00009 }),
+    ];
+    expect(otherOutcomes(outcomes)).toEqual([]);
+  });
+
+  it("returns nothing for fewer than two outcomes", () => {
+    expect(otherOutcomes([outcome({ probability: 0.4 })])).toEqual([]);
+    expect(otherOutcomes([])).toEqual([]);
   });
 });
