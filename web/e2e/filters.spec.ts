@@ -116,20 +116,23 @@ async function findSameNamePair(
 }
 
 /**
- * Welcome → step 1 with a valid RUN → step 2, on the guided branch.
+ * Welcome → step 1 with a valid RUN → the list-choice question → step 2, on
+ * the guided branch.
  *
- * "No — help me build it" is answered on the welcome page item 2; it
- * is what makes step 2 render the filter panel at all.
+ * "No — help me build it" is what makes step 2 render the filter panel at
+ * all.
  */
 async function openBuilder(page: Page) {
   await page.goto("/es");
-  await page.getByTestId("welcome-no").click();
+  await page.getByTestId("welcome-continue").click();
   await page.waitForURL("**/es/disclaimer");
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL("**/es/student");
   await page.getByLabel(es.student.idLabel).fill(VALID_RUN);
   await page.getByTestId("wizard-continue").click();
+  await page.waitForURL("**/es/list-choice");
+  await page.getByTestId("list-choice-no").click();
   await page.waitForURL("**/es/list");
   await expect(page.getByTestId("filter-panel")).toBeVisible();
 }

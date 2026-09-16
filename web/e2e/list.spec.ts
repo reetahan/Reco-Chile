@@ -108,13 +108,13 @@ async function findSameNamePair(
 }
 
 /**
- * Welcome → step 1 → step 2. The RUN is never persisted, so every test starts
- * at the front door.
+ * Welcome → step 1 → list-choice → step 2. The RUN is never persisted, so
+ * every test starts at the front door.
  *
- * The "do you already have a list?" question is the welcome
- * page's pair of buttons, and answering it is what unlocks step 1. `"yes"` is
- * the default here because most of these scenarios are about ordering a list
- * that exists; `"no"` is the branch that adds the filter panel to step 2.
+ * "Do you already have a list?" is asked after step 1 now, at the list-choice
+ * page. `"yes"` is the default here because most of these scenarios are about
+ * ordering a list that exists; `"no"` is the branch that adds the filter panel
+ * to step 2.
  */
 async function openListStep(
   page: Page,
@@ -122,13 +122,15 @@ async function openListStep(
   branch: "yes" | "no" = "yes",
 ) {
   await page.goto(`/${locale}`);
-  await page.getByTestId(`welcome-${branch}`).click();
+  await page.getByTestId("welcome-continue").click();
   await page.waitForURL(`**/${locale}/disclaimer`);
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL(`**/${locale}/student`);
   await page.getByLabel(copy(locale, "student.idLabel")).fill(VALID_RUN);
   await page.getByTestId("wizard-continue").click();
+  await page.waitForURL(`**/${locale}/list-choice`);
+  await page.getByTestId(`list-choice-${branch}`).click();
   await page.waitForURL(`**/${locale}/list`);
 }
 
@@ -471,6 +473,8 @@ test.describe("step 2 — build and order the list", () => {
 
     await page.getByLabel(copy("es", "student.idLabel")).fill(VALID_RUN);
     await page.getByTestId("wizard-continue").click();
+    await page.waitForURL("**/es/list-choice");
+    await page.getByTestId("list-choice-yes").click();
     await page.waitForURL("**/es/list");
 
     // The list itself is persisted to sessionStorage.
@@ -489,19 +493,23 @@ test.describe("step 2 — build and order the list", () => {
     );
 
     // "Yes — review my list", changed via the header's brand link back to the
-    // welcome page (step 1 no longer echoes the answer): no filter panel, and
+    // welcome page and back through the same question: no filter panel, and
     // the order reminder instead.
     await page.getByTestId("wizard-back").click();
     await page.waitForURL("**/es/student");
     await page.getByRole("link", { name: copy("es", "app.title") }).click();
     await page.waitForURL("**/es");
-    await page.getByTestId("welcome-yes").click();
+    await page.getByTestId("welcome-continue").click();
     // The consent checkbox was already ticked on the way in and is a direct
     // view of that flag, so it comes back pre-checked here.
     await page.waitForURL("**/es/disclaimer");
     await page.getByTestId("disclaimer-continue").click();
     await page.waitForURL("**/es/student");
+    // The RUN is still in memory from the way in too.
+    await expect(page.getByTestId("wizard-continue")).toBeEnabled();
     await page.getByTestId("wizard-continue").click();
+    await page.waitForURL("**/es/list-choice");
+    await page.getByTestId("list-choice-yes").click();
     await page.waitForURL("**/es/list");
     await expect(page.getByTestId("filter-panel")).toHaveCount(0);
     await expect(page.getByTestId("list-caption")).toHaveText(

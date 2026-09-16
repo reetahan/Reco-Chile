@@ -8,11 +8,12 @@ import es from "../messages/es";
  *
  * `wizard.spec.ts` already covers the shell (routing, the welcome page, the
  * guard, the stepper, the locale switch). What is under test here is the step
- * itself: the live RUN/IPE pre-check, the jargon-free copy, and the welcome
- * answer — including that it survives a reload while the identifier does not.
- * The research-tool disclaimer lives on its own page now (`DisclaimerScreen`,
- * covered by `e2e/wizard.spec.ts`), the "about this estimate" caveat is gone
- * from this step, and the ties switch moved to step 2 (`e2e/list.spec.ts`).
+ * itself: the live RUN/IPE pre-check, the jargon-free copy, and the disclaimer
+ * flag — including that it survives a reload while the identifier does not.
+ * The "do you already have your list?" question now lives on its own page,
+ * after this step (`ListChoiceScreen`, covered by `e2e/wizard.spec.ts`); the
+ * "about this estimate" caveat is gone from this step, and the ties switch
+ * moved to step 2 (`e2e/list.spec.ts`).
  *
  * The step is only reachable through the welcome page, so every test
  * enters through `openStudent()` rather than deep-linking `/es/student`.
@@ -66,13 +67,10 @@ function validCopy(locale: Locale, kind: "RUN" | "IPE"): string {
  */
 async function openStudent(
   page: Page,
-  {
-    locale = "es",
-    answer = "yes",
-  }: { locale?: Locale; answer?: "yes" | "no" } = {},
+  { locale = "es" }: { locale?: Locale } = {},
 ) {
   await page.goto(`/${locale}`);
-  await page.getByTestId(`welcome-${answer}`).click();
+  await page.getByTestId("welcome-continue").click();
   await page.waitForURL(`**/${locale}/disclaimer`);
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
@@ -170,25 +168,25 @@ test.describe("step 1 — identify the student", () => {
 });
 
 test.describe("step 1 — mode controls", () => {
-  test("the welcome answer survives a reload; the RUN/IPE does not", async ({
+  test("the disclaimer flag survives a reload; the RUN/IPE does not", async ({
     page,
   }) => {
-    await openStudent(page, { answer: "no" });
+    await openStudent(page);
 
     await identifierInput(page).fill(VALID_RUN);
     await expect(continueButton(page)).toBeEnabled();
 
-    // Privacy: the welcome answer is persisted, the identifier is
+    // Privacy: the consent flag is persisted, the identifier is
     // never written anywhere.
     const stored = await persisted(page);
-    expect(stored).toContain('"listExists":false');
+    expect(stored).toContain('"disclaimerAcknowledged":true');
     expect(stored).not.toContain("12345678");
     expect(stored).not.toContain(VALID_RUN);
     expect(page.url()).not.toContain("12");
 
     await page.reload();
 
-    // The answer is what keeps the step reachable at all after a reload
+    // The flag is what keeps the step reachable at all after a reload
     // — nothing on this step echoes it back any more.
     await expect(page).toHaveURL(/\/es\/student$/);
 

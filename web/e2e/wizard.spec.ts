@@ -7,10 +7,11 @@ import es from "../messages/es";
  * Shell smoke test: navigating `/es/student` → `/es/list` works with the guard,
  * and step 1 loads in both locales.
  *
- * The wizard opens on a welcome page instead of step 1: `/es` asks "do you
- * already have your list?", the answer writes `listExists`, and step 1 cannot
- * be entered without it. So every scenario here starts at the front door, and
- * the guard's "last allowed step" can now be the welcome page.
+ * The wizard opens on a welcome page instead of step 1, but it no longer asks
+ * anything: `/es` is a single Continue button, then the disclaimer, then
+ * step 1 (the RUN/IPE). "Do you already have your list?" is asked *after*
+ * step 1 now, at `/es/list-choice`, so both paths start the same way — and
+ * that answer is what unlocks step 2.
  *
  * Expected copy is read from `messages/{es,en}.json` rather than frozen here, so
  * these stay true when a sentence is reworded — what is under test is the
@@ -55,24 +56,42 @@ function stepHeading(locale: Locale, key: string) {
 }
 
 /**
- * Through the front door and into step 1. The front door is two screens: the welcome question (`answer: "yes"` is "I
- * already have my list", `"no"` asks for help building it) and then the
- * "Before we continue" consent checkbox.
+ * Through the front door and into step 1: the welcome page's single Continue
+ * button, then the "Before we continue" consent checkbox.
  */
 async function enterWizard(
   page: Page,
-  { locale = "es", answer = "yes" }: { locale?: Locale; answer?: "yes" | "no" },
+  { locale = "es" }: { locale?: Locale } = {},
 ) {
   await page.goto(`/${locale}`);
-  await page.getByTestId(`welcome-${answer}`).click();
+  await page.getByTestId("welcome-continue").click();
   await page.waitForURL(`**/${locale}/disclaimer`);
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL(`**/${locale}/student`);
 }
 
+/**
+ * From step 1, through the list-choice question, into step 2. `answer: "yes"`
+ * is "I already have my list", `"no"` asks for help building it.
+ */
+async function enterListStep(
+  page: Page,
+  {
+    locale = "es",
+    answer = "yes",
+  }: { locale?: Locale; answer?: "yes" | "no" } = {},
+) {
+  await enterWizard(page, { locale });
+  await page.getByLabel(copy(locale, "student.idLabel")).fill(VALID_RUN);
+  await page.getByTestId("wizard-continue").click();
+  await page.waitForURL(`**/${locale}/list-choice`);
+  await page.getByTestId(`list-choice-${answer}`).click();
+  await page.waitForURL(`**/${locale}/list`);
+}
+
 test.describe("welcome page", () => {
-  test("opens the wizard with the positive framing and two choices", async ({
+  test("opens the wizard with the positive framing and a single continue", async ({
     page,
   }) => {
     const response = await page.goto("/es");
@@ -85,51 +104,14 @@ test.describe("welcome page", () => {
         name: copy("es", "app.welcome.headline"),
       }),
     ).toBeVisible();
-    await expect(page.getByTestId("welcome")).toContainText(
-      copy("es", "app.welcome.question"),
-    );
-    await expect(page.getByTestId("welcome-yes")).toHaveText(
-      copy("es", "app.welcome.yes"),
-    );
-    await expect(page.getByTestId("welcome-no")).toHaveText(
-      copy("es", "app.welcome.no"),
+    await expect(page.getByTestId("welcome-continue")).toHaveText(
+      copy("es", "steps.continue"),
     );
 
     // No stepper on the front door, and no step title either.
     await expect(
       page.getByRole("navigation", { name: copy("es", "steps.navLabel") }),
     ).toHaveCount(0);
-  });
-
-  test("each answer opens step 1 and is remembered there", async ({ page }) => {
-    await enterWizard(page, { answer: "no" });
-
-    await expect(
-      page.getByRole("heading", stepHeading("es", "student.title")),
-    ).toBeVisible();
-    // "Remembered" means it survived into `sessionStorage` — step 1
-    // itself carries no visible echo of the answer any more.
-    const stored = await page.evaluate(() =>
-      window.sessionStorage.getItem("reco-chile.wizard"),
-    );
-    expect(stored).toContain('"listExists":false');
-
-    // The other answer, from the same front door — reached via the header's
-    // brand link, the only way back to the welcome page from step 1 now. The
-    // consent checkbox was already ticked on the way in, so the disclaimer
-    // page here needs no re-ticking — it is a direct view of the flag that
-    // recorded it.
-    await page.getByRole("link", { name: copy("es", "app.title") }).click();
-    await page.waitForURL("**/es");
-    await page.getByTestId("welcome-yes").click();
-    await page.waitForURL("**/es/disclaimer");
-    await expect(page.getByTestId("disclaimer-checkbox")).toBeChecked();
-    await page.getByTestId("disclaimer-continue").click();
-    await page.waitForURL("**/es/student");
-    const storedAfter = await page.evaluate(() =>
-      window.sessionStorage.getItem("reco-chile.wizard"),
-    );
-    expect(storedAfter).toContain('"listExists":true');
   });
 
   test("loads in English too", async ({ page }) => {
@@ -150,13 +132,48 @@ test.describe("welcome page", () => {
   test("a deep link into the wizard without an answer lands here", async ({
     page,
   }) => {
-    // `listExists` is the only gate step 1 has, and it is not set on a cold
-    // load, so every wizard route redirects to the welcome page.
+    // The consent checkbox is the only gate step 1 has, and it is not set on
+    // a cold load, so every wizard route redirects to the welcome page — the
+    // same page `reset()` sends a "start over" to.
     for (const locked of ["student", "list", "result", "improve", "finish"]) {
       await page.goto(`/es/${locked}`);
       await page.waitForURL("**/es");
-      await expect(page.getByTestId("welcome-yes")).toBeVisible();
+      await expect(page.getByTestId("welcome-continue")).toBeVisible();
     }
+  });
+});
+
+test.describe("list-choice page", () => {
+  test("each answer opens step 2 and is remembered there", async ({ page }) => {
+    await enterListStep(page, { answer: "no" });
+
+    await expect(
+      page.getByRole("heading", stepHeading("es", "list.title")),
+    ).toBeVisible();
+    const stored = await page.evaluate(() =>
+      window.sessionStorage.getItem("reco-chile.wizard"),
+    );
+    expect(stored).toContain('"listExists":false');
+
+    // The other answer, from the same question — reached via the header's
+    // brand link back to the welcome page. The consent checkbox and the RUN
+    // are both still in memory from the way in, so neither needs re-entering.
+    await page.getByRole("link", { name: copy("es", "app.title") }).click();
+    await page.waitForURL("**/es");
+    await page.getByTestId("welcome-continue").click();
+    await page.waitForURL("**/es/disclaimer");
+    await expect(page.getByTestId("disclaimer-checkbox")).toBeChecked();
+    await page.getByTestId("disclaimer-continue").click();
+    await page.waitForURL("**/es/student");
+    await expect(page.getByTestId("wizard-continue")).toBeEnabled();
+    await page.getByTestId("wizard-continue").click();
+    await page.waitForURL("**/es/list-choice");
+    await page.getByTestId("list-choice-yes").click();
+    await page.waitForURL("**/es/list");
+    const storedAfter = await page.evaluate(() =>
+      window.sessionStorage.getItem("reco-chile.wizard"),
+    );
+    expect(storedAfter).toContain('"listExists":true');
   });
 });
 
@@ -211,9 +228,9 @@ test.describe("wizard shell", () => {
   test("the guard sends a locked step back to step 1", async ({ page }) => {
     await enterWizard(page, {});
 
-    // The RUN/IPE is never persisted, so with the welcome
-    // answer given and nothing else, steps 2-4 stay locked however the URL was
-    // reached — and the fallback is now step 1, not the welcome page. `finish`
+    // The RUN/IPE is never persisted, so with the disclaimer
+    // acknowledged and nothing else, steps 2-4 stay locked however the URL was
+    // reached — and the fallback is now step 1, not the front door. `finish`
     // is locked by the same chain: it needs a fresh simulation,
     // and a simulation is memory-only, so a fresh page load never has one.
     for (const locked of ["list", "result", "improve", "finish"]) {
@@ -225,16 +242,16 @@ test.describe("wizard shell", () => {
     }
   });
 
-  test("a hard load of step 1 keeps the answer instead of bouncing", async ({
+  test("a hard load of step 1 keeps the disclaimer instead of bouncing", async ({
     page,
   }) => {
-    await enterWizard(page, { answer: "no" });
+    await enterWizard(page, {});
 
-    // The answer lives in `sessionStorage` and only reaches the store one
-    // effect after the tree mounts. The guard has to wait for that hydration
-    // (`hydrated` in the store) — redirecting on the empty default would send
-    // a family that *did* answer back to the front door on every reload or
-    // shared link.
+    // The consent flag lives in `sessionStorage` and only reaches the store
+    // one effect after the tree mounts. The guard has to wait for that
+    // hydration (`hydrated` in the store) — redirecting on the empty default
+    // would send a family that *did* acknowledge it back to the disclaimer on
+    // every reload or shared link.
     await page.goto("/es/student");
     await page.waitForLoadState("networkidle");
     await expect(page).toHaveURL(/\/es\/student$/);
@@ -243,7 +260,9 @@ test.describe("wizard shell", () => {
     await expect(page).toHaveURL(/\/es\/student$/);
   });
 
-  test("a valid RUN enables Continue and opens step 2", async ({ page }) => {
+  test("a valid RUN enables Continue and opens the list-choice question", async ({
+    page,
+  }) => {
     await enterWizard(page, {});
 
     const continueButton = page.getByTestId("wizard-continue");
@@ -269,7 +288,17 @@ test.describe("wizard shell", () => {
     await expect(continueButton).toBeEnabled();
 
     await continueButton.click();
-    await page.waitForURL("**/es/list");
+    await page.waitForURL("**/es/list-choice");
+    await expect(
+      page.getByRole("heading", {
+        level: 1,
+        name: copy("es", "app.listChoice.headline"),
+      }),
+    ).toBeVisible();
+  });
+
+  test("the list-choice question opens step 2", async ({ page }) => {
+    await enterListStep(page);
     await expect(
       page.getByRole("heading", stepHeading("es", "list.title")),
     ).toBeVisible();
@@ -279,10 +308,7 @@ test.describe("wizard shell", () => {
     // The region select only exists in the guided branch, and it is the step's
     // one control filled straight from `/meta` (an earlier build printed
     // the region count instead; the filter panel replaced it).
-    await enterWizard(page, { answer: "no" });
-    await page.getByLabel(copy("es", "student.idLabel")).fill(VALID_RUN);
-    await page.getByTestId("wizard-continue").click();
-    await page.waitForURL("**/es/list");
+    await enterListStep(page, { answer: "no" });
 
     // Proves the whole data path: FastAPI -> fetchMeta() on the server ->
     // MetaProvider -> useMeta() in the client tree. Chile has 16 regions, so a
@@ -294,10 +320,7 @@ test.describe("wizard shell", () => {
   test("step 2 keeps its own gate closed while the list is empty", async ({
     page,
   }) => {
-    await enterWizard(page, {});
-    await page.getByLabel(copy("es", "student.idLabel")).fill(VALID_RUN);
-    await page.getByTestId("wizard-continue").click();
-    await page.waitForURL("**/es/list");
+    await enterListStep(page);
 
     // Entering step 2 does not unlock step 3: that needs at least one wish.
     await expect(page.getByTestId("wizard-continue")).toBeDisabled();
@@ -308,7 +331,7 @@ test.describe("wizard shell", () => {
     ).toHaveCount(0);
   });
 
-  test("the stepper unlocks step 2 only once step 1 is valid", async ({
+  test("the stepper unlocks step 2 only once step 1 and the list choice are done", async ({
     page,
   }) => {
     await enterWizard(page, {});
@@ -319,8 +342,19 @@ test.describe("wizard shell", () => {
     await expect(stepTwoLink).toHaveCount(0);
 
     await page.getByLabel(copy("es", "student.idLabel")).fill(VALID_RUN);
-    await expect(stepTwoLink.first()).toBeVisible();
+    // A valid RUN alone does not unlock it: the list-choice question is next.
+    await expect(stepTwoLink).toHaveCount(0);
 
+    await page.getByTestId("wizard-continue").click();
+    await page.waitForURL("**/es/list-choice");
+    await page.getByTestId("list-choice-yes").click();
+    await page.waitForURL("**/es/list");
+
+    // Back to step 1: now that the list choice is answered too, the rail
+    // link is live.
+    await page.getByTestId("wizard-back").click();
+    await page.waitForURL("**/es/student");
+    await expect(stepTwoLink.first()).toBeVisible();
     await stepTwoLink.first().click();
     await page.waitForURL("**/es/list");
   });
@@ -337,11 +371,10 @@ test.describe("wizard shell", () => {
     await expect(rail).not.toContainText(copy("es", "app.finish.title"));
   });
 
-  test("Back returns from step 2 to step 1", async ({ page }) => {
-    await enterWizard(page, {});
-    await page.getByLabel(copy("es", "student.idLabel")).fill(VALID_RUN);
-    await page.getByTestId("wizard-continue").click();
-    await page.waitForURL("**/es/list");
+  test("Back returns from step 2 to step 1, skipping the list choice", async ({
+    page,
+  }) => {
+    await enterListStep(page);
 
     await page.getByTestId("wizard-back").click();
     await page.waitForURL("**/es/student");

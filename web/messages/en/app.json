@@ -10,8 +10,10 @@
   "yes": "Yes",
   "no": "No",
   "welcome": {
-    "headline": "Calculate your admission chances",
-    "question": "Do you already have your preference list?",
+    "headline": "Calculate your admission chances"
+  },
+  "listChoice": {
+    "headline": "Do you already have your preference list?",
     "yes": "Yes",
     "no": "No, help me build it"
   },

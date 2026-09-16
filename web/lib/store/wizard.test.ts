@@ -4,7 +4,6 @@ import type { GeocodeResult, SimulationResponse } from "@/lib/store/types";
 import {
   canContinue,
   canEnterStep,
-  hasAcknowledgedDisclaimer,
   hasListChoice,
   DEFAULT_RECOMMENDATION_COUNT,
   emptyFilters,
@@ -59,8 +58,8 @@ const store = () => useWizardStore.getState();
 function seed(options: { ties?: boolean; programIds?: string[] } = {}) {
   const { ties = false, programIds = ["1001:A", "1002:B", "1003:C"] } = options;
   store().reset();
-  // The welcome answer and the consent checkbox are what unlocks
-  // step 1 now, so every "reachable" fixture has to include both.
+  // The disclaimer unlocks step 1, and the list-choice answer (asked after
+  // it) unlocks step 2, so every "reachable" fixture needs both.
   store().setListExists(true);
   store().setDisclaimerAcknowledged(true);
   store().setStudentId(VALID_RUN);
@@ -534,32 +533,29 @@ describe("step gates", () => {
     expect(canContinue(state(), 1)).toBe(true);
   });
 
-  it("step 1 needs the welcome answer; step 2 needs step 1", () => {
-    // Nothing answered: the guard's target is the welcome page, not step 1.
-    expect(hasListChoice(state())).toBe(false);
+  it("step 1 needs the disclaimer; step 2 needs step 1 and the list choice", () => {
+    // Nothing acknowledged: the guard's target is the disclaimer page.
     expect(canEnterStep(state(), 1)).toBe(false);
     expect(canEnterStep(state(), 2)).toBe(false);
 
     store().setStudentId(VALID_RUN);
-    // A valid identifier does not substitute for the choice.
-    expect(canEnterStep(state(), 1)).toBe(false);
-    expect(canEnterStep(state(), 2)).toBe(false);
-
-    store().setListExists(false);
-    // The welcome answer alone is not enough: the consent checkbox still gates.
-    expect(hasAcknowledgedDisclaimer(state())).toBe(false);
+    // A valid identifier does not substitute for the consent checkbox.
     expect(canEnterStep(state(), 1)).toBe(false);
     expect(canEnterStep(state(), 2)).toBe(false);
 
     store().setDisclaimerAcknowledged(true);
     expect(canEnterStep(state(), 1)).toBe(true);
+    // Step 1 is satisfied, but the list choice — asked after it — is not.
+    expect(hasListChoice(state())).toBe(false);
+    expect(canEnterStep(state(), 2)).toBe(false);
+
+    store().setListExists(false);
     expect(canEnterStep(state(), 2)).toBe(true);
 
-    // Either welcome answer counts; only `null` locks the step.
+    // Either answer counts; only `null` locks step 2 again.
     store().setListExists(true);
-    expect(canEnterStep(state(), 1)).toBe(true);
+    expect(canEnterStep(state(), 2)).toBe(true);
     store().setListExists(null);
-    expect(canEnterStep(state(), 1)).toBe(false);
     expect(canEnterStep(state(), 2)).toBe(false);
   });
 
@@ -611,12 +607,14 @@ describe("step gates", () => {
   });
 
   it("lastAllowedStep is the redirect target of the step guard", () => {
-    // `null` = not even step 1: the welcome page is where the guard sends them.
+    // `null` = not even step 1: the disclaimer page is where the guard sends them.
     expect(lastAllowedStep(state())).toBeNull();
-    store().setListExists(false);
     store().setDisclaimerAcknowledged(true);
     expect(lastAllowedStep(state())).toBe(1);
     store().setStudentId(VALID_RUN);
+    // Step 1 is done, but the list choice — asked after it — is not.
+    expect(lastAllowedStep(state())).toBe(1);
+    store().setListExists(false);
     expect(lastAllowedStep(state())).toBe(2);
     store().addWish("1001:A");
     expect(lastAllowedStep(state())).toBe(3);
