@@ -19,24 +19,30 @@ export type StepSlug = (typeof STEP_SLUGS)[number];
 /**
  * The welcome page — `app/[locale]/page.tsx`, the wizard's front door.
  *
- * It is not a step: it carries no stepper, no Back/Continue bar and no number.
- * Its two buttons write `listExists`, which is what `canEnterStep(1)` now
- * requires, so it is also the step guard's redirect target while that choice is
- * unmade. Locale-free like every path here — `Link`/`useRouter` from
- * `@/i18n/navigation` add the `[locale]` prefix.
+ * It is not a step: it carries no stepper, no Back/Continue bar and no number,
+ * and it asks no question — just a Continue button to the disclaimer. Locale-
+ * free like every path here — `Link`/`useRouter` from `@/i18n/navigation` add
+ * the `[locale]` prefix.
  */
 export const WELCOME_PATH = "/";
 
 /**
  * The "Before we continue" consent page — `app/[locale]/disclaimer/page.tsx`.
  *
- * Screen 2 of the front door: shown after the welcome page's Yes/No choice and
- * before step 1, with one checkbox ("I understand and want to continue") that
- * has to be checked before the family can reach step 1. Like the welcome page
- * it carries no stepper, no Back/Continue bar and no `/meta` fetch, and is
- * outside the `(wizard)` route group for the same reason.
+ * Shown after the welcome page's Continue button and before step 1, with one
+ * checkbox that has to be checked before the family can reach step 1. Like the
+ * welcome page it carries no stepper, no Back/Continue bar and no `/meta`
+ * fetch, and is outside the `(wizard)` route group for the same reason.
  */
 export const DISCLAIMER_PATH = "/disclaimer";
+
+/**
+ * Asked after step 1 (the RUN/IPE) rather than before it, so both paths start
+ * the same way. Writes `listExists`, which `canEnterStep(2)` requires; like
+ * the welcome and disclaimer pages it carries no stepper and no
+ * Back/Continue bar.
+ */
+export const LIST_CHOICE_PATH = "/list-choice";
 
 /**
  * The completion page — `app/[locale]/(wizard)/finish/page.tsx`.
@@ -79,11 +85,8 @@ export const STEP_TITLE_KEY = {
 } as const satisfies Record<StepSlug, string>;
 
 export const STEP_LEAD_KEY = {
-  // Why the identifier is needed at all, in one sentence; the detail is in the
-  // "Why do we ask for this?" popover.
   student: "student.lead",
   list: "list.order.preferenceHint",
-  // "About this estimate" — the caveat shown beside the result.
   result: "app.aboutEstimate.body",
   improve: "improve.methodBody",
 } as const satisfies Record<StepSlug, string>;
@@ -119,21 +122,6 @@ export function stepFromPathname(pathname: string): StepSlug | null {
   return last !== undefined && isStepSlug(last) ? last : null;
 }
 
-/**
- * Does the step make its own onward choice, instead of the shell's Continue?
- *
- * Step 3 does, since the result page ends with an
- * explicit *I'm happy — finish* / *not happy — help me improve my list* pair
- * (`components/result/result-actions.tsx`). A third, unlabelled Continue below
- * them silently picked the "improve" branch, which is exactly the "you are not
- * done yet" reading the product feedback asked us to remove — so the bar keeps
- * Back and drops Continue there, as it already does on the terminal step.
- *
- * The gate itself is untouched: `canContinue(state, 3)` still means "a fresh
- * simulation exists" and still guards step 4 through `canEnterStep(4)`. The
- * choice is only rendered once the simulation succeeded, so there is no way
- * forward from a failed or stale result either way.
- */
 export function ownsForwardChoice(slug: StepSlug): boolean {
   return slug === "result";
 }
@@ -141,6 +129,19 @@ export function ownsForwardChoice(slug: StepSlug): boolean {
 /** The slug a Continue press moves to, or `null` on the terminal step. */
 export function nextSlug(slug: StepSlug): StepSlug | null {
   return STEP_SLUGS[STEP_SLUGS.indexOf(slug) + 1] ?? null;
+}
+
+/**
+ * The path a Continue press actually opens from `slug`. Same as
+ * `stepPath(nextSlug(slug))`, except student's continue detours through
+ * `LIST_CHOICE_PATH` first — every time, even if already answered, since that
+ * question's only way back is finding the page again.
+ */
+export function forwardPath(slug: StepSlug): string | null {
+  if (ownsForwardChoice(slug)) return null;
+  if (slug === "student") return LIST_CHOICE_PATH;
+  const next = nextSlug(slug);
+  return next ? stepPath(next) : null;
 }
 
 /** The slug a Back press moves to, or `null` on the first step. */

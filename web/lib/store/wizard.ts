@@ -380,10 +380,10 @@ export const useWizardStore = create<WizardStore>()(
       },
 
       setListExists: (listExists) => {
-        // The welcome page's answer. It selects a UI branch — step
-        // 2 shows the filter panel only for "No, help me build it" — so the
-        // list itself and the simulation survive a change of mind. `null` puts
-        // the family back in front of the welcome question (`canEnterStep(1)`).
+        // The list-choice answer, asked after step 1. It selects a UI branch —
+        // step 2 shows the filter panel only for "No, help me build it" — so
+        // the list itself and the simulation survive a change of mind. `null`
+        // locks step 2 again (`canEnterStep(2)`).
         set({ listExists });
       },
 
@@ -642,16 +642,13 @@ export function isStudentIdValid(
 }
 
 /**
- * Has the welcome page's question been answered?
+ * Has the list-choice question been answered? Asked after step 1 (the
+ * RUN/IPE), not before it, so both paths start the same way — this is the
+ * *entry* condition of step 2, not step 1.
  *
- * `listExists === null` means "not asked yet", and since the two welcome
- * buttons are the only way to answer it, an unanswered choice means the family
- * has not come through the front door at all — a deep link straight to
- * `/es/student`, or a `reset()`. That is what makes it the *entry* condition of
- * step 1 rather than a Continue condition: the guard sends them to
- * `WELCOME_PATH` instead of showing a step whose question was skipped.
- *
- * The answer is persisted, so a reload keeps the family where they were.
+ * `listExists === null` means "not asked yet": a deep link straight to
+ * `/es/list`, or a `reset()`. The answer is persisted, so a reload keeps the
+ * family where they were.
  */
 export function hasListChoice(state: Pick<WizardState, "listExists">): boolean {
   return state.listExists !== null;
@@ -659,10 +656,9 @@ export function hasListChoice(state: Pick<WizardState, "listExists">): boolean {
 
 /**
  * Has the "Before we continue" consent checkbox been checked? Shown right
- * after the welcome answer and before step 1 — like `listExists`, this is an
- * *entry* condition for step 1, not a step 1 field, so a deep link past it
- * (with the welcome answer given but the checkbox unmarked) sends the family
- * to the consent page instead of into the step.
+ * after the welcome page and before step 1 — this is the *entry* condition
+ * for step 1, not a step 1 field, so a deep link past it sends the family to
+ * the consent page instead of into the step.
  */
 export function hasAcknowledgedDisclaimer(
   state: Pick<WizardState, "disclaimerAcknowledged">,
@@ -717,8 +713,8 @@ export function canContinue(
 }
 
 /** May the user open `step`? Cumulative: every earlier gate must hold too, so
- * a deep link to a locked step can be redirected. Step 1 is no longer
- * unconditional — it needs the welcome page's answer (`hasListChoice`). */
+ * a deep link to a locked step can be redirected. Step 1 only needs the
+ * consent checkbox; the list-choice question comes after it, gating step 2. */
 export function canEnterStep(
   state: WizardState,
   step: WizardStep,
@@ -726,12 +722,13 @@ export function canEnterStep(
 ): boolean {
   switch (step) {
     case 1:
-      // The welcome choice and the consent checkbox, not "always": step 1 no
-      // longer asks the question, so entering it without an answer would strand
-      // the family in a wizard branch nobody chose.
-      return hasListChoice(state) && hasAcknowledgedDisclaimer(state);
+      return hasAcknowledgedDisclaimer(state);
     case 2:
-      return canEnterStep(state, 1, options) && canContinue(state, 1, options);
+      return (
+        canEnterStep(state, 1, options) &&
+        canContinue(state, 1, options) &&
+        hasListChoice(state)
+      );
     case 3:
       return canEnterStep(state, 2, options) && canContinue(state, 2, options);
     case 4:
@@ -749,8 +746,8 @@ export function lastAllowedStep(
   for (const step of steps) {
     if (canEnterStep(state, step, options)) return step;
   }
-  // Not even step 1: the welcome question is unanswered, so the redirect target
-  // is the welcome page (`WELCOME_PATH`), which is not a step.
+  // Not even step 1: the redirect target is the welcome page
+  // (`WELCOME_PATH`), which is not a step.
   return null;
 }
 

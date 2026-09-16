@@ -369,6 +369,8 @@ for (const viewport of VIEWPORTS) {
 
       // --- step 2 --------------------------------------------------------
       await page.getByTestId("wizard-continue").click();
+      await page.waitForURL("**/es/list-choice");
+      await page.getByTestId("list-choice-yes").click();
       await page.waitForURL("**/es/list");
       await expect(page.getByTestId("wish-card")).toHaveCount(
         LIST.inputs.wishes.length,

@@ -372,6 +372,8 @@ test.describe("improve step — feeding recommendations back into the list", () 
     await page.getByTestId("wizard-back").click();
     await page.waitForURL("**/es/student");
     await page.getByTestId("wizard-continue").click();
+    await page.waitForURL("**/es/list-choice");
+    await page.getByTestId("list-choice-yes").click();
     await page.waitForURL("**/es/list");
     await expect(page.getByTestId("wish-card")).toHaveCount(
       LIST.inputs.wishes.length + 2,

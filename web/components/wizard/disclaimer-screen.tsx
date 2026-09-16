@@ -9,22 +9,17 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "@/i18n/navigation";
 import { hydrateWizardStore, useWizardStore } from "@/lib/store/wizard";
 
-import { stepPath, WELCOME_PATH } from "./steps";
+import { stepPath } from "./steps";
 
 const CHECKBOX_ID = "disclaimer-acknowledge";
 
 /**
- * The "Before we continue" consent page — screen 2 of the front door,
- * between the welcome page's Yes/No choice and step 1.
+ * The "Before we continue" consent page, between the welcome page and step 1.
  *
  * The checkbox is a direct, controlled view of the store's
  * `disclaimerAcknowledged` flag rather than local state: checking it writes
- * the flag immediately, so a family who already agreed once (e.g. they used
- * "change answer" to flip the welcome choice and came back through here)
- * finds it pre-checked, and Continue only reads the flag it already wrote. The
- * flag, together with `listExists`, is what `canEnterStep(1)` requires — a
- * deep link here without the welcome answer bounces to the welcome page, the
- * same way a deep link to step 1 would.
+ * the flag immediately, so a family who already agreed once finds it
+ * pre-checked, and Continue only reads the flag it already wrote.
  *
  * No stepper and no Back/Continue bar: like the welcome page, this sits
  * outside the `(wizard)` route group, so it never mounts `WizardShell` and
@@ -36,8 +31,6 @@ export function DisclaimerScreen() {
   const tSteps = useTranslations("steps");
   const router = useRouter();
 
-  const hydrated = useWizardStore((state) => state.hydrated);
-  const listExists = useWizardStore((state) => state.listExists);
   const acknowledged = useWizardStore((state) => state.disclaimerAcknowledged);
   const setDisclaimerAcknowledged = useWizardStore(
     (state) => state.setDisclaimerAcknowledged,
@@ -46,14 +39,6 @@ export function DisclaimerScreen() {
   React.useEffect(() => {
     void hydrateWizardStore();
   }, []);
-
-  const blocked = hydrated && listExists === null;
-
-  React.useEffect(() => {
-    if (blocked) router.replace(WELCOME_PATH);
-  }, [blocked, router]);
-
-  if (blocked) return null;
 
   return (
     <section

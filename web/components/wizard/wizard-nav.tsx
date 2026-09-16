@@ -6,13 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Link, useRouter } from "@/i18n/navigation";
 
-import {
-  nextSlug,
-  ownsForwardChoice,
-  previousSlug,
-  stepPath,
-  type StepSlug,
-} from "./steps";
+import { forwardPath, previousSlug, stepPath, type StepSlug } from "./steps";
 
 /**
  * The `[← Back] [Continue →]` bar
@@ -57,7 +51,7 @@ export function WizardNav({
   const back = previousSlug(slug);
   // `null` on the terminal step and on any step that offers its own onward
   // choice — step 3's explicit finish / improve pair.
-  const forward = ownsForwardChoice(slug) ? null : nextSlug(slug);
+  const forward = forwardPath(slug);
 
   return (
     <div className="sticky bottom-0 -mx-4 mt-4 flex items-center justify-between gap-3 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
@@ -80,7 +74,7 @@ export function WizardNav({
           data-pending={pending ? "" : undefined}
           disabled={!canContinue || pending}
           aria-busy={pending || undefined}
-          onClick={() => router.push(stepPath(forward))}
+          onClick={() => router.push(forward)}
         >
           {t("continue")}
           {pending ? (

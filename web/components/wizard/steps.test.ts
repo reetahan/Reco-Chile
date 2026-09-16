@@ -6,11 +6,13 @@ import es from "@/messages/es";
 import {
   FINISH_PATH,
   FINISH_SLUG,
+  LIST_CHOICE_PATH,
   STEP_LABEL_KEY,
   STEP_LEAD_KEY,
   STEP_SLUGS,
   STEP_TITLE_KEY,
   WELCOME_PATH,
+  forwardPath,
   isFinishPathname,
   isStepSlug,
   nextSlug,
@@ -89,6 +91,13 @@ describe("routing", () => {
     // shell's bar must not offer a third, unlabelled way forward.
     expect(STEP_SLUGS.filter(ownsForwardChoice)).toEqual(["result"]);
   });
+
+  it("detours the student's continue through the list-choice question", () => {
+    expect(forwardPath("student")).toBe(LIST_CHOICE_PATH);
+    expect(forwardPath("list")).toBe(stepPath("result"));
+    expect(forwardPath("result")).toBeNull();
+    expect(forwardPath("improve")).toBeNull();
+  });
 });
 
 /**
@@ -144,9 +153,9 @@ describe("message ids resolve in both locales", () => {
     "student.idLabel",
     "student.idPlaceholder",
     "app.welcome.headline",
-    "app.welcome.question",
-    "app.welcome.yes",
-    "app.welcome.no",
+    "app.listChoice.headline",
+    "app.listChoice.yes",
+    "app.listChoice.no",
     "app.finish.title",
     "app.finish.lead",
     "app.finish.studentIdLabel",

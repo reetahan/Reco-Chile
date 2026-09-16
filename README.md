@@ -52,7 +52,7 @@ Full details — Python version pinning, Windows, Docker specifics — are under
 
 ## Application workflow
 
-1. On the welcome screen, indicate whether the wish list already exists; acknowledge the disclaimer, then enter the student's RUN or IPE.
+1. Acknowledge the disclaimer, enter the student's RUN or IPE, then indicate whether the wish list already exists.
 2. Add programs in the family's genuine order of preference. An optional toggle groups programs whose internal order is undecided so every compatible ordering is tested.
 3. Mark every applicable priority for each establishment and analyze the list.
 4. Review the estimated chance of assignment and the single most likely program, named with its commune and region.

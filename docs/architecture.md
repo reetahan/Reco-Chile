@@ -142,8 +142,10 @@ port. The durable rules live in `CONTRIBUTING.md`'s frontend style guide; the
 highlights:
 
 - **Welcome screen.** The wizard opens on `/[locale]` with a positive-framing
-  headline and the "do you already have a list?" choice as two buttons, then a
-  consent screen (`/[locale]/disclaimer`), then step 1.
+  headline and a single Continue button, then a consent screen
+  (`/[locale]/disclaimer`), then step 1 (the RUN/IPE). The "do you already
+  have a list?" choice is asked *after* step 1, at `/[locale]/list-choice`, so
+  both paths start the same way; that answer is what unlocks step 2.
 - **Second-person, positive framing.** "you" / "tú" everywhere; the tool
   *calculates your chances* rather than "reviews the risk of your list". Alarm
   vocabulary ("risk", "attention level", "warning") stays out of family-facing
@@ -186,4 +188,4 @@ Recorded so a side-by-side review does not report them as bugs:
 - Spanish percentages use a comma decimal separator (`54,8%`); the digits are
   identical to English, only the punctuation is localized.
 - `/meta` is fetched in the `(wizard)` group layout, not the root layout, so the
-  welcome and consent pages stay backend-free.
+  welcome, consent and list-choice pages stay backend-free.

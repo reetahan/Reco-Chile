@@ -11,9 +11,9 @@ import {
 } from "@/lib/store/wizard";
 
 import {
-  DISCLAIMER_PATH,
   FINISH_SLUG,
   isFinishPathname,
+  LIST_CHOICE_PATH,
   STEP_SLUGS,
   stepFromPathname,
   stepNumber,
@@ -30,10 +30,8 @@ import {
  * `/meta.max_wishes` as the two server limits, and re-exposes the gates as plain booleans so every
  * component below takes props instead of touching the store.
  *
- * Two routes under `(wizard)` are not steps and are told apart by `kind`:
- * the completion page `/finish`, which the shell draws without the
- * rail; and — as a redirect target only — the welcome page at `WELCOME_PATH`,
- * which is where an unanswered welcome question sends the family.
+ * The completion page `/finish` is under `(wizard)` but is not a step; the
+ * shell draws it without the rail, told apart here by `kind`.
  *
  * Each gate is a separate primitive subscription, so the shell re-renders only
  * when a gate actually flips — not on every keystroke in the wish list.
@@ -67,12 +65,12 @@ export function useWizardGating(): WizardGating {
     maxWishes: meta?.max_wishes ?? null,
   };
 
-  // Step 1 needs the welcome answer and the consent checkbox so all
-  // four need a subscription — plus the two raw flags, to tell which of the
-  // two front-door screens is the right redirect target when neither step is
-  // reachable yet.
-  const listExists = useWizardStore((state) => state.listExists);
+  // `canContinueStudent` is only needed to tell apart the two reasons step 2
+  // can be out of reach with step 1 itself showing as "enterable" (see
+  // `fallbackHref` below): an invalid RUN, or a valid one with the list
+  // choice still unanswered.
   const canEnterStudent = useWizardStore(selectCanEnterStep(1, options));
+  const canContinueStudent = useWizardStore(selectCanContinue(1, options));
   const canEnterList = useWizardStore(selectCanEnterStep(2, options));
   const canEnterResult = useWizardStore(selectCanEnterStep(3, options));
   const canEnterImprove = useWizardStore(selectCanEnterStep(4, options));
@@ -89,22 +87,23 @@ export function useWizardGating(): WizardGating {
 
   // `lastAllowedStep` from the store needs the whole state object; the same
   // answer falls out of the four booleans already subscribed to. `null` — not
-  // even step 1 — is the welcome page.
+  // even step 1 — is the welcome page: nothing is set, which is also where an
+  // explicit "start over" (`reset()`) sends the family, so the guard must not
+  // pick a different page out from under that navigation.
   let fallbackSlug: StepSlug | null = null;
   for (const candidate of STEP_SLUGS) {
     if (!entry[candidate]) break;
     fallbackSlug = candidate;
   }
-  // Not even step 1: either the welcome question is unanswered (→ the welcome
-  // page) or it is answered but the consent checkbox is not (→ the disclaimer
-  // page). `canEnterStep(1)` conflates both into `false`, so the raw
-  // `listExists` flag is what tells them apart here.
   const fallbackHref =
-    fallbackSlug !== null
-      ? stepPath(fallbackSlug)
-      : listExists === null
-        ? WELCOME_PATH
-        : DISCLAIMER_PATH;
+    fallbackSlug === "student" && canContinueStudent
+      ? // Step 1 is done and the RUN is valid, but the list-choice question
+        // that now gates step 2 has not been answered — send them there
+        // instead of back through a step they already passed.
+        LIST_CHOICE_PATH
+      : fallbackSlug !== null
+        ? stepPath(fallbackSlug)
+        : WELCOME_PATH;
 
   if (finish) {
     return {

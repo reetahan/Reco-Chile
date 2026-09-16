@@ -119,13 +119,13 @@ async function seedList(
 }
 
 /**
- * The welcome answer on its own, without a list.
+ * The disclaimer accepted and the list choice answered, without a list.
  *
- * Since the welcome page replaced step 1's "list exists?" radio, `listExists`
- * is what `canEnterStep(1)` requires: a hard load of `/es/student` without it
- * is sent back to `/es`. Tests that are about a *page load* — the focus test
- * asserts that a fresh load steals no focus — seed the answer instead of
- * clicking through the front door, which would navigate client-side.
+ * `disclaimerAcknowledged` is what `canEnterStep(1)` requires: a hard load of
+ * `/es/student` without it is sent back to `/es/disclaimer`. Tests that are
+ * about a *page load* — the focus test asserts that a fresh load steals no
+ * focus — seed both flags instead of clicking through the front door, which
+ * would navigate client-side.
  */
 async function seedListChoice(page: Page, listExists = true): Promise<void> {
   await page.addInitScript(
@@ -287,15 +287,14 @@ for (const locale of LOCALES) {
           name: MESSAGES[locale].app.welcome.headline,
         }),
       ).toBeVisible();
-      // The two buttons are one labelled group, and they are the only way in
-      // — a scan of the wizard's front door is not optional.
+      // The only way in — a scan of the wizard's front door is not optional.
       await scan(page, info, `welcome (${locale})`);
     });
 
     test("the disclaimer page", async ({ page }, info) => {
-      // Screen 2 of the front door, reached from either welcome answer.
+      // Reached from the welcome page's Continue button.
       await page.goto(`/${locale}`);
-      await page.getByTestId("welcome-no").click();
+      await page.getByTestId("welcome-continue").click();
       await page.waitForURL(`**/${locale}/disclaimer`);
       await expect(
         page.getByRole("heading", {
@@ -306,12 +305,33 @@ for (const locale of LOCALES) {
       await scan(page, info, `disclaimer (${locale})`);
     });
 
-    test("step 1, empty and filled", async ({ page }, info) => {
-      // Through the front door: the welcome answer is what unlocks step 1, and
-      // "No — help me build it" is the branch that also opens step 2's filter
-      // panel later on.
+    test("the list-choice page", async ({ page }, info) => {
+      // Reached from step 1's Continue button, once the RUN is valid.
       await page.goto(`/${locale}`);
-      await page.getByTestId("welcome-no").click();
+      await page.getByTestId("welcome-continue").click();
+      await page.waitForURL(`**/${locale}/disclaimer`);
+      await page.getByTestId("disclaimer-checkbox").click();
+      await page.getByTestId("disclaimer-continue").click();
+      await page.waitForURL(`**/${locale}/student`);
+      await page
+        .getByLabel(MESSAGES[locale].student.idLabel)
+        .fill(STRICT_SMALL.inputs.student_id);
+      await page.getByTestId("wizard-continue").click();
+      await page.waitForURL(`**/${locale}/list-choice`);
+      await expect(
+        page.getByRole("heading", {
+          level: 1,
+          name: MESSAGES[locale].app.listChoice.headline,
+        }),
+      ).toBeVisible();
+      // The two buttons are one labelled group.
+      await scan(page, info, `list-choice (${locale})`);
+    });
+
+    test("step 1, empty and filled", async ({ page }, info) => {
+      // Through the front door: the disclaimer is what unlocks step 1.
+      await page.goto(`/${locale}`);
+      await page.getByTestId("welcome-continue").click();
       await page.waitForURL(`**/${locale}/disclaimer`);
       await page.getByTestId("disclaimer-checkbox").click();
       await page.getByTestId("disclaimer-continue").click();
@@ -523,6 +543,8 @@ test.describe("focus management", () => {
 
     await page.getByLabel(es.student.idLabel).fill("12.345.678-5");
     await page.getByTestId("wizard-continue").click();
+    await page.waitForURL("**/es/list-choice");
+    await page.getByTestId("list-choice-yes").click();
     await page.waitForURL("**/es/list");
     await expect(headingIsFocused(page)).resolves.toBe(es.list.title);
 
