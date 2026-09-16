@@ -4,22 +4,9 @@
  * Step 3 — review the result.
  *
  * The step runs `/simulate` on entry whenever the stored result is stale, then
- * renders exactly two things:
- *
- * the outcome box (most likely school, its location, which preference it is,
- * the estimated chance, and the historical-data caveat)
- * -> the finish / improve choice
- *
- * Earlier designs showed attention-level alerts and, below the headline, the overall assignment figure and unmatched
- * risk, the outcome list, the per-preference family table, the equivalence
- * sensitivity block and the detailed calculation. The page now answers one
- * question — where am I most likely to end up, and how likely is that.
- *
- * Note that the branch on `useEquivalenceClasses` is gone with it: the box is
- * the same in both modes, so the store flag no longer changes what step 3
- * draws. `ResultSummary`, `FamilyChanceTable`, `EquivalenceBlock`,
- * `DetailTable`, `PagedRows`, `ProgramLine` and `tied-order.ts` are unrendered
- * as of this change and kept only so the decision can be reversed cheaply.
+ * renders: the outcome box (most likely school, its location, which
+ * preference it is, the estimated chance, and the historical-data caveat) ->
+ * the collapsed "more odds" detail -> the finish / improve choice.
  */
 
 import { RotateCcwIcon, TriangleAlertIcon } from "lucide-react";
@@ -33,7 +20,7 @@ import { useSimulation } from "@/lib/simulation";
 import type { SimulationError } from "@/lib/simulation/use-simulation";
 import { useWizardStore } from "@/lib/store/wizard";
 
-import { OutcomeBox } from "./outcome-box";
+import { MoreOdds } from "./more-odds";
 import { ResultActions } from "./result-actions";
 
 export function ResultStep() {
@@ -53,7 +40,7 @@ export function ResultStep() {
         <ResultSkeleton />
       ) : simulation ? (
         <div className="flex flex-col gap-8">
-          <OutcomeBox simulation={simulation} />
+          <MoreOdds simulation={simulation} />
           <ResultActions />
         </div>
       ) : (

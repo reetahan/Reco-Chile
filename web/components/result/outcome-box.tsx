@@ -16,6 +16,7 @@
  * them" over "Estimated chance: 100.0%" reads as a 100% chance of a place.
  */
 
+import type { ReactNode } from "react";
 import { CircleCheckIcon, InfoIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -23,12 +24,17 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import type { SimulationResponse } from "@/lib/api/types";
 import { formatInt, formatPercent } from "@/lib/format";
 
-import { useResultLabels } from "./labels";
+import { UNMATCHED, useResultLabels } from "./labels";
 
-/** The engine's outcome code for "none of the listed programs". */
-const UNMATCHED = "Unmatched";
-
-export function OutcomeBox({ simulation }: { simulation: SimulationResponse }) {
+export function OutcomeBox({
+  simulation,
+  moreOddsTrigger,
+}: {
+  simulation: SimulationResponse;
+  /** The "more odds" disclosure trigger, attached to the bottom of this card
+   * (see `more-odds.tsx`) — omitted when there is nothing more to show. */
+  moreOddsTrigger?: ReactNode;
+}) {
   const t = useTranslations("result");
   const locale = useLocale();
   const labels = useResultLabels(simulation);
@@ -40,13 +46,7 @@ export function OutcomeBox({ simulation }: { simulation: SimulationResponse }) {
 
   // The wish the top school sits at — matched by id, the wire's join key; the
   // label is only a fallback for a response that carries no id.
-  const predictedWish = unmatched
-    ? undefined
-    : simulation.wishes.find((wish) =>
-        top.program_id
-          ? wish.program_id === top.program_id
-          : wish.program_label === top.label,
-      );
+  const predictedWish = unmatched ? undefined : labels.wishFor(top);
   // Only the program shape prints this; the fallback matters for the
   // impossible empty-outcomes case, which takes the unmatched branch anyway.
   const chance = top?.probability ?? simulation.unmatched_risk;
@@ -112,6 +112,8 @@ export function OutcomeBox({ simulation }: { simulation: SimulationResponse }) {
         <InfoIcon aria-hidden="true" className="size-4 shrink-0" />
         <span data-testid="estimate-note">{t("outcome.disclaimer")}</span>
       </CardFooter>
+
+      {moreOddsTrigger}
     </Card>
   );
 }

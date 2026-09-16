@@ -52,6 +52,7 @@ type Choice = {
 
 type Variant = {
   predicted_outcome: string;
+  predicted_outcome_program_id: string | null;
   predicted_outcome_final_chance: number;
 };
 
@@ -83,6 +84,9 @@ function golden(name: string): Fixture {
 
 const STRICT = golden("strict_04_eight_wishes_scarce");
 const EQUIV_STABLE = golden("equiv_01_two_tied_stable_outcome");
+/** Two groups of three: 36 compatible orders split evenly across three
+ * distinct top choices (12 each) — the "more odds" tie breakdown. */
+const THREE_WAY_TIE = golden("equiv_02_two_groups_of_three");
 
 /**
  * The band where "most likely outcome" and "the engine's unmatched alert"
@@ -175,6 +179,26 @@ function topProgram(fixture: Fixture): Choice {
   )[0];
   expect(best, `${fixture.name} has no choices`).toBeDefined();
   return best;
+}
+
+type OutcomeRow = {
+  label: string;
+  program_id: string | null;
+  probability: number;
+};
+
+function computedOutcomes(fixture: Fixture): OutcomeRow[] {
+  const rows: OutcomeRow[] = referenceChoices(fixture).map((choice) => ({
+    label: choice.program,
+    program_id: choice.program_id,
+    probability: choice.choice_assignment_probability,
+  }));
+  rows.push({
+    label: "Unmatched",
+    program_id: null,
+    probability: unmatchedRisk(fixture),
+  });
+  return rows.sort((a, b) => b.probability - a.probability);
 }
 
 /** One program's display fields, straight from the API the page reads. */
@@ -363,6 +387,8 @@ test.describe("result step — the outcome box", () => {
     ]) {
       await expect(page.getByTestId(testId)).toHaveCount(0);
     }
+    // "More odds" is collapsed by default.
+    await expect(page.getByTestId("more-odds-content")).not.toBeVisible();
 
     // The lead sentence under the heading went with them: the box carries the
     // caveat now, next to the number it qualifies.
@@ -516,6 +542,92 @@ test.describe("result step — the outcome box", () => {
     for (const blob of [stored.session, stored.local, page.url()]) {
       expect(blob).not.toContain(run);
       expect(blob).not.toContain(bareRun);
+    }
+  });
+});
+
+test.describe("result step — more odds", () => {
+  test("is collapsed by default and reveals the #2 and #3 outcomes", async ({
+    page,
+  }) => {
+    // strict_04: Unmatched outranks every school, so #2 and #3 are the two
+    // real backup schools the family would actually want to see.
+    await openResult(page, STRICT);
+
+    const trigger = page.getByTestId("more-odds-trigger");
+    await expect(trigger).toHaveText(es.result.moreOdds.trigger);
+    await expect(page.getByTestId("more-odds-content")).not.toBeVisible();
+
+    await trigger.click();
+    const cards = page.getByTestId("outcome-mini-card");
+    await expect(cards).toHaveCount(2);
+
+    const [second, third] = computedOutcomes(STRICT).slice(1, 3);
+    const secondProgram = await programOf(page, second.program_id!);
+
+    await expect(cards.nth(0)).toHaveAttribute("data-rank", "2");
+    await expect(cards.nth(0)).toContainText(
+      copy(es.result.moreOdds.rankTitle, { rank: "2" }),
+    );
+    await expect(cards.nth(0).getByTestId("mini-card-school")).toHaveText(
+      second.label,
+    );
+    await expect(cards.nth(0).getByTestId("mini-card-location")).toHaveText(
+      `${secondProgram.school_commune} · ${secondProgram.region}`,
+    );
+    await expect(cards.nth(0).getByTestId("mini-card-rank")).toHaveText(
+      copy(es.result.headline.preferenceRank, {
+        rank: String(wishRankOf(STRICT, second.label)),
+      }),
+    );
+    await expect(cards.nth(0).getByTestId("mini-card-chance")).toHaveText(
+      copy(es.result.outcome.chance, {
+        chance: formatPercent(second.probability, "es"),
+      }),
+    );
+
+    await expect(cards.nth(1)).toHaveAttribute("data-rank", "3");
+    await expect(cards.nth(1).getByTestId("mini-card-school")).toHaveText(
+      third.label,
+    );
+
+    // A strict list has nothing about a tie to show.
+    await expect(page.getByTestId("equivalence-order-card")).toHaveCount(0);
+  });
+
+  test("in ties mode, shows the order used and how often other orders agreed", async ({
+    page,
+  }) => {
+    await openResult(page, THREE_WAY_TIE);
+    await page.getByTestId("more-odds-trigger").click();
+
+    const card = page.getByTestId("equivalence-order-card");
+    await expect(card).toBeVisible();
+
+    const expectedOrder = referenceChoices(THREE_WAY_TIE).map((c) => c.program);
+    const orderedItems = card.getByTestId("equivalence-order-item");
+    await expect(orderedItems).toHaveCount(expectedOrder.length);
+    for (const [index, label] of expectedOrder.entries()) {
+      await expect(orderedItems.nth(index)).toContainText(label);
+    }
+
+    await expect(card).toContainText(
+      copy(es.result.moreOdds.ordersChecked, {
+        n: formatInt(THREE_WAY_TIE.expected.total_orders!, "es"),
+      }),
+    );
+
+    const distinctOutcomes = THREE_WAY_TIE.expected.distinct_outcomes!;
+    await expect(card.getByTestId("outcome-share-row")).toHaveCount(
+      distinctOutcomes.length,
+    );
+    for (const outcome of distinctOutcomes) {
+      await expect(card).toContainText(
+        copy(es.result.moreOdds.topChoiceShare, {
+          outcome,
+          share: formatPercent(1 / 3, "es"),
+        }),
+      );
     }
   });
 });
