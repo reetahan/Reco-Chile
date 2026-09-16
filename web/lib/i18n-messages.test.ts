@@ -26,7 +26,10 @@ import { routing } from "@/i18n/routing";
  * so drift between the two catalogues has to be caught by a test.
  */
 
-type MessageNode = string | { [key: string]: MessageNode };
+// `faq.items` is an array of `{question, answer}` (read via `t.raw`, not
+// `t()`), so a node can be a list of nodes too — `Object.entries` walks an
+// array's indices the same way it walks an object's keys.
+type MessageNode = string | MessageNode[] | { [key: string]: MessageNode };
 
 function flatten(node: MessageNode, prefix = ""): string[] {
   if (typeof node === "string") return [prefix];

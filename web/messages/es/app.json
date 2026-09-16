@@ -7,6 +7,16 @@
     "es": "Español",
     "en": "English"
   },
+  "faq": {
+    "trigger": "Preguntas frecuentes",
+    "title": "Preguntas frecuentes",
+    "items": [
+      {
+        "question": "¿Esta herramienta envía mi postulación?",
+        "answer": "No. Esta herramienta solo estima tus posibilidades de admisión usando datos históricos. Igual debes ingresar tu lista de preferencias en el sitio oficial del SAE antes del plazo."
+      }
+    ]
+  },
   "yes": "Sí",
   "no": "No",
   "welcome": {

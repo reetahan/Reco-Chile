@@ -291,6 +291,14 @@ for (const locale of LOCALES) {
       await scan(page, info, `welcome (${locale})`);
     });
 
+    test("the FAQ dialog", async ({ page }, info) => {
+      // Reachable from every page's header; opened here from the front door.
+      await page.goto(`/${locale}`);
+      await page.getByTestId("faq-trigger").click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+      await scan(page, info, `FAQ dialog (${locale})`);
+    });
+
     test("the disclaimer page", async ({ page }, info) => {
       // Reached from the welcome page's Continue button.
       await page.goto(`/${locale}`);
@@ -488,9 +496,11 @@ for (const locale of LOCALES) {
   });
 }
 
-/** Open every collapsed disclosure on the page, in document order. */
+/** Open every collapsed disclosure in the step content, in document order.
+ * Scoped to `main`, not the whole page: the header's FAQ button also carries
+ * `aria-expanded` (it opens a dialog), but it is not part of the step. */
 async function openEveryDisclosure(page: Page): Promise<void> {
-  const closed = page.locator('button[aria-expanded="false"]');
+  const closed = page.locator('main button[aria-expanded="false"]');
   // Opening one can reveal another (the equivalence block nests none today, but
   // the loop costs nothing and keeps this true if one is ever added).
   for (let round = 0; round < 3; round += 1) {
