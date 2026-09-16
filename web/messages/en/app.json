@@ -7,6 +7,16 @@
     "es": "Español",
     "en": "English"
   },
+  "faq": {
+    "trigger": "FAQ",
+    "title": "Frequently asked questions",
+    "items": [
+      {
+        "question": "Does this tool submit my application?",
+        "answer": "No. This tool only estimates your chances of admission using historical data. You still need to submit your preference list on the official SAE website before the deadline."
+      }
+    ]
+  },
   "yes": "Yes",
   "no": "No",
   "welcome": {

@@ -2,6 +2,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
+import { FaqDialog } from "@/components/faq-dialog";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Toaster } from "@/components/ui/sonner";
 import { Link } from "@/i18n/navigation";
@@ -65,7 +66,10 @@ export default async function LocaleLayout({
                   {t("title")}
                 </Link>
               </p>
-              <LocaleSwitcher />
+              <div className="flex items-center gap-2">
+                <FaqDialog />
+                <LocaleSwitcher />
+              </div>
             </div>
           </header>
           <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
