@@ -122,7 +122,6 @@ export function stepFromPathname(pathname: string): StepSlug | null {
   return last !== undefined && isStepSlug(last) ? last : null;
 }
 
-
 export function ownsForwardChoice(slug: StepSlug): boolean {
   return slug === "result";
 }
