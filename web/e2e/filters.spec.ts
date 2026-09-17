@@ -116,8 +116,8 @@ async function findSameNamePair(
 }
 
 /**
- * Welcome → step 1 with a valid RUN → the list-choice question → step 2, on
- * the guided branch.
+ * Front door → step 1 with a valid RUN → the list-choice question → step 2,
+ * on the guided branch.
  *
  * "No — help me build it" opens on a "pick 1-3 starter schools" phase before
  * the filter panel and program search appear (`e2e/starters.spec.ts` covers
@@ -125,8 +125,6 @@ async function findSameNamePair(
  */
 async function openBuilder(page: Page) {
   await page.goto("/es");
-  await page.getByTestId("welcome-continue").click();
-  await page.waitForURL("**/es/disclaimer");
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL("**/es/student");

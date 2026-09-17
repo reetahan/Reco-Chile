@@ -292,7 +292,7 @@ async function meta(page: Page): Promise<{
 // --- Tests -----------------------------------------------------------------
 
 test.describe("result step — the outcome box", () => {
-  test("the unmatched shape is the sentence alone, with no percentage", async ({
+  test("the unmatched shape names the sentence and its own chance", async ({
     page,
   }) => {
     // strict_04's unmatched risk is 54.8%, which is also the highest of all
@@ -302,12 +302,10 @@ test.describe("result step — the outcome box", () => {
     await expect(page.getByTestId("predicted-unmatched")).toHaveText(
       es.result.headline.unmatchedBody,
     );
-    // No percentage here: the number that belongs to this
-    // outcome is its own probability, and "you receive none of the programs" +
-    // "Estimated chance: 100.0%" read as a 100% chance of a place.
-    await expect(page.getByTestId("predicted-chance")).toHaveCount(0);
-    await expect(page.getByTestId("result-outcome")).not.toContainText(
-      formatPercent(unmatchedRisk(STRICT), "es"),
+    await expect(page.getByTestId("predicted-chance")).toHaveText(
+      copy(es.result.outcome.chance, {
+        chance: formatPercent(unmatchedRisk(STRICT), "es"),
+      }),
     );
     await expect(page.getByTestId("predicted-school")).toHaveCount(0);
     await expect(page.getByTestId("predicted-rank")).toHaveCount(0);
@@ -458,7 +456,7 @@ test.describe("result step — the outcome box", () => {
     expect(stored).toContain(MID_BAND.inputs.wishes[0].program_id);
   });
 
-  test("back to the start clears the wizard and returns to the welcome page", async ({
+  test("back to the start clears the wizard and returns to the front door", async ({
     page,
   }) => {
     await openResult(page, STRICT);
@@ -468,7 +466,7 @@ test.describe("result step — the outcome box", () => {
     await page.getByTestId("finish-start-over").click();
     await page.waitForURL(/\/es$/);
     await expect(
-      page.getByRole("heading", { level: 1, name: es.app.welcome.headline }),
+      page.getByRole("heading", { level: 1, name: es.app.disclaimer.headline }),
     ).toBeVisible();
 
     // `reset()` ran: the seeded list is out of storage, so pressing "Yes"
@@ -491,11 +489,17 @@ test.describe("result step — the outcome box", () => {
     await expect(page.getByTestId("predicted-unmatched")).toHaveText(
       en.result.headline.unmatchedBody,
     );
+    await expect(page.getByTestId("predicted-chance")).toHaveText(
+      copy(en.result.outcome.chance, {
+        chance: formatPercent(unmatchedRisk(STRICT), "en"),
+      }),
+    );
     await expect(page.getByTestId("estimate-note")).toHaveText(
       en.result.outcome.disclaimer,
     );
-    // The English formatting assertion moves to the fixture whose top outcome
-    // *is* a school — the unmatched shape prints no percentage at all.
+
+    // Same formatting for the matched shape, on the fixture whose top outcome
+    // *is* a school.
     await openResult(page, MID_BAND, "en");
     await expect(page.getByTestId("predicted-chance")).toHaveText(
       copy(en.result.outcome.chance, {

@@ -14,14 +14,31 @@
       {
         "question": "Does this tool submit my application?",
         "answer": "No. This tool only estimates your chances of admission using historical data. You still need to submit your preference list on the official SAE website before the deadline."
+      },
+      {
+        "question": "How do I know if I have a priority?",
+        "answer": "",
+        "link": {
+          "url": "https://www.ayudamineduc.cl/ficha/criterios-de-prioridad",
+          "label": "See the official priority criteria"
+        }
+      },
+      {
+        "question": "How do I interpret the estimated chances?",
+        "answer": "The percentage next to a program is the model's estimate of your chance of being assigned to it, based on historical admission data, not an official result. Treat it as general guidance: the real process can still turn out differently."
+      },
+      {
+        "question": "How do I interpret the permutation outcomes?",
+        "answer": "When you mark some programs as tied - meaning you haven't decided the exact order between them — the tool checks every possible strict order among them and reports how often each outcome came out on top across those orders. That shows how much your final ranking matters for the programs you're still unsure about."
+      },
+      {
+        "question": "Is my data stored anywhere?",
+        "answer": "No. Your RUN/IPE is only used in memory to run the calculation: it is never stored, logged, or included in the page address. Your preference list and settings live only in your browser's session storage and are cleared when you close the tab or start over. This tool never submits anything to SAE; you still need to apply on the official website."
       }
     ]
   },
   "yes": "Yes",
   "no": "No",
-  "welcome": {
-    "headline": "Calculate your admission chances"
-  },
   "listChoice": {
     "headline": "Do you already have your preference list?",
     "yes": "Yes",

@@ -12,7 +12,7 @@
     "unmatchedBody": "The most likely outcome is that you receive none of the programs on your list."
   },
   "moreOdds": {
-    "trigger": "Show me more info on my matching odds",
+    "trigger": "Show me more info on my admission chances",
     "rankTitle": "#{rank} most likely",
     "orderTitle": "The order used for this result",
     "orderNote": "Some of your preferences are tied, so more than one order was possible. This is the one used above.",

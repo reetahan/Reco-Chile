@@ -19,11 +19,10 @@ import { stepPath } from "./steps";
  * RUN/IPE) instead of before it, so both paths start the same way.
  *
  * Guards on step 1 being complete (disclaimer + a valid identifier); a family
- * that lands here without it is sent back to step 1, same as `DisclaimerScreen`
- * guards on the welcome page.
+ * that lands here without it is sent back to step 1.
  *
  * No stepper and no Back/Continue bar: outside the `(wizard)` route group,
- * like the welcome and disclaimer pages.
+ * like the front door.
  */
 export function ListChoiceScreen() {
   const t = useTranslations("app.listChoice");

@@ -7,11 +7,10 @@ import es from "../messages/es";
  * Shell smoke test: navigating `/es/student` → `/es/list` works with the guard,
  * and step 1 loads in both locales.
  *
- * The wizard opens on a welcome page instead of step 1, but it no longer asks
- * anything: `/es` is a single Continue button, then the disclaimer, then
- * step 1 (the RUN/IPE). "Do you already have your list?" is asked *after*
- * step 1 now, at `/es/list-choice`, so both paths start the same way — and
- * that answer is what unlocks step 2.
+ * The wizard's front door (`/es`) is the "Before we continue" consent screen
+ * itself — there is no separate welcome screen before it. "Do you already
+ * have your list?" is asked *after* step 1, at `/es/list-choice`, so both
+ * paths start the same way — and that answer is what unlocks step 2.
  *
  * Expected copy is read from `messages/{es,en}.json` rather than frozen here, so
  * these stay true when a sentence is reworded — what is under test is the
@@ -55,17 +54,13 @@ function stepHeading(locale: Locale, key: string) {
   return { level: 1 as const, name: copy(locale, key) };
 }
 
-/**
- * Through the front door and into step 1: the welcome page's single Continue
- * button, then the "Before we continue" consent checkbox.
- */
+/** Through the front door and into step 1: the "Before we continue" consent
+ * checkbox, then Continue. */
 async function enterWizard(
   page: Page,
   { locale = "es" }: { locale?: Locale } = {},
 ) {
   await page.goto(`/${locale}`);
-  await page.getByTestId("welcome-continue").click();
-  await page.waitForURL(`**/${locale}/disclaimer`);
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL(`**/${locale}/student`);
@@ -90,10 +85,8 @@ async function enterListStep(
   await page.waitForURL(`**/${locale}/list`);
 }
 
-test.describe("welcome page", () => {
-  test("opens the wizard with the positive framing and a single continue", async ({
-    page,
-  }) => {
+test.describe("front door", () => {
+  test("opens the wizard with the consent screen", async ({ page }) => {
     const response = await page.goto("/es");
 
     expect(response?.status()).toBe(200);
@@ -101,12 +94,10 @@ test.describe("welcome page", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: copy("es", "app.welcome.headline"),
+        name: copy("es", "app.disclaimer.headline"),
       }),
     ).toBeVisible();
-    await expect(page.getByTestId("welcome-continue")).toHaveText(
-      copy("es", "steps.continue"),
-    );
+    await expect(page.getByTestId("disclaimer-continue")).toBeDisabled();
 
     // No stepper on the front door, and no step title either.
     await expect(
@@ -120,12 +111,12 @@ test.describe("welcome page", () => {
     await expect(
       page.getByRole("heading", {
         level: 1,
-        name: copy("en", "app.welcome.headline"),
+        name: copy("en", "app.disclaimer.headline"),
       }),
     ).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    expect(copy("en", "app.welcome.headline")).not.toBe(
-      copy("es", "app.welcome.headline"),
+    expect(copy("en", "app.disclaimer.headline")).not.toBe(
+      copy("es", "app.disclaimer.headline"),
     );
   });
 
@@ -133,12 +124,12 @@ test.describe("welcome page", () => {
     page,
   }) => {
     // The consent checkbox is the only gate step 1 has, and it is not set on
-    // a cold load, so every wizard route redirects to the welcome page — the
+    // a cold load, so every wizard route redirects to the front door — the
     // same page `reset()` sends a "start over" to.
     for (const locked of ["student", "list", "result", "improve", "finish"]) {
       await page.goto(`/es/${locked}`);
       await page.waitForURL("**/es");
-      await expect(page.getByTestId("welcome-continue")).toBeVisible();
+      await expect(page.getByTestId("disclaimer-checkbox")).toBeVisible();
     }
   });
 });
@@ -156,12 +147,10 @@ test.describe("list-choice page", () => {
     expect(stored).toContain('"listExists":false');
 
     // The other answer, from the same question — reached via the header's
-    // brand link back to the welcome page. The consent checkbox and the RUN
-    // are both still in memory from the way in, so neither needs re-entering.
+    // brand link back to the front door. The consent checkbox and the RUN are
+    // both still in memory from the way in, so neither needs re-entering.
     await page.getByRole("link", { name: copy("es", "app.title") }).click();
     await page.waitForURL("**/es");
-    await page.getByTestId("welcome-continue").click();
-    await page.waitForURL("**/es/disclaimer");
     await expect(page.getByTestId("disclaimer-checkbox")).toBeChecked();
     await page.getByTestId("disclaimer-continue").click();
     await page.waitForURL("**/es/student");

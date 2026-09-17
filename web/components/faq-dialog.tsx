@@ -12,16 +12,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-type FaqItem = { question: string; answer: string };
+type FaqItem = {
+  question: string;
+  /** Empty when the item is link-only — its `<p>` is skipped rather than
+   * rendered blank. */
+  answer: string;
+  /** Optional further-reading link, e.g. the official SAE priority criteria. */
+  link?: { url: string; label: string };
+};
 
 /**
  * FAQ button next to the language toggle. Content comes from `app.faq.items`
  * (`messages/{es,en}/app.json`) via `t.raw` — add more entries there, no
  * component change needed.
  *
- * `max-h-64 overflow-y-auto` caps the list at roughly two questions before it
- * scrolls internally, so the dialog itself stays a fixed size as more are
- * added; re-tune the height once real content replaces the one sample entry.
+ * `max-h-64 overflow-y-auto` caps the list before it scrolls internally, so
+ * the dialog itself stays a fixed size as more entries are added.
  *
  * Icon-only: the header has to keep the brand and the language toggle on one
  * row down to 360px (`e2e/responsive.spec.ts`), which does not leave room for
@@ -55,7 +61,19 @@ export function FaqDialog() {
           {items.map((item) => (
             <div key={item.question} className="flex flex-col gap-1 text-sm">
               <p className="font-medium">{item.question}</p>
-              <p className="text-muted-foreground">{item.answer}</p>
+              {item.answer.trim() !== "" ? (
+                <p className="text-muted-foreground">{item.answer}</p>
+              ) : null}
+              {item.link ? (
+                <a
+                  href={item.link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary underline underline-offset-4"
+                >
+                  {item.link.label}
+                </a>
+              ) : null}
             </div>
           ))}
         </div>
