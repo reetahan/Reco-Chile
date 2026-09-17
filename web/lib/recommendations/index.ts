@@ -6,6 +6,7 @@ export {
   formatRatio,
   isFiniteNumber,
   MISSING_NUMBER,
+  roundsToZeroPercent,
 } from "./format";
 export {
   buildRecommendationRequest,

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { formatDistanceKm, formatRatio, isFiniteNumber } from "./format";
+import {
+  formatDistanceKm,
+  formatRatio,
+  isFiniteNumber,
+  roundsToZeroPercent,
+} from "./format";
 
 /**
  * `formatPercent` / `formatInt` are covered by `lib/format/number.test.ts`;
@@ -81,5 +86,23 @@ describe("isFiniteNumber", () => {
     expect(isFiniteNumber(undefined)).toBe(false);
     expect(isFiniteNumber(Number.NaN)).toBe(false);
     expect(isFiniteNumber(Number.POSITIVE_INFINITY)).toBe(false);
+  });
+});
+
+describe("roundsToZeroPercent", () => {
+  it("is true for exactly zero and for whatever formatPercent prints as 0.0%", () => {
+    expect(roundsToZeroPercent(0)).toBe(true);
+    expect(roundsToZeroPercent(0.0004)).toBe(true);
+  });
+
+  it("is false once the value would print as 0.1% or more", () => {
+    expect(roundsToZeroPercent(0.0005)).toBe(false);
+    expect(roundsToZeroPercent(0.3)).toBe(false);
+  });
+
+  it("is false for an unknown chance, not just a small one", () => {
+    expect(roundsToZeroPercent(null)).toBe(false);
+    expect(roundsToZeroPercent(undefined)).toBe(false);
+    expect(roundsToZeroPercent(Number.NaN)).toBe(false);
   });
 });

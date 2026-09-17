@@ -21,6 +21,13 @@ export function isFiniteNumber(
   return typeof value === "number" && Number.isFinite(value);
 }
 
+/** True for a probability so small it prints as "0.0%" (`formatPercent`'s
+ * one-decimal rounding) — no real chance of admission, not merely unknown
+ * (that's `!isFiniteNumber`, a separate case). */
+export function roundsToZeroPercent(value: number | null | undefined): boolean {
+  return isFiniteNumber(value) && Math.abs(value) < 0.0005;
+}
+
 /** `{:.1f}` — the straight-line distance caption, or `null` to omit it. */
 export function formatDistanceKm(
   value: number | null | undefined,

@@ -14,7 +14,11 @@ import { Slider } from "@/components/ui/slider";
 import { useRouter } from "@/i18n/navigation";
 import type { RecommendationItem } from "@/lib/api/types";
 import { useMeta } from "@/lib/meta";
-import { isFiniteNumber, useRecommendations } from "@/lib/recommendations";
+import {
+  isFiniteNumber,
+  roundsToZeroPercent,
+  useRecommendations,
+} from "@/lib/recommendations";
 import {
   MAX_RECOMMENDATION_COUNT,
   MIN_RECOMMENDATION_COUNT,
@@ -76,7 +80,11 @@ export function ImproveStep() {
     () => new Set(),
   );
 
-  const items: RecommendationItem[] = data?.items ?? [];
+  // A school with no real chance of admission isn't a useful suggestion —
+  // "unknown" (`!isFiniteNumber`) is a different case and stays visible.
+  const items: RecommendationItem[] = (data?.items ?? []).filter(
+    (item) => !roundsToZeroPercent(item.final_chance_if_appended),
+  );
   // Only what is on screen can be submitted; a tick left over from a wider
   // slider setting is remembered but does not count while it is hidden.
   const selectedVisible = items
