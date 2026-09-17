@@ -14,6 +14,26 @@
       {
         "question": "¿Esta herramienta envía mi postulación?",
         "answer": "No. Esta herramienta solo estima tus posibilidades de admisión usando datos históricos. Igual debes ingresar tu lista de preferencias en el sitio oficial del SAE antes del plazo."
+      },
+      {
+        "question": "¿Cómo sé si tengo una prioridad?",
+        "answer": "",
+        "link": {
+          "url": "https://www.ayudamineduc.cl/ficha/criterios-de-prioridad",
+          "label": "Ver los criterios oficiales de prioridad"
+        }
+      },
+      {
+        "question": "¿Cómo interpreto las posibilidades estimadas?",
+        "answer": "El porcentaje junto a un programa es la estimación del modelo de tu posibilidad de quedar asignado/a a él, según datos históricos de admisión, no es un resultado oficial. Tómalo como una orientación general: el proceso real igual puede tener otro resultado."
+      },
+      {
+        "question": "¿Cómo interpreto los resultados de las permutaciones?",
+        "answer": "Cuando marcas algunos programas como empatados - es decir, todavía no decides el orden exacto entre ellos — la herramienta revisa cada orden estricto posible entre esos programas y reporta en cuántos de esos órdenes cada resultado quedó como el más probable. Eso muestra cuánto importa tu orden final para los programas que todavía no tienes decididos."
+      },
+      {
+        "question": "¿Se guarda mi información en algún lugar?",
+        "answer": "No. Tu RUN o IPE solo se usa en memoria para hacer el cálculo: nunca se guarda, se registra, ni aparece en la dirección de la página. Tu lista de preferencias y tus ajustes viven solo en el almacenamiento de sesión de tu navegador y se borran al cerrar la pestaña o volver al inicio. Esta herramienta nunca envía nada al SAE; igual debes postular en el sitio oficial."
       }
     ]
   },

@@ -10,9 +10,7 @@ import es from "../messages/es";
  */
 
 test.describe("FAQ dialog", () => {
-  test("opens from the header and lists the sample question", async ({
-    page,
-  }) => {
+  test("opens from the header and lists every question", async ({ page }) => {
     await page.goto("/es");
 
     const trigger = page.getByTestId("faq-trigger");
@@ -24,11 +22,24 @@ test.describe("FAQ dialog", () => {
     await expect(dialog).toBeVisible();
 
     const list = page.getByTestId("faq-list");
-    await expect(list).toContainText(es.app.faq.items[0].question);
-    await expect(list).toContainText(es.app.faq.items[0].answer);
+    for (const item of es.app.faq.items) {
+      await expect(list).toContainText(item.question);
+      await expect(list).toContainText(item.answer);
+    }
     // Set up to scroll internally once more questions are added, rather than
     // growing the dialog without bound.
     await expect(list).toHaveCSS("overflow-y", "auto");
+
+    // The priority question links out to the ministry's own criteria page.
+    const priorityItem = es.app.faq.items.find(
+      (item) => item.link !== undefined,
+    );
+    if (!priorityItem?.link) throw new Error("no FAQ item has a link");
+    const priorityLink = list.getByRole("link", {
+      name: priorityItem.link.label,
+    });
+    await expect(priorityLink).toHaveAttribute("href", priorityItem.link.url);
+    await expect(priorityLink).toHaveAttribute("target", "_blank");
 
     await page.keyboard.press("Escape");
     await expect(dialog).not.toBeVisible();

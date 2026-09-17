@@ -88,10 +88,16 @@ describe("message catalogues", () => {
   });
 
   it("has no blank message", () => {
+    // One exception: a FAQ item may carry a link and no answer text — the
+    // dialog renders the link alone in that case (`components/faq-dialog.tsx`).
+    const isFaqAnswer = (key: string) =>
+      /^app\.faq\.items\.\d+\.answer$/.test(key);
     for (const [key, value] of entries(es as MessageNode)) {
+      if (isFaqAnswer(key)) continue;
       expect(value.trim(), `es.${key}`).not.toBe("");
     }
     for (const [key, value] of entries(en as MessageNode)) {
+      if (isFaqAnswer(key)) continue;
       expect(value.trim(), `en.${key}`).not.toBe("");
     }
   });
