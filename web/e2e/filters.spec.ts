@@ -119,8 +119,9 @@ async function findSameNamePair(
  * Welcome → step 1 with a valid RUN → the list-choice question → step 2, on
  * the guided branch.
  *
- * "No — help me build it" is what makes step 2 render the filter panel at
- * all.
+ * "No — help me build it" opens on a "pick 1-3 starter schools" phase before
+ * the filter panel and program search appear (`e2e/starters.spec.ts` covers
+ * it); this picks one and confirms past it.
  */
 async function openBuilder(page: Page) {
   await page.goto("/es");
@@ -134,6 +135,11 @@ async function openBuilder(page: Page) {
   await page.waitForURL("**/es/list-choice");
   await page.getByTestId("list-choice-no").click();
   await page.waitForURL("**/es/list");
+
+  await page.getByTestId("program-search-trigger").click();
+  await page.getByTestId("program-search-option").first().click();
+  await page.getByTestId("program-search-add").click();
+  await page.getByTestId("starter-picks-continue").click();
   await expect(page.getByTestId("filter-panel")).toBeVisible();
 }
 

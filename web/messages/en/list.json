@@ -35,6 +35,19 @@
       "applicantsPerSeat": "Applicants / seat"
     }
   },
+  "starters": {
+    "title": "Pick 1 to 3 schools you're interested in",
+    "intro": "Choose a few schools you like — we'll use them to suggest more.",
+    "max": "You can pick up to 3 starter schools.",
+    "remove": "Remove",
+    "suggestionsTitle": "Suggested schools for you",
+    "suggestionsIntro": "Based on your picks, here are some schools you might also like. Add the ones you want to your list below.",
+    "yourPick": "One of your starter picks",
+    "add": "Add",
+    "added": "Added",
+    "searchOtherTitle": "Search for other schools",
+    "searchOtherPlaceholder": "Search for other schools…"
+  },
   "notices": {
     "imputedTitle": "Some selected programs use estimated historical calibration values.",
     "imputedBody": "Complete historical observations were unavailable for at least one selected program, so the model uses an imputed 2024 value. Interpret those program-level estimates with additional caution.",

@@ -3,15 +3,24 @@
 /**
  * Step 2 — build and order the preference list.
  *
- * Section order, top to bottom, with the ties toggle added first: the
- * "I have not yet decided the exact order" ties toggle lives here because it
- * governs how *this* list gets built and ordered.
+ * The guided branch ("No — help me build it") opens on two phases this step
+ * owns before the rest of the page: pick 1-3 schools (`StarterPicksPanel`),
+ * then review suggestions built from them (`StarterRecommendationsPanel`).
+ * `starterPicksConfirmed` switches from the first phase to the second; a
+ * family that already has wishes is treated as having passed the phase
+ * already, so it isn't sent back through it.
+ *
+ * Section order once past that phase, top to bottom, with the ties toggle
+ * added first: the "I have not yet decided the exact order" ties toggle lives
+ * here because it governs how *this* list gets built and ordered.
  *
  * heading + one caption that depends on the mode
  * the ties toggle (`EquivalenceSwitch`)
  * "N recommended programs were added…" (returning from step 4)
- * filter panel (only "No — help me build it")
- * program search + Add
+ * filter panel + program search (only "No — help me build it"; grouped in a
+ * bordered box once the starter-picks suggestions below exist, so the two
+ * ways to add a program read as one "find more" area)
+ * the starter-picks suggestions (only once confirmed)
  * the wish list itself
  * "some programs use imputed calibration" (+ "What does this mean?")
  * the over-cap order-count warning (ties mode, over the limit only)
@@ -34,6 +43,8 @@ import { FilterPanel } from "@/components/list/filters/filter-panel";
 import { ImputedNotice } from "@/components/list/imputed-notice";
 import { OrderCount } from "@/components/list/order-count";
 import { ProgramSearch } from "@/components/list/program-search";
+import { StarterPicksPanel } from "@/components/list/starter-picks-panel";
+import { StarterRecommendationsPanel } from "@/components/list/starter-recommendations-panel";
 import { WishList } from "@/components/list/wish-list";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { StepPage } from "@/components/wizard/step-page";
@@ -52,6 +63,12 @@ export function ListStep() {
   const ties = useWizardStore((state) => state.useEquivalenceClasses);
   const wishes = useWizardStore((state) => state.wishes);
   const addWish = useWizardStore((state) => state.addWish);
+  const starterPicksConfirmed = useWizardStore(
+    (state) => state.starterPicksConfirmed,
+  );
+  const confirmStarterPicks = useWizardStore(
+    (state) => state.confirmStarterPicks,
+  );
   const setMaxWishes = useWizardStore((state) => state.setMaxWishes);
   const dropMissingPrograms = useWizardStore(
     (state) => state.dropMissingPrograms,
@@ -144,6 +161,55 @@ export function ListStep() {
   );
 
   const needsBuilder = listExists === false;
+  // Wishes already exist (earlier session, or a list built before this phase
+  // existed) — skip straight past the starter-picks phase.
+  React.useEffect(() => {
+    if (needsBuilder && wishes.length > 0 && !starterPicksConfirmed) {
+      confirmStarterPicks();
+    }
+  }, [needsBuilder, wishes.length, starterPicksConfirmed, confirmStarterPicks]);
+
+  const showStarterPicks = needsBuilder && !starterPicksConfirmed;
+  const showStarterRecommendations = needsBuilder && starterPicksConfirmed;
+
+  if (showStarterPicks) {
+    return (
+      <StepPage slug="list" leadTestId="list-caption" lead={t("filters.intro")}>
+        <StarterPicksPanel />
+      </StepPage>
+    );
+  }
+
+  // Once suggestions are showing, this doubles as "search for anything else"
+  // rather than the guided branch's first search, so both its heading and its
+  // placeholder change to say so.
+  const filtersAndSearch = (
+    <>
+      {needsBuilder ? <FilterPanel /> : null}
+      <section className="flex flex-col gap-3">
+        <h2 className="text-base font-semibold">
+          {showStarterRecommendations
+            ? t("list.starters.searchOtherTitle")
+            : t("filters.search.title")}
+        </h2>
+        <ProgramSearch
+          onAdd={handleAdd}
+          excludeIds={wishIds}
+          disabled={atMaxWishes}
+          placeholder={
+            showStarterRecommendations
+              ? t("list.starters.searchOtherPlaceholder")
+              : undefined
+          }
+        />
+        {atMaxWishes ? (
+          <p className="text-sm text-destructive" data-testid="max-wishes">
+            {t("list.notices.maxWishes", { max: meta.max_wishes })}
+          </p>
+        ) : null}
+      </section>
+    </>
+  );
 
   return (
     // A different caption per branch: the filter intro
@@ -171,21 +237,18 @@ export function ListStep() {
         </Alert>
       ) : null}
 
-      {needsBuilder ? <FilterPanel /> : null}
+      {showStarterRecommendations ? (
+        <div
+          className="flex flex-col gap-4 rounded-xl border border-border p-4"
+          data-testid="starter-search-filters"
+        >
+          {filtersAndSearch}
+        </div>
+      ) : (
+        filtersAndSearch
+      )}
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-base font-semibold">{t("filters.search.title")}</h2>
-        <ProgramSearch
-          onAdd={handleAdd}
-          excludeIds={wishIds}
-          disabled={atMaxWishes}
-        />
-        {atMaxWishes ? (
-          <p className="text-sm text-destructive" data-testid="max-wishes">
-            {t("list.notices.maxWishes", { max: meta.max_wishes })}
-          </p>
-        ) : null}
-      </section>
+      {showStarterRecommendations ? <StarterRecommendationsPanel /> : null}
 
       <section className="flex flex-col gap-3">
         <h2 className="text-base font-semibold">{t("list.current.title")}</h2>

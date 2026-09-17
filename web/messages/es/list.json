@@ -35,6 +35,19 @@
       "applicantsPerSeat": "Postulantes / cupo"
     }
   },
+  "starters": {
+    "title": "Elige entre 1 y 3 colegios que te interesen",
+    "intro": "Elige algunos colegios que te gusten — los usaremos para sugerirte más.",
+    "max": "Puedes elegir hasta 3 colegios iniciales.",
+    "remove": "Quitar",
+    "suggestionsTitle": "Colegios sugeridos para ti",
+    "suggestionsIntro": "Según tus elecciones, estos son otros colegios que podrían interesarte. Agrega los que quieras a tu lista de abajo.",
+    "yourPick": "Uno de tus colegios iniciales",
+    "add": "Agregar",
+    "added": "Agregado",
+    "searchOtherTitle": "Busca otros colegios",
+    "searchOtherPlaceholder": "Busca otros colegios…"
+  },
   "notices": {
     "imputedTitle": "Algunos programas seleccionados usan valores históricos de calibración estimados.",
     "imputedBody": "No había observaciones históricas completas para al menos un programa seleccionado, por lo que el modelo usa un valor imputado de 2024. Interpreta esas estimaciones con especial cautela.",

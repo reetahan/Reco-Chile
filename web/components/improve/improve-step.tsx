@@ -14,7 +14,11 @@ import { Slider } from "@/components/ui/slider";
 import { useRouter } from "@/i18n/navigation";
 import type { RecommendationItem } from "@/lib/api/types";
 import { useMeta } from "@/lib/meta";
-import { isFiniteNumber, useRecommendations } from "@/lib/recommendations";
+import {
+  isFiniteNumber,
+  roundsToZeroPercent,
+  useRecommendations,
+} from "@/lib/recommendations";
 import {
   MAX_RECOMMENDATION_COUNT,
   MIN_RECOMMENDATION_COUNT,
@@ -76,7 +80,11 @@ export function ImproveStep() {
     () => new Set(),
   );
 
-  const items: RecommendationItem[] = data?.items ?? [];
+  // A school with no real chance of admission isn't a useful suggestion —
+  // "unknown" (`!isFiniteNumber`) is a different case and stays visible.
+  const items: RecommendationItem[] = (data?.items ?? []).filter(
+    (item) => !roundsToZeroPercent(item.final_chance_if_appended),
+  );
   // Only what is on screen can be submitted; a tick left over from a wider
   // slider setting is remembered but does not count while it is hidden.
   const selectedVisible = items
@@ -228,32 +236,40 @@ export function ImproveStep() {
       <section className="flex flex-col gap-3">
         <h2 className="text-base font-semibold">{t("improve.subtitle")}</h2>
 
-        {showSkeleton ? (
-          <div className="flex flex-col gap-3" aria-hidden="true">
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-          </div>
-        ) : null}
-
         {hasResponse && items.length === 0 ? (
           <ToneAlert tone="warning" data-testid="recommendation-empty">
             {emptyMessage(t, data)}
           </ToneAlert>
         ) : null}
 
-        {items.map((item) => (
-          <RecommendationCard
-            key={item.program_id ?? item.program_label}
-            item={item}
-            appendedWishRank={data?.appended_wish_rank ?? null}
-            selected={
-              item.program_id !== null && selectedIds.has(item.program_id)
-            }
-            onSelectedChange={(selected) => {
-              if (item.program_id) toggle(item.program_id, selected);
-            }}
-          />
-        ))}
+        {showSkeleton || items.length > 0 ? (
+          <div
+            className="flex max-h-[36rem] flex-col gap-3 overflow-y-auto rounded-xl border border-border p-3"
+            data-testid="recommendation-list"
+          >
+            {showSkeleton ? (
+              <div className="flex flex-col gap-3" aria-hidden="true">
+                <Skeleton className="h-40 w-full" />
+                <Skeleton className="h-40 w-full" />
+              </div>
+            ) : null}
+
+            {items.map((item) => (
+              <RecommendationCard
+                key={item.program_id ?? item.program_label}
+                item={item}
+                appendedWishRank={data?.appended_wish_rank ?? null}
+                distanceReference={data?.distance_reference ?? null}
+                selected={
+                  item.program_id !== null && selectedIds.has(item.program_id)
+                }
+                onSelectedChange={(selected) => {
+                  if (item.program_id) toggle(item.program_id, selected);
+                }}
+              />
+            ))}
+          </div>
+        ) : null}
       </section>
 
       <Button

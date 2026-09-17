@@ -11,7 +11,8 @@
  * | recommendations appended | singleton trailing groups (ties) / trailing ranks (strict); inv |
  * | | ...and never past `maxWishes` when the API's cap is known |
  *
- * Persistence: only `wishes`, `listExists`, `useEquivalenceClasses`, `filters`
+ * Persistence: `wishes`, `listExists`, `disclaimerAcknowledged`,
+ * `useEquivalenceClasses`, `filters`, `starterPicks` and `starterPicksConfirmed`
  * go to `sessionStorage`. `studentId`, `simulation` and `home` are memory-only,
  * for privacy.
  *
@@ -52,6 +53,13 @@ export const DEFAULT_RECOMMENDATION_COUNT = 3;
 export const MIN_RECOMMENDATION_COUNT = 2;
 export const MAX_RECOMMENDATION_COUNT = 10;
 
+/** The guided branch's "pick your starter schools" phase: 1 to 3 picks. */
+export const MIN_STARTER_PICKS = 1;
+export const MAX_STARTER_PICKS = 3;
+/** Target total row count of the starter-phase suggestion list (starters +
+ * recommended candidates), capped by the `/recommend` contract. */
+export const STARTER_RECOMMENDATIONS_TOTAL = 15;
+
 /** `sessionStorage` key. Bump `WIZARD_PERSIST_VERSION` on a breaking shape change. */
 export const WIZARD_PERSIST_KEY = "reco-chile.wizard";
 export const WIZARD_PERSIST_VERSION = 1;
@@ -71,6 +79,11 @@ export type WizardState = {
   disclaimerAcknowledged: boolean;
   useEquivalenceClasses: boolean;
   filters: ProgramFilters;
+  /** Guided branch's "pick 1-3 schools" phase — raw material for `/recommend`,
+   * not part of `wishes` until actually added from the suggestions list. */
+  starterPicks: string[];
+  /** Has the family clicked past the starter-picks phase? */
+  starterPicksConfirmed: boolean;
   wishes: Wish[];
   simulation: SimulationResponse | null;
   simulationStale: boolean;
@@ -142,6 +155,12 @@ export type WizardActions = {
       | Partial<ProgramFilters>
       | ((current: ProgramFilters) => Partial<ProgramFilters>),
   ) => void;
+  /** Ignored past `MAX_STARTER_PICKS` or once already picked. */
+  addStarterPick: (programId: string) => void;
+  removeStarterPick: (programId: string) => void;
+  /** Not range-checked here — the 1-3 gate is the Continue button's
+   * `disabled`, so this doubles as "skip the phase" when needed. */
+  confirmStarterPicks: () => void;
   addWish: (programId: string) => void;
   removeWish: (programId: string) => void;
   moveWish: (programId: string, target: MoveTarget) => void;
@@ -175,6 +194,8 @@ export type PersistedWizardState = Pick<
   | "disclaimerAcknowledged"
   | "useEquivalenceClasses"
   | "filters"
+  | "starterPicks"
+  | "starterPicksConfirmed"
 >;
 
 // ---------------------------------------------------------------------------
@@ -342,6 +363,8 @@ export function initialWizardState(): WizardState {
     disclaimerAcknowledged: false,
     useEquivalenceClasses: false,
     filters: emptyFilters(),
+    starterPicks: [],
+    starterPicksConfirmed: false,
     wishes: [],
     simulation: null,
     simulationStale: true,
@@ -409,6 +432,29 @@ export const useWizardStore = create<WizardStore>()(
           typeof filters === "function" ? filters(current) : filters;
         // Filters only drive the program search; results are untouched.
         set({ filters: { ...current, ...patch } });
+      },
+
+      addStarterPick: (programId) => {
+        const state = get();
+        const id = programId.trim();
+        if (id === "") return;
+        if (state.starterPicks.includes(id)) return;
+        if (state.starterPicks.length >= MAX_STARTER_PICKS) return;
+        set({ starterPicks: [...state.starterPicks, id] });
+      },
+
+      removeStarterPick: (programId) => {
+        const state = get();
+        const starterPicks = state.starterPicks.filter(
+          (id) => id !== programId,
+        );
+        if (starterPicks.length === state.starterPicks.length) return;
+        set({ starterPicks });
+      },
+
+      confirmStarterPicks: () => {
+        if (get().starterPicksConfirmed) return;
+        set({ starterPicksConfirmed: true });
       },
 
       addWish: (programId) => {
@@ -597,6 +643,8 @@ export const useWizardStore = create<WizardStore>()(
         disclaimerAcknowledged: state.disclaimerAcknowledged,
         useEquivalenceClasses: state.useEquivalenceClasses,
         filters: state.filters,
+        starterPicks: state.starterPicks,
+        starterPicksConfirmed: state.starterPicksConfirmed,
       }),
       // Hydration is explicit so the server-rendered HTML and the first client
       // render always agree; call `hydrateWizardStore()` from a client effect.

@@ -223,6 +223,19 @@ test.describe("improve step — the home address", () => {
     expect(calls.addresses).toEqual([TYPED_ADDRESS]);
   });
 
+  test("no distance is shown until a home address is confirmed", async ({
+    page,
+  }) => {
+    // Without a home address, `distance_km` is measured from the current
+    // list, not from the family — a figure with no plain-language meaning to
+    // them, so the card omits it rather than showing something unexplainable.
+    await openImprove(page);
+    await waitForRecommendations(page);
+    await expect(
+      page.getByTestId("recommendation-card").first(),
+    ).not.toContainText("línea recta");
+  });
+
   test("an exact match is confirmed and the hard distance limit applies", async ({
     page,
   }) => {
@@ -248,6 +261,11 @@ test.describe("improve step — the home address", () => {
       fill(es.improve.distance.hardLimit, {
         maxDistance: String(await maxHomeDistanceKm(page)),
       }),
+    );
+    // A confirmed home address is the one case where the distance line means
+    // something a family can act on ("distance from you"), so it shows.
+    await expect(page.getByTestId("recommendation-card").first()).toContainText(
+      "línea recta",
     );
 
     // Editing the field invalidates the coordinates on file until the family
@@ -303,8 +321,16 @@ test.describe("improve step — feeding recommendations back into the list", () 
     await openImprove(page);
     await waitForRecommendations(page);
 
+    // The cards live in one bordered, scrollable box — not loose in the page
+    // — so a long list never squeezes cards down to fit instead of scrolling.
+    const list = page.getByTestId("recommendation-list");
+    await expect(list).toBeVisible();
+
     const cards = page.getByTestId("recommendation-card");
     expect(await cards.count()).toBeGreaterThanOrEqual(2);
+    await expect(
+      list.getByTestId("recommendation-select").first(),
+    ).toBeVisible();
 
     const chosen = [
       await cards.nth(0).getAttribute("data-program-id"),

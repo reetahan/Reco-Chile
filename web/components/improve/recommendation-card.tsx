@@ -44,10 +44,17 @@ import {
  * missing. The location line is the one deliberate exception: it always
  * renders, because a school name without its commune and
  * region cannot be looked up or told apart from its namesakes.
+ *
+ * The distance line only shows when it was measured from an actual home
+ * address (`distanceReference === "home"`). Without one, `distance_km` is
+ * measured from a weighted average of the family's current wishlist instead —
+ * a number with no plain-language explanation a family can act on, so it's
+ * left out entirely rather than shown and misread as "distance from you".
  */
 export function RecommendationCard({
   item,
   appendedWishRank,
+  distanceReference,
   selected,
   onSelectedChange,
 }: {
@@ -55,6 +62,9 @@ export function RecommendationCard({
   /** `appended_wish_rank` of the same response — the position
    * `final_chance_if_appended` assumes. */
   appendedWishRank: number | null;
+  /** `distance_reference` of the same response — "home" or "list" on the
+   * wire, typed loosely there since it's a plain `str`, not a literal. */
+  distanceReference: string | null;
   selected: boolean;
   onSelectedChange: (selected: boolean) => void;
 }) {
@@ -69,7 +79,10 @@ export function RecommendationCard({
     formatProgramLocation(item.school_commune, item.region) ||
     t("improve.card.noInformation");
 
-  const distance = formatDistanceKm(item.distance_km, locale);
+  const distance =
+    distanceReference === "home"
+      ? formatDistanceKm(item.distance_km, locale)
+      : null;
   const showChance =
     isFiniteNumber(item.final_chance_if_appended) && appendedWishRank !== null;
 
@@ -82,6 +95,10 @@ export function RecommendationCard({
 
   return (
     <Card
+      // `shrink-0`: `Card`'s own `overflow-hidden` makes its flex min-height
+      // resolve to 0, so without this the cards inside the scrolling list
+      // below get squeezed to fit instead of scrolling.
+      className="shrink-0"
       data-testid="recommendation-card"
       data-program-id={item.program_id ?? ""}
       data-risk-level={item.risk_level}

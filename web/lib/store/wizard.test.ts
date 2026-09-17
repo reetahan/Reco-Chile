@@ -401,6 +401,56 @@ describe("invalidation table — appended recommendations", () => {
   });
 });
 
+describe("starter picks (guided branch, phase 1)", () => {
+  it("adds, dedupes, and caps at MAX_STARTER_PICKS", () => {
+    store().addStarterPick("1001:A");
+    store().addStarterPick("1002:B");
+    store().addStarterPick("1001:A");
+    expect(store().starterPicks).toEqual(["1001:A", "1002:B"]);
+
+    store().addStarterPick("1003:C");
+    store().addStarterPick("1004:D");
+    expect(store().starterPicks).toEqual(["1001:A", "1002:B", "1003:C"]);
+  });
+
+  it("ignores a blank id", () => {
+    store().addStarterPick("   ");
+    expect(store().starterPicks).toEqual([]);
+  });
+
+  it("removes a pick", () => {
+    store().addStarterPick("1001:A");
+    store().addStarterPick("1002:B");
+    store().removeStarterPick("1001:A");
+    expect(store().starterPicks).toEqual(["1002:B"]);
+  });
+
+  it("does not touch wishes or the simulation", () => {
+    seed();
+    store().addStarterPick("2001:R");
+    expect(store().simulation).toBe(SIMULATION);
+    expect(store().wishes.map((wish) => wish.programId)).not.toContain(
+      "2001:R",
+    );
+  });
+
+  it("confirms once, idempotently", () => {
+    expect(store().starterPicksConfirmed).toBe(false);
+    store().confirmStarterPicks();
+    expect(store().starterPicksConfirmed).toBe(true);
+    store().confirmStarterPicks();
+    expect(store().starterPicksConfirmed).toBe(true);
+  });
+
+  it("clears on reset", () => {
+    store().addStarterPick("1001:A");
+    store().confirmStarterPicks();
+    store().reset();
+    expect(store().starterPicks).toEqual([]);
+    expect(store().starterPicksConfirmed).toBe(false);
+  });
+});
+
 describe("inputs that must NOT invalidate the simulation", () => {
   it("keeps the result for filters, list-exists, home and slider changes", () => {
     seed();
@@ -794,7 +844,7 @@ describe("sessionStorage persistence", () => {
     };
   };
 
-  it("stores exactly the five allowed slices", () => {
+  it("stores exactly the seven allowed slices", () => {
     seed({ ties: true });
     store().setListExists(false);
     store().setFilters({ region: "Metropolitana" });
@@ -805,6 +855,8 @@ describe("sessionStorage persistence", () => {
       "disclaimerAcknowledged",
       "filters",
       "listExists",
+      "starterPicks",
+      "starterPicksConfirmed",
       "useEquivalenceClasses",
       "wishes",
     ]);

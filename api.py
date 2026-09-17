@@ -664,7 +664,7 @@ class RecommendationFilters(BaseModel):
 class RecommendationRequest(BaseModel):
     student_id: str = Field(..., description="Student RUN/IPE, e.g. 12.345.678-9")
     wishes: list[WishItem] = Field(..., min_length=1, max_length=MAX_WISHES)
-    max_recommendations: int = Field(default=5, ge=2, le=10)
+    max_recommendations: int = Field(default=5, ge=2, le=15)
     home: HomeLocation | None = None
     filters: RecommendationFilters | None = None
 
