@@ -42,8 +42,8 @@ describe("step identity", () => {
     expect(isStepSlug("")).toBe(false);
   });
 
-  it("keeps the welcome and completion pages out of the four steps", () => {
-    // The rail still shows four steps. The welcome page opens the wizard
+  it("keeps the front door and completion pages out of the four steps", () => {
+    // The rail still shows four steps. The front door opens the wizard
     // and the completion page ends it; neither is a `StepSlug`.
     expect(isStepSlug(FINISH_SLUG)).toBe(false);
     expect(STEP_SLUGS).not.toContain(FINISH_SLUG);
@@ -152,7 +152,7 @@ describe("message ids resolve in both locales", () => {
   it.each([
     "student.idLabel",
     "student.idPlaceholder",
-    "app.welcome.headline",
+    "app.disclaimer.headline",
     "app.listChoice.headline",
     "app.listChoice.yes",
     "app.listChoice.no",

@@ -108,7 +108,7 @@ async function findSameNamePair(
 }
 
 /**
- * Welcome → step 1 → list-choice → step 2. The RUN is never persisted, so
+ * Front door → step 1 → list-choice → step 2. The RUN is never persisted, so
  * every test starts at the front door.
  *
  * "Do you already have a list?" is asked after step 1 now, at the list-choice
@@ -122,8 +122,6 @@ async function openListStep(
   branch: "yes" | "no" = "yes",
 ) {
   await page.goto(`/${locale}`);
-  await page.getByTestId("welcome-continue").click();
-  await page.waitForURL(`**/${locale}/disclaimer`);
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL(`**/${locale}/student`);
@@ -493,16 +491,14 @@ test.describe("step 2 — build and order the list", () => {
     );
 
     // "Yes — review my list", changed via the header's brand link back to the
-    // welcome page and back through the same question: no filter panel, and
+    // front door and back through the same question: no filter panel, and
     // the order reminder instead.
     await page.getByTestId("wizard-back").click();
     await page.waitForURL("**/es/student");
     await page.getByRole("link", { name: copy("es", "app.title") }).click();
     await page.waitForURL("**/es");
-    await page.getByTestId("welcome-continue").click();
     // The consent checkbox was already ticked on the way in and is a direct
     // view of that flag, so it comes back pre-checked here.
-    await page.waitForURL("**/es/disclaimer");
     await page.getByTestId("disclaimer-continue").click();
     await page.waitForURL("**/es/student");
     // The RUN is still in memory from the way in too.

@@ -11,9 +11,8 @@
  * includes `Unmatched`, so its first entry is genuinely the most likely one.
  *
  * Two shapes, because the top outcome has two: a program (with commune and
- * region — many Chilean schools share a name) or `Unmatched`. The unmatched
- * shape is the sentence alone — no percentage, because "you receive none of
- * them" over "Estimated chance: 100.0%" reads as a 100% chance of a place.
+ * region — many Chilean schools share a name) or `Unmatched`, each with its
+ * own sentence and its own estimated chance.
  */
 
 import type { ReactNode } from "react";
@@ -56,12 +55,19 @@ export function OutcomeBox({
     <Card data-testid="result-outcome">
       <CardContent className="flex flex-col gap-5 py-2">
         {unmatched ? (
-          <p
-            className="text-lg font-medium text-balance"
-            data-testid="predicted-unmatched"
-          >
-            {t("headline.unmatchedBody")}
-          </p>
+          <>
+            <p
+              className="text-lg font-medium text-balance"
+              data-testid="predicted-unmatched"
+            >
+              {t("headline.unmatchedBody")}
+            </p>
+            <p className="text-base font-medium" data-testid="predicted-chance">
+              {t("outcome.chance", {
+                chance: formatPercent(chance, locale),
+              })}
+            </p>
+          </>
         ) : (
           <>
             <p className="flex items-center gap-2 font-medium">

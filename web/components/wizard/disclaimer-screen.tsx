@@ -14,16 +14,16 @@ import { stepPath } from "./steps";
 const CHECKBOX_ID = "disclaimer-acknowledge";
 
 /**
- * The "Before we continue" consent page, between the welcome page and step 1.
+ * The wizard's front door (`WELCOME_PATH`) — the "Before we continue" consent
+ * screen, with one checkbox that has to be checked before step 1.
  *
  * The checkbox is a direct, controlled view of the store's
  * `disclaimerAcknowledged` flag rather than local state: checking it writes
  * the flag immediately, so a family who already agreed once finds it
  * pre-checked, and Continue only reads the flag it already wrote.
  *
- * No stepper and no Back/Continue bar: like the welcome page, this sits
- * outside the `(wizard)` route group, so it never mounts `WizardShell` and
- * never reads `/meta`.
+ * No stepper and no Back/Continue bar: this sits outside the `(wizard)` route
+ * group, so it never mounts `WizardShell` and never reads `/meta`.
  */
 export function DisclaimerScreen() {
   const t = useTranslations("app.disclaimer");

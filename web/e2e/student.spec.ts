@@ -6,7 +6,7 @@ import es from "../messages/es";
 /**
  * The Student step.
  *
- * `wizard.spec.ts` already covers the shell (routing, the welcome page, the
+ * `wizard.spec.ts` already covers the shell (routing, the front door, the
  * guard, the stepper, the locale switch). What is under test here is the step
  * itself: the live RUN/IPE pre-check, the jargon-free copy, and the disclaimer
  * flag — including that it survives a reload while the identifier does not.
@@ -15,7 +15,7 @@ import es from "../messages/es";
  * "about this estimate" caveat is gone from this step, and the ties switch
  * moved to step 2 (`e2e/list.spec.ts`).
  *
- * The step is only reachable through the welcome page, so every test
+ * The step is only reachable through the front door, so every test
  * enters through `openStudent()` rather than deep-linking `/es/student`.
  *
  * Expected copy is read from `messages/{es,en}/*.json`, never frozen here, so a
@@ -62,16 +62,13 @@ function validCopy(locale: Locale, kind: "RUN" | "IPE"): string {
 }
 
 /**
- * Through the welcome page and the "Before we continue" consent page into
- * step 1.
+ * Through the front door's "Before we continue" consent checkbox into step 1.
  */
 async function openStudent(
   page: Page,
   { locale = "es" }: { locale?: Locale } = {},
 ) {
   await page.goto(`/${locale}`);
-  await page.getByTestId("welcome-continue").click();
-  await page.waitForURL(`**/${locale}/disclaimer`);
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL(`**/${locale}/student`);

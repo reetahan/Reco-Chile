@@ -17,30 +17,20 @@ export const STEP_SLUGS = ["student", "list", "result", "improve"] as const;
 export type StepSlug = (typeof STEP_SLUGS)[number];
 
 /**
- * The welcome page — `app/[locale]/page.tsx`, the wizard's front door.
+ * The front door — `app/[locale]/page.tsx`: the "Before we continue" consent
+ * screen, with one checkbox that has to be checked before the family can
+ * reach step 1.
  *
- * It is not a step: it carries no stepper, no Back/Continue bar and no number,
- * and it asks no question — just a Continue button to the disclaimer. Locale-
- * free like every path here — `Link`/`useRouter` from `@/i18n/navigation` add
- * the `[locale]` prefix.
+ * It is not a step: it carries no stepper, no Back/Continue bar and no
+ * number, and no `/meta` fetch. Locale-free like every path here —
+ * `Link`/`useRouter` from `@/i18n/navigation` add the `[locale]` prefix.
  */
 export const WELCOME_PATH = "/";
 
 /**
- * The "Before we continue" consent page — `app/[locale]/disclaimer/page.tsx`.
- *
- * Shown after the welcome page's Continue button and before step 1, with one
- * checkbox that has to be checked before the family can reach step 1. Like the
- * welcome page it carries no stepper, no Back/Continue bar and no `/meta`
- * fetch, and is outside the `(wizard)` route group for the same reason.
- */
-export const DISCLAIMER_PATH = "/disclaimer";
-
-/**
  * Asked after step 1 (the RUN/IPE) rather than before it, so both paths start
  * the same way. Writes `listExists`, which `canEnterStep(2)` requires; like
- * the welcome and disclaimer pages it carries no stepper and no
- * Back/Continue bar.
+ * the front door it carries no stepper and no Back/Continue bar.
  */
 export const LIST_CHOICE_PATH = "/list-choice";
 

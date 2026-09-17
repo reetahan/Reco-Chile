@@ -122,7 +122,7 @@ async function seedList(
  * The disclaimer accepted and the list choice answered, without a list.
  *
  * `disclaimerAcknowledged` is what `canEnterStep(1)` requires: a hard load of
- * `/es/student` without it is sent back to `/es/disclaimer`. Tests that are
+ * `/es/student` without it is sent back to the front door, `/es`. Tests that are
  * about a *page load* — the focus test asserts that a fresh load steals no
  * focus — seed both flags instead of clicking through the front door, which
  * would navigate client-side.
@@ -279,16 +279,17 @@ async function scan(page: Page, info: TestInfo, label: string): Promise<void> {
 
 for (const locale of LOCALES) {
   test.describe(`a11y — ${locale}`, () => {
-    test("the welcome page", async ({ page }, info) => {
+    test("the front door", async ({ page }, info) => {
+      // The wizard's front door is the "Before we continue" consent screen
+      // itself — the only way in, so a scan of it is not optional.
       await page.goto(`/${locale}`);
       await expect(
         page.getByRole("heading", {
           level: 1,
-          name: MESSAGES[locale].app.welcome.headline,
+          name: MESSAGES[locale].app.disclaimer.headline,
         }),
       ).toBeVisible();
-      // The only way in — a scan of the wizard's front door is not optional.
-      await scan(page, info, `welcome (${locale})`);
+      await scan(page, info, `front door (${locale})`);
     });
 
     test("the FAQ dialog", async ({ page }, info) => {
@@ -299,25 +300,9 @@ for (const locale of LOCALES) {
       await scan(page, info, `FAQ dialog (${locale})`);
     });
 
-    test("the disclaimer page", async ({ page }, info) => {
-      // Reached from the welcome page's Continue button.
-      await page.goto(`/${locale}`);
-      await page.getByTestId("welcome-continue").click();
-      await page.waitForURL(`**/${locale}/disclaimer`);
-      await expect(
-        page.getByRole("heading", {
-          level: 1,
-          name: MESSAGES[locale].app.disclaimer.headline,
-        }),
-      ).toBeVisible();
-      await scan(page, info, `disclaimer (${locale})`);
-    });
-
     test("the list-choice page", async ({ page }, info) => {
       // Reached from step 1's Continue button, once the RUN is valid.
       await page.goto(`/${locale}`);
-      await page.getByTestId("welcome-continue").click();
-      await page.waitForURL(`**/${locale}/disclaimer`);
       await page.getByTestId("disclaimer-checkbox").click();
       await page.getByTestId("disclaimer-continue").click();
       await page.waitForURL(`**/${locale}/student`);
@@ -339,8 +324,6 @@ for (const locale of LOCALES) {
     test("step 1, empty and filled", async ({ page }, info) => {
       // Through the front door: the disclaimer is what unlocks step 1.
       await page.goto(`/${locale}`);
-      await page.getByTestId("welcome-continue").click();
-      await page.waitForURL(`**/${locale}/disclaimer`);
       await page.getByTestId("disclaimer-checkbox").click();
       await page.getByTestId("disclaimer-continue").click();
       await page.waitForURL(`**/${locale}/student`);
@@ -552,7 +535,7 @@ async function stubGeocode(page: Page): Promise<void> {
  */
 test.describe("focus management", () => {
   test("Continue and Back move focus to the step heading", async ({ page }) => {
-    // Seeded rather than clicked through the welcome page: the first assertion
+    // Seeded rather than clicked through the front door: the first assertion
     // is about a *fresh load*, which a client-side push from `/es` would not be.
     await seedListChoice(page);
     await page.goto("/es/student");
