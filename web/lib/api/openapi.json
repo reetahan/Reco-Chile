@@ -866,7 +866,7 @@
           },
           "max_recommendations": {
             "default": 5,
-            "maximum": 10.0,
+            "maximum": 15.0,
             "minimum": 2.0,
             "title": "Max Recommendations",
             "type": "integer"

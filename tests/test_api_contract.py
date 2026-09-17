@@ -890,7 +890,7 @@ def test_recommend_filters_restrict_the_candidate_pool(client):
     assert limited["limited_by_filters"] is True
 
 
-@pytest.mark.parametrize("count", [1, 11])
+@pytest.mark.parametrize("count", [1, 16])
 def test_recommend_rejects_out_of_range_counts(client, count):
     fixture = RECOMMENDATION_FIXTURES[0]
     response = client.post(

@@ -30,7 +30,7 @@ import type {
   RecommendationRequest,
   RecommendationResponse,
 } from "@/lib/api/types";
-import { useWizardStore } from "@/lib/store/wizard";
+import { useWizardStore, type Wish } from "@/lib/store/wizard";
 
 import { buildRecommendationRequest } from "./request";
 
@@ -61,16 +61,32 @@ function requestFromKey(key: string): RecommendationRequest {
   return JSON.parse(key.slice(key.indexOf(" ") + 1)) as RecommendationRequest;
 }
 
-export function useRecommendations(): UseRecommendationsResult {
+export type UseRecommendationsOverrides = {
+  /** Overrides the store's `wishes` — the guided branch's starter-picks phase
+   * asks `/recommend` to build a profile from its 1-3 picks, which are not
+   * (yet) part of the store's real wish list. */
+  wishes?: readonly Wish[];
+  /** Overrides the store's `recommendationCount` (the step-4 slider's value),
+   * which is clamped to that slider's 2-10 range and is not what the
+   * starter-picks phase wants to ask for. */
+  maxRecommendations?: number;
+};
+
+export function useRecommendations(
+  overrides: UseRecommendationsOverrides = {},
+): UseRecommendationsResult {
   const locale = useLocale();
 
   const studentId = useWizardStore((state) => state.studentId);
-  const wishes = useWizardStore((state) => state.wishes);
+  const storeWishes = useWizardStore((state) => state.wishes);
   const home = useWizardStore((state) => state.home);
   const filters = useWizardStore((state) => state.filters);
-  const maxRecommendations = useWizardStore(
+  const storeMaxRecommendations = useWizardStore(
     (state) => state.recommendationCount,
   );
+  const wishes = overrides.wishes ?? storeWishes;
+  const maxRecommendations =
+    overrides.maxRecommendations ?? storeMaxRecommendations;
 
   const request = React.useMemo(
     () =>

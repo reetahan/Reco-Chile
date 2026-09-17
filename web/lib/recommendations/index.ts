@@ -17,4 +17,7 @@ export {
   RECOMMENDATION_DEBOUNCE_MS,
   useRecommendations,
 } from "./use-recommendations";
-export type { UseRecommendationsResult } from "./use-recommendations";
+export type {
+  UseRecommendationsOverrides,
+  UseRecommendationsResult,
+} from "./use-recommendations";

@@ -114,7 +114,9 @@ async function findSameNamePair(
  * "Do you already have a list?" is asked after step 1 now, at the list-choice
  * page. `"yes"` is the default here because most of these scenarios are about
  * ordering a list that exists; `"no"` is the branch that adds the filter panel
- * to step 2.
+ * to step 2 — and now opens on the "pick 1-3 starter schools" phase first, so
+ * this also picks one and confirms past it, landing on the same filter/search/
+ * list UI these tests expect (`e2e/starters.spec.ts` covers that phase itself).
  */
 async function openListStep(
   page: Page,
@@ -132,6 +134,14 @@ async function openListStep(
   await page.waitForURL(`**/${locale}/list-choice`);
   await page.getByTestId(`list-choice-${branch}`).click();
   await page.waitForURL(`**/${locale}/list`);
+
+  if (branch === "no") {
+    await page.getByTestId("program-search-trigger").click();
+    await page.getByTestId("program-search-option").first().click();
+    await page.getByTestId("program-search-add").click();
+    await page.getByTestId("starter-picks-continue").click();
+    await expect(page.getByTestId("filter-panel")).toBeVisible();
+  }
 }
 
 async function addProgram(page: Page, program: Program) {

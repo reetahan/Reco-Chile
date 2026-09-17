@@ -3,13 +3,23 @@
 /**
  * Step 2 — build and order the preference list.
  *
- * Section order, top to bottom, with the ties toggle added first: the
- * "I have not yet decided the exact order" ties toggle lives here because it
- * governs how *this* list gets built and ordered.
+ * The guided branch ("No — help me build it") opens on a phase this step owns
+ * before any of the above: pick 1-3 schools of general interest
+ * (`StarterPicksPanel`), then review up to 15 suggestions built from them
+ * (`StarterRecommendationsPanel`) before the rest of the page appears at all.
+ * `starterPicksConfirmed` is what switches from the first phase to the second;
+ * a family that already has wishes (say, from an earlier session) is deemed
+ * to have passed the phase already, on mount, rather than being sent back
+ * through it.
+ *
+ * Section order once past that phase, top to bottom, with the ties toggle
+ * added first: the "I have not yet decided the exact order" ties toggle lives
+ * here because it governs how *this* list gets built and ordered.
  *
  * heading + one caption that depends on the mode
  * the ties toggle (`EquivalenceSwitch`)
  * "N recommended programs were added…" (returning from step 4)
+ * the starter-picks suggestions (only "No — help me build it", once confirmed)
  * filter panel (only "No — help me build it")
  * program search + Add
  * the wish list itself
@@ -34,6 +44,8 @@ import { FilterPanel } from "@/components/list/filters/filter-panel";
 import { ImputedNotice } from "@/components/list/imputed-notice";
 import { OrderCount } from "@/components/list/order-count";
 import { ProgramSearch } from "@/components/list/program-search";
+import { StarterPicksPanel } from "@/components/list/starter-picks-panel";
+import { StarterRecommendationsPanel } from "@/components/list/starter-recommendations-panel";
 import { WishList } from "@/components/list/wish-list";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { StepPage } from "@/components/wizard/step-page";
@@ -52,6 +64,12 @@ export function ListStep() {
   const ties = useWizardStore((state) => state.useEquivalenceClasses);
   const wishes = useWizardStore((state) => state.wishes);
   const addWish = useWizardStore((state) => state.addWish);
+  const starterPicksConfirmed = useWizardStore(
+    (state) => state.starterPicksConfirmed,
+  );
+  const confirmStarterPicks = useWizardStore(
+    (state) => state.confirmStarterPicks,
+  );
   const setMaxWishes = useWizardStore((state) => state.setMaxWishes);
   const dropMissingPrograms = useWizardStore(
     (state) => state.dropMissingPrograms,
@@ -144,6 +162,26 @@ export function ListStep() {
   );
 
   const needsBuilder = listExists === false;
+  // A family that already has wishes when arriving here — an earlier session,
+  // or a list built before this phase existed — has effectively already
+  // passed it; sending them through it now would ask them to justify a list
+  // they already made.
+  React.useEffect(() => {
+    if (needsBuilder && wishes.length > 0 && !starterPicksConfirmed) {
+      confirmStarterPicks();
+    }
+  }, [needsBuilder, wishes.length, starterPicksConfirmed, confirmStarterPicks]);
+
+  const showStarterPicks = needsBuilder && !starterPicksConfirmed;
+  const showStarterRecommendations = needsBuilder && starterPicksConfirmed;
+
+  if (showStarterPicks) {
+    return (
+      <StepPage slug="list" leadTestId="list-caption" lead={t("filters.intro")}>
+        <StarterPicksPanel />
+      </StepPage>
+    );
+  }
 
   return (
     // A different caption per branch: the filter intro
@@ -170,6 +208,8 @@ export function ListStep() {
           </AlertDescription>
         </Alert>
       ) : null}
+
+      {showStarterRecommendations ? <StarterRecommendationsPanel /> : null}
 
       {needsBuilder ? <FilterPanel /> : null}
 
