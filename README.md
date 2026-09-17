@@ -234,7 +234,7 @@ Inside the project directory, `python` then resolves to the version pinned in
 Clone the repository and enter the project directory:
 
 ```bash
-git clone https://github.com/AugustinPlantureux/Reco-Chile.git
+git clone https://anonymous.4open.science/r/Reco-Chile-9C6A
 cd Reco-Chile
 ```
 
