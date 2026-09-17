@@ -119,10 +119,9 @@ async function findSameNamePair(
  * Welcome → step 1 with a valid RUN → the list-choice question → step 2, on
  * the guided branch.
  *
- * "No — help me build it" now opens on the "pick 1-3 starter schools" phase
- * before the filter panel and the ordinary program search appear at all
- * (`e2e/starters.spec.ts` covers that phase itself); this picks one and
- * confirms past it so the tests below reach the UI they are actually about.
+ * "No — help me build it" opens on a "pick 1-3 starter schools" phase before
+ * the filter panel and program search appear (`e2e/starters.spec.ts` covers
+ * it); this picks one and confirms past it.
  */
 async function openBuilder(page: Page) {
   await page.goto("/es");

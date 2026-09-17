@@ -3,14 +3,12 @@
 /**
  * Step 2 — build and order the preference list.
  *
- * The guided branch ("No — help me build it") opens on a phase this step owns
- * before any of the above: pick 1-3 schools of general interest
- * (`StarterPicksPanel`), then review up to 15 suggestions built from them
- * (`StarterRecommendationsPanel`) before the rest of the page appears at all.
- * `starterPicksConfirmed` is what switches from the first phase to the second;
- * a family that already has wishes (say, from an earlier session) is deemed
- * to have passed the phase already, on mount, rather than being sent back
- * through it.
+ * The guided branch ("No — help me build it") opens on two phases this step
+ * owns before the rest of the page: pick 1-3 schools (`StarterPicksPanel`),
+ * then review suggestions built from them (`StarterRecommendationsPanel`).
+ * `starterPicksConfirmed` switches from the first phase to the second; a
+ * family that already has wishes is treated as having passed the phase
+ * already, so it isn't sent back through it.
  *
  * Section order once past that phase, top to bottom, with the ties toggle
  * added first: the "I have not yet decided the exact order" ties toggle lives
@@ -162,10 +160,8 @@ export function ListStep() {
   );
 
   const needsBuilder = listExists === false;
-  // A family that already has wishes when arriving here — an earlier session,
-  // or a list built before this phase existed — has effectively already
-  // passed it; sending them through it now would ask them to justify a list
-  // they already made.
+  // Wishes already exist (earlier session, or a list built before this phase
+  // existed) — skip straight past the starter-picks phase.
   React.useEffect(() => {
     if (needsBuilder && wishes.length > 0 && !starterPicksConfirmed) {
       confirmStarterPicks();

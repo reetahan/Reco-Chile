@@ -1,13 +1,11 @@
 "use client";
 
 /**
- * Guided branch, phase 1: pick 1-3 schools the family is generally interested
- * in, as raw material for `/recommend` — not yet an ordered list, so this
- * renders a plain remove-only list rather than {@link WishList}'s rank badges
- * and drag handles, which would misstate what these picks mean.
+ * Guided branch, phase 1: pick 1-3 schools as raw material for `/recommend`.
+ * Not an ordered list yet, so this is a plain remove-only list rather than
+ * `WishList`'s rank badges and drag handles.
  *
- * Reuses the same {@link FilterPanel} and {@link ProgramSearch} step 2 already
- * uses to find a program; only the destination of "Add" differs
+ * Reuses `FilterPanel` and `ProgramSearch`; only "Add"'s destination differs
  * (`addStarterPick`, not `addWish`).
  */
 

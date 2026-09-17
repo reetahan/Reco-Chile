@@ -111,12 +111,11 @@ async function findSameNamePair(
  * Welcome → step 1 → list-choice → step 2. The RUN is never persisted, so
  * every test starts at the front door.
  *
- * "Do you already have a list?" is asked after step 1 now, at the list-choice
- * page. `"yes"` is the default here because most of these scenarios are about
- * ordering a list that exists; `"no"` is the branch that adds the filter panel
- * to step 2 — and now opens on the "pick 1-3 starter schools" phase first, so
- * this also picks one and confirms past it, landing on the same filter/search/
- * list UI these tests expect (`e2e/starters.spec.ts` covers that phase itself).
+ * "Do you already have a list?" is asked after step 1, at the list-choice
+ * page. `"yes"` is the default; `"no"` opens the guided branch, which starts
+ * on a "pick 1-3 starter schools" phase — this picks one and confirms past it
+ * so callers land on the filter/search/list UI they expect
+ * (`e2e/starters.spec.ts` covers that phase itself).
  */
 async function openListStep(
   page: Page,

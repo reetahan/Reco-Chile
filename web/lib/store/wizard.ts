@@ -79,15 +79,10 @@ export type WizardState = {
   disclaimerAcknowledged: boolean;
   useEquivalenceClasses: boolean;
   filters: ProgramFilters;
-  /**
-   * The guided branch's "pick 1-3 schools you're interested in" phase — raw
-   * material for `/recommend`, not yet part of `wishes`. Cleared only by
-   * `reset()`; a program moves out of here and into `wishes` the moment it is
-   * actually added from the suggestions list, same as any other program.
-   */
+  /** Guided branch's "pick 1-3 schools" phase — raw material for `/recommend`,
+   * not part of `wishes` until actually added from the suggestions list. */
   starterPicks: string[];
-  /** Has the family clicked past the starter-picks phase? Gates whether step 2
-   * shows that phase or the suggestions + full builder that follow it. */
+  /** Has the family clicked past the starter-picks phase? */
   starterPicksConfirmed: boolean;
   wishes: Wish[];
   simulation: SimulationResponse | null;
@@ -160,14 +155,11 @@ export type WizardActions = {
       | Partial<ProgramFilters>
       | ((current: ProgramFilters) => Partial<ProgramFilters>),
   ) => void;
-  /** Add a program to the starter-picks phase; ignored past `MAX_STARTER_PICKS`
-   * or once the program is already picked. */
+  /** Ignored past `MAX_STARTER_PICKS` or once already picked. */
   addStarterPick: (programId: string) => void;
   removeStarterPick: (programId: string) => void;
-  /** Move on from the starter-picks phase, whatever it currently holds — the
-   * 1-3 range is a UI gate (the Continue button's `disabled`), not enforced
-   * here, so this also doubles as "skip the phase" for a family that already
-   * has wishes when it would otherwise show. */
+  /** Not range-checked here — the 1-3 gate is the Continue button's
+   * `disabled`, so this doubles as "skip the phase" when needed. */
   confirmStarterPicks: () => void;
   addWish: (programId: string) => void;
   removeWish: (programId: string) => void;

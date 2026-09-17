@@ -12,11 +12,9 @@ import {
 import { Button } from "@/components/ui/button";
 
 /**
- * One row of the starter-picks phase's suggestion list: a starter pick itself
- * (`isStarter`, always addable) or a candidate `/recommend` proposed. Unlike
- * {@link "../improve/recommendation-card"}'s checkbox-then-submit pattern, this
- * adds immediately — the family reviews a shorter, less familiar list here,
- * with no separate "submit" step to forget.
+ * One row of the starter-picks suggestion list: a starter pick (`isStarter`)
+ * or a `/recommend` candidate. Adds immediately on click, unlike
+ * `RecommendationCard`'s checkbox-then-submit pattern.
  */
 export function StarterRecommendationCard({
   programId,

@@ -129,8 +129,7 @@ test.describe("step 2 — pick starter schools", () => {
     await expect(page.getByTestId("filter-panel")).toBeVisible();
     await expect(page.getByTestId("program-search")).toBeVisible();
 
-    // The starter pick itself is one of the (up to 15) suggested rows, marked
-    // as already the family's own choice, not folded into the empty list yet.
+    // The starter pick is one of the suggested rows, not yet on the real list.
     const starterCard = page.locator(
       `[data-testid="starter-recommendation-card"][data-program-id="${program.program_id}"]`,
     );

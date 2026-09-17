@@ -1,17 +1,10 @@
 "use client";
 
 /**
- * Guided branch, phase 2: `/recommend`, fed by the starter picks instead of a
- * home address or an existing list, filled out with the same store filters as
- * the search below. Up to {@link STARTER_RECOMMENDATIONS_TOTAL} rows, the
- * starter picks themselves first (already known to matter to the family) then
- * the engine's own suggestions — each with its own "Add" button, since a
- * program the family already added elsewhere in the meantime must not be
- * offered twice.
- *
- * Stays on screen once shown: the family reviews and adds from here at their
- * own pace, alongside the ordinary filter/search/list UI that appears at the
- * same time below it (`ListStep`).
+ * Guided branch, phase 2: `/recommend` fed by the starter picks (no home
+ * address or existing list needed). Up to `STARTER_RECOMMENDATIONS_TOTAL`
+ * rows — starter picks first, then the engine's suggestions — each with its
+ * own "Add" button so an already-added program isn't offered twice.
  */
 
 import * as React from "react";

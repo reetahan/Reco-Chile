@@ -62,13 +62,11 @@ function requestFromKey(key: string): RecommendationRequest {
 }
 
 export type UseRecommendationsOverrides = {
-  /** Overrides the store's `wishes` — the guided branch's starter-picks phase
-   * asks `/recommend` to build a profile from its 1-3 picks, which are not
-   * (yet) part of the store's real wish list. */
+  /** Overrides the store's `wishes` — for the starter-picks phase, which asks
+   * `/recommend` from 1-3 picks not yet on the real wish list. */
   wishes?: readonly Wish[];
-  /** Overrides the store's `recommendationCount` (the step-4 slider's value),
-   * which is clamped to that slider's 2-10 range and is not what the
-   * starter-picks phase wants to ask for. */
+  /** Overrides the store's `recommendationCount` (the step-4 slider, clamped
+   * to 2-10 — not the range the starter-picks phase wants). */
   maxRecommendations?: number;
 };
 
