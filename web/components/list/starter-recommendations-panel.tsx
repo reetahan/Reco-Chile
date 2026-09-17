@@ -102,7 +102,7 @@ export function StarterRecommendationsPanel() {
       ) : null}
 
       <div
-        className="flex max-h-[36rem] flex-col gap-3 overflow-y-auto pr-1"
+        className="flex max-h-[36rem] flex-col gap-3 overflow-y-auto rounded-xl border border-border p-3"
         data-testid="starter-recommendations-list"
       >
         {starterPicks.map((id) => {
@@ -120,7 +120,7 @@ export function StarterRecommendationsPanel() {
                     )
                   : ""
               }
-              programDisplayName={program?.program_label ?? ""}
+              programDisplayName={program?.program_display_name ?? ""}
               isStarter
               added={wishIds.has(id)}
               disabled={atMaxWishes}

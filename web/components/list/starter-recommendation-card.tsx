@@ -39,6 +39,10 @@ export function StarterRecommendationCard({
 
   return (
     <Card
+      // `shrink-0`: `Card`'s own `overflow-hidden` makes its flex min-height
+      // resolve to 0, so without this a tall stack of cards inside the
+      // scrolling container below gets squeezed to fit instead of scrolling.
+      className="shrink-0"
       data-testid="starter-recommendation-card"
       data-program-id={programId ?? ""}
       data-starter={isStarter ? "true" : "false"}

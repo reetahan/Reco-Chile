@@ -44,7 +44,9 @@
     "suggestionsIntro": "Según tus elecciones, estos son otros colegios que podrían interesarte. Agrega los que quieras a tu lista de abajo.",
     "yourPick": "Uno de tus colegios iniciales",
     "add": "Agregar",
-    "added": "Agregado"
+    "added": "Agregado",
+    "searchOtherTitle": "Busca otros colegios",
+    "searchOtherPlaceholder": "Busca otros colegios…"
   },
   "notices": {
     "imputedTitle": "Algunos programas seleccionados usan valores históricos de calibración estimados.",

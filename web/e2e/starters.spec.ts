@@ -129,12 +129,33 @@ test.describe("step 2 — pick starter schools", () => {
     await expect(page.getByTestId("filter-panel")).toBeVisible();
     await expect(page.getByTestId("program-search")).toBeVisible();
 
+    // Filters + search sit above the suggestions, both inside one bordered
+    // element — "additional search filters/box -> scrollable recs box ->
+    // existing list UI".
+    const filtersBox = page.getByTestId("starter-search-filters");
+    await expect(filtersBox).toBeVisible();
+    await expect(filtersBox.getByTestId("filter-panel")).toBeVisible();
+    await expect(filtersBox.getByTestId("program-search")).toBeVisible();
+    const boxesTopToBottom = page.locator(
+      '[data-testid="starter-search-filters"], [data-testid="starter-recommendations-panel"]',
+    );
+    await expect(boxesTopToBottom).toHaveCount(2);
+    await expect(boxesTopToBottom.nth(0)).toHaveAttribute(
+      "data-testid",
+      "starter-search-filters",
+    );
+
     // The starter pick is one of the suggested rows, not yet on the real list.
     const starterCard = page.locator(
       `[data-testid="starter-recommendation-card"][data-program-id="${program.program_id}"]`,
     );
     await expect(starterCard).toHaveAttribute("data-starter", "true");
     await expect(page.getByTestId("wish-card")).toHaveCount(0);
+
+    // Every card shows its Add button (the scrolling box does not clip them).
+    await expect(
+      page.getByTestId("starter-recommendation-add").first(),
+    ).toBeVisible();
   });
 
   test("adding a suggestion puts it straight on the reorderable list", async ({

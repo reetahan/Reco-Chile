@@ -17,9 +17,10 @@
  * heading + one caption that depends on the mode
  * the ties toggle (`EquivalenceSwitch`)
  * "N recommended programs were added…" (returning from step 4)
- * the starter-picks suggestions (only "No — help me build it", once confirmed)
- * filter panel (only "No — help me build it")
- * program search + Add
+ * filter panel + program search (only "No — help me build it"; grouped in a
+ * bordered box once the starter-picks suggestions below exist, so the two
+ * ways to add a program read as one "find more" area)
+ * the starter-picks suggestions (only once confirmed)
  * the wish list itself
  * "some programs use imputed calibration" (+ "What does this mean?")
  * the over-cap order-count warning (ties mode, over the limit only)
@@ -179,6 +180,37 @@ export function ListStep() {
     );
   }
 
+  // Once suggestions are showing, this doubles as "search for anything else"
+  // rather than the guided branch's first search, so both its heading and its
+  // placeholder change to say so.
+  const filtersAndSearch = (
+    <>
+      {needsBuilder ? <FilterPanel /> : null}
+      <section className="flex flex-col gap-3">
+        <h2 className="text-base font-semibold">
+          {showStarterRecommendations
+            ? t("list.starters.searchOtherTitle")
+            : t("filters.search.title")}
+        </h2>
+        <ProgramSearch
+          onAdd={handleAdd}
+          excludeIds={wishIds}
+          disabled={atMaxWishes}
+          placeholder={
+            showStarterRecommendations
+              ? t("list.starters.searchOtherPlaceholder")
+              : undefined
+          }
+        />
+        {atMaxWishes ? (
+          <p className="text-sm text-destructive" data-testid="max-wishes">
+            {t("list.notices.maxWishes", { max: meta.max_wishes })}
+          </p>
+        ) : null}
+      </section>
+    </>
+  );
+
   return (
     // A different caption per branch: the filter intro
     // when it is helping to build the list, the preference-order reminder when
@@ -205,23 +237,18 @@ export function ListStep() {
         </Alert>
       ) : null}
 
+      {showStarterRecommendations ? (
+        <div
+          className="flex flex-col gap-4 rounded-xl border border-border p-4"
+          data-testid="starter-search-filters"
+        >
+          {filtersAndSearch}
+        </div>
+      ) : (
+        filtersAndSearch
+      )}
+
       {showStarterRecommendations ? <StarterRecommendationsPanel /> : null}
-
-      {needsBuilder ? <FilterPanel /> : null}
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-base font-semibold">{t("filters.search.title")}</h2>
-        <ProgramSearch
-          onAdd={handleAdd}
-          excludeIds={wishIds}
-          disabled={atMaxWishes}
-        />
-        {atMaxWishes ? (
-          <p className="text-sm text-destructive" data-testid="max-wishes">
-            {t("list.notices.maxWishes", { max: meta.max_wishes })}
-          </p>
-        ) : null}
-      </section>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-base font-semibold">{t("list.current.title")}</h2>

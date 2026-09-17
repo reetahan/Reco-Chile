@@ -44,7 +44,9 @@
     "suggestionsIntro": "Based on your picks, here are some schools you might also like. Add the ones you want to your list below.",
     "yourPick": "One of your starter picks",
     "add": "Add",
-    "added": "Added"
+    "added": "Added",
+    "searchOtherTitle": "Search for other schools",
+    "searchOtherPlaceholder": "Search for other schools…"
   },
   "notices": {
     "imputedTitle": "Some selected programs use estimated historical calibration values.",

@@ -62,6 +62,8 @@ export type ProgramSearchProps = {
   /** Set while the list is at `/meta.max_wishes`, say. */
   disabled?: boolean;
   className?: string;
+  /** Overrides the trigger's empty-state text (`search.placeholder`). */
+  placeholder?: string;
 };
 
 const NO_EXCLUSIONS: readonly string[] = [];
@@ -72,6 +74,7 @@ export function ProgramSearch({
   filters,
   disabled = false,
   className,
+  placeholder,
 }: ProgramSearchProps) {
   const t = useTranslations("filters");
 
@@ -146,7 +149,7 @@ export function ProgramSearch({
                 className="flex min-w-0 flex-1 flex-col gap-0.5"
               >
                 {selected === null ? (
-                  t("search.placeholder")
+                  (placeholder ?? t("search.placeholder"))
                 ) : (
                   <>
                     <span>{selected.program_label}</span>
