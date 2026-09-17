@@ -363,10 +363,8 @@ test.describe("result step — the outcome box", () => {
   test("is the whole page: the page is only the outcome box", async ({
     page,
   }) => {
-    // The page no longer shows the overall assignment figure and unmatched risk, the
-    // outcome podium, the per-preference family table, the equivalence block
-    // and the detailed calculation. The box and the finish/improve choice are
-    // all that remain — assert their absence so none of them creeps back.
+    // The outcome box and the finish/improve choice are all this page shows —
+    // assert the absence of everything else so it doesn't creep back.
     await openResult(page, STRICT);
     await expect(page.getByTestId("result-outcome")).toBeVisible();
 
@@ -512,10 +510,8 @@ test.describe("result step — the outcome box", () => {
   });
 
   test("ties mode shows the same single box", async ({ page }) => {
-    // The mode used to decide the branch: ties drew the equivalence
-    // sensitivity block, strict drew the family table. Both are gone, so the
-    // mode no longer changes what step 3 renders — only what `/simulate` is
-    // asked. `equiv_01` is stable, so its top outcome is the fixture's own.
+    // Mode only changes what `/simulate` is asked, not what step 3 renders.
+    // `equiv_01` is stable, so its top outcome is the fixture's own.
     await openResult(page, EQUIV_STABLE);
 
     await expect(page.getByTestId("result-outcome")).toBeVisible();

@@ -18,23 +18,19 @@ import {
   stepFromPathname,
   stepNumber,
   stepPath,
-  WELCOME_PATH,
+  FRONT_DOOR_PATH,
   type StepSlug,
 } from "./steps";
 
 /**
- * Binds the store's step gates to the current route.
+ * Binds the store's step gates (in `@/lib/store/wizard`) to the current route:
+ * decides which route the URL is on, supplies the two server limits from
+ * `/meta`, and re-exposes the gates as plain booleans so components below take
+ * props instead of touching the store.
  *
- * The rules themselves live in `@/lib/store/wizard`; this hook only decides
- * *which* route the URL is on, supplies `/meta.max_exact_equiv_permutations` and
- * `/meta.max_wishes` as the two server limits, and re-exposes the gates as plain booleans so every
- * component below takes props instead of touching the store.
- *
- * The completion page `/finish` is under `(wizard)` but is not a step; the
- * shell draws it without the rail, told apart here by `kind`.
- *
- * Each gate is a separate primitive subscription, so the shell re-renders only
- * when a gate actually flips — not on every keystroke in the wish list.
+ * The completion page `/finish` is under `(wizard)` but is not a step — told
+ * apart here by `kind`. Each gate is a separate subscription so the shell
+ * re-renders only when a gate actually flips, not on every keystroke.
  */
 export type WizardGating = {
   /** `"step"` for the four numbered steps, `"finish"` for the completion page. */
@@ -56,10 +52,8 @@ export function useWizardGating(): WizardGating {
   const path = pathname ?? "";
   const finish = isFinishPathname(path);
   const slug = stepFromPathname(path) ?? "student";
-  // Both server caps , straight from `/meta`, so every gate the shell
-  // draws — the stepper links, Continue, and the guard's fallback — uses the
-  // numbers the API will enforce, and does so from the first render rather than
-  // waiting for some step to have called `setMaxWishes`.
+  // Both caps come straight from `/meta`, available on the first render
+  // rather than waiting for some step to have called `setMaxWishes`.
   const options: StepGateOptions = {
     maxOrders: meta?.max_exact_equiv_permutations ?? null,
     maxWishes: meta?.max_wishes ?? null,
@@ -87,9 +81,8 @@ export function useWizardGating(): WizardGating {
 
   // `lastAllowedStep` from the store needs the whole state object; the same
   // answer falls out of the four booleans already subscribed to. `null` — not
-  // even step 1 — is the welcome page: nothing is set, which is also where an
-  // explicit "start over" (`reset()`) sends the family, so the guard must not
-  // pick a different page out from under that navigation.
+  // even step 1 — is the front door, which is also where `reset()` sends
+  // the family, so the guard must not pick a different page there.
   let fallbackSlug: StepSlug | null = null;
   for (const candidate of STEP_SLUGS) {
     if (!entry[candidate]) break;
@@ -103,7 +96,7 @@ export function useWizardGating(): WizardGating {
         LIST_CHOICE_PATH
       : fallbackSlug !== null
         ? stepPath(fallbackSlug)
-        : WELCOME_PATH;
+        : FRONT_DOOR_PATH;
 
   if (finish) {
     return {

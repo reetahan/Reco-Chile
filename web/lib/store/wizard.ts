@@ -71,11 +71,9 @@ export type MoveTarget = "up" | "down" | number;
 export type WizardState = {
   /** RUN/IPE — memory only, never persisted, never logged. */
   studentId: string;
-  /** The welcome page's answer; `null` = not asked yet, which locks step 1. */
+  /** The list-choice question's answer; `null` = not asked yet, locking step 2. */
   listExists: boolean | null;
-  /** The "Before we continue" consent checkbox, shown after the welcome
-   * answer and before step 1. `false` locks step 1 the same way an
-   * unanswered `listExists` does. */
+  /** The "Before we continue" consent checkbox. `false` locks step 1. */
   disclaimerAcknowledged: boolean;
   useEquivalenceClasses: boolean;
   filters: ProgramFilters;
@@ -89,58 +87,37 @@ export type WizardState = {
   simulationStale: boolean;
   home: GeocodeResult | null;
   recommendationCount: number;
-  /**
-   * `/meta.max_wishes` — the server's cap on the length of a preference list
-   * (`MAX_WISHES`). Memory-only and `null` until a component that has `/meta`
-   * calls `setMaxWishes`, exactly like `maxOrders`: with no limit known, the
-   * client simply does not pre-check and the server's 422 stays the only gate.
-   */
+  /** `/meta.max_wishes` — the server's cap on list length. `null` until a
+   * component with `/meta` calls `setMaxWishes`; with no limit known, the
+   * client skips the pre-check and the server's 422 is the only gate. */
   maxWishes: number | null;
-  /**
-   * How many recommendations the last `appendRecommendations` added, for the
-   * success notice at the top of step 2. Transient: never persisted, and the
-   * step that shows it clears it with `clearRecommendationsNotice()` — shown
-   * once, then cleared.
-   */
+  /** How many recommendations the last `appendRecommendations` added, for the
+   * step-2 success notice. Shown once, then cleared via
+   * `clearRecommendationsNotice()`. */
   recommendationsAddedNotice: number;
   /**
    * A navigation the wizard itself started, as the destination's step number —
-   * memory-only, and the one thing that makes the step-4 → step-2 hand-off
-   * possible.
+   * what makes the step-4 → step-2 hand-off possible.
    *
-   * `appendRecommendations` invalidates the simulation, which instantly makes
-   * step 4 unenterable. Without this flag the step guard in
-   * `components/wizard/step-guard.tsx` reacts to that first and `router.replace`s
-   * to step 3 — the furthest step still reachable — overriding the `router.push`
-   * to step 2 the producer had just issued. While `pendingNavigation` is set the
-   * guard stands down: the wizard is already moving somewhere legal, and the
-   * destination clears the flag when it mounts.
-   *
-   * A step *number* rather than a slug so the store keeps no dependency on the
-   * routing layer; `components/wizard/steps.ts` translates in both directions.
+   * `appendRecommendations` invalidates the simulation, locking step 4. Without
+   * this flag the step guard reacts to that first and redirects to step 3
+   * before the `router.push` to step 2 lands. While set, the guard stands
+   * down; the destination clears it on mount.
    */
   pendingNavigation: WizardStep | null;
   /**
    * The current step is waiting on a request it must finish before the family
-   * can move on — the result step's `/simulate`. Memory-only, and
-   * read by the shell to put `WizardNav` in its `pending` state.
-   *
-   * Contract for the owning step: call `setStepBusy(true)` when the request
-   * starts and `setStepBusy(false)` when it settles *and* from the effect's
-   * cleanup, so leaving the step can never strand the spinner. Nothing here
-   * clears it on navigation: effects of the arriving page run before the
-   * shell's, so a shell-side reset would race with the step that just set it.
+   * can move on. Read by the shell to put `WizardNav` in its `pending` state.
+   * Contract: the owning step calls `setStepBusy(true)` when the request
+   * starts and `setStepBusy(false)` when it settles and on cleanup.
    */
   stepBusy: boolean;
   /**
-   * Has `hydrateWizardStore()` finished reading `sessionStorage` back?
-   *
-   * Memory-only, never persisted, and `false` on every fresh document. It
-   * exists because the persisted slices arrive one effect *after* the tree
-   * mounts, and the step guard now gates on one of them (`listExists`):
-   * without this flag a reload of `/es/student` would see the empty default,
-   * decide the welcome question was never answered, and bounce a family that
-   * had answered it. Whoever redirects on store state must wait for this.
+   * Has `hydrateWizardStore()` finished reading `sessionStorage` back? `false`
+   * on every fresh document — the persisted slices arrive one effect after
+   * mount, and the step guard gates on one of them (`listExists`), so
+   * redirecting before this is true would bounce a family that already
+   * answered back to the front door.
    */
   hydrated: boolean;
 };
@@ -186,7 +163,7 @@ export type WizardActions = {
 
 export type WizardStore = WizardState & WizardActions;
 
-/** The four persisted slices — everything else is memory-only. */
+/** The persisted slices — everything else is memory-only. */
 export type PersistedWizardState = Pick<
   WizardState,
   | "wishes"
@@ -703,10 +680,9 @@ export function hasListChoice(state: Pick<WizardState, "listExists">): boolean {
 }
 
 /**
- * Has the "Before we continue" consent checkbox been checked? Shown right
- * after the welcome page and before step 1 — this is the *entry* condition
- * for step 1, not a step 1 field, so a deep link past it sends the family to
- * the consent page instead of into the step.
+ * Has the "Before we continue" consent checkbox been checked? The *entry*
+ * condition for step 1, not a step 1 field — a deep link past it sends the
+ * family to the consent page instead of into the step.
  */
 export function hasAcknowledgedDisclaimer(
   state: Pick<WizardState, "disclaimerAcknowledged">,
@@ -794,8 +770,7 @@ export function lastAllowedStep(
   for (const step of steps) {
     if (canEnterStep(state, step, options)) return step;
   }
-  // Not even step 1: the redirect target is the welcome page
-  // (`WELCOME_PATH`), which is not a step.
+  // Not even step 1: the redirect target is the front door (`FRONT_DOOR_PATH`).
   return null;
 }
 

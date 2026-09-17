@@ -3,22 +3,13 @@
 /**
  * Program lookup hooks for step 2.
  *
- * Two jobs, both of them thin:
+ * `useProgramSearch` is the debounced server search behind the combobox and
+ * the filter panel's matching count — every filter decision is FastAPI's, so
+ * the browser can never disagree about which programs exist.
  *
- * - `useProgramSearch` is the debounced server search behind the combobox and
- * behind the filter panel's matching count. Every filter decision is made by
- * FastAPI (`program_matches_filters`), so the browser can never disagree with
- * the engine about which programs exist.
- * - `useProgram` / `usePrograms` resolve a `program_id` to its display fields.
- * The store holds only ids (labels change when the data or the labelling
- * rules change, ids do not), so every card, details sheet and "kept outside
- * filters" count needs this lookup. Results are memoized in a module-level
- * map and concurrent callers share one in-flight request, so ten wish cards
- * asking for the same program issue one HTTP call.
- *
- * Privacy: nothing here ever sends or logs the RUN/IPE — these are
- * catalogue reads, and they go through the same-origin `/api` proxy like every
- * other browser call.
+ * `useProgram`/`usePrograms` resolve a `program_id` to its display fields; the
+ * store holds only ids. Results are memoized in a module-level map and
+ * concurrent callers share one in-flight request.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

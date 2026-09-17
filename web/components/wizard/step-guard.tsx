@@ -9,20 +9,16 @@ import { stepNumber, type StepSlug } from "./steps";
 
 /**
  * Deep-link guard for the wizard routes: a locked step (or the completion page)
- * redirects to `fallbackHref` — the last allowed step, or the welcome page when
- * its question is unanswered. It gates on client-only state (`studentId`,
- * `simulation` are never persisted), so this can't be a middleware redirect;
- * `router.replace` keeps the locked URL out of history.
+ * redirects to `fallbackHref` — the last allowed step, or the front door. Gates
+ * on client-only state (`studentId`, `simulation` are never persisted), so this
+ * can't be a middleware redirect; `router.replace` keeps the locked URL out of
+ * history. A skeleton replaces `children` while a redirect is in flight, and
+ * for the one frame before `hydrateWizardStore()` runs.
  *
- * A skeleton replaces `children` while a redirect is in flight (rendering the
- * step would flash it and fire its data hooks) and for the one frame before
- * `hydrateWizardStore()` runs — see `hydrated` below.
- *
- * `pendingNavigation` handles the one flow that locks the current step on
- * purpose: step 4's "Add selected and review" invalidates the simulation (which
- * locks step 4) and then pushes to step 2. The producer sets that flag before
- * mutating the store; the guard stands down while it is set, and the
- * destination clears it on mount.
+ * `pendingNavigation` covers the one flow that locks the current step on
+ * purpose: step 4's "Add selected and review" invalidates the simulation
+ * (locking step 4) then pushes to step 2. The guard stands down while that flag
+ * is set, and the destination clears it on mount.
  */
 export function StepGuard({
   slug,
@@ -33,14 +29,14 @@ export function StepGuard({
   /** The step the URL is on; `null` on the completion page. */
   slug: StepSlug | null;
   allowed: boolean;
-  /** Locale-free redirect target — a step, or `WELCOME_PATH`. */
+  /** Locale-free redirect target — a step, or `FRONT_DOOR_PATH`. */
   fallbackHref: string;
   children: React.ReactNode;
 }) {
   const router = useRouter();
 
   // Persisted slices land one effect after mount; redirecting before `hydrated`
-  // would bounce every reload of a reachable step back to the welcome page.
+  // would bounce every reload of a reachable step back to the front door.
   const hydrated = useWizardStore((state) => state.hydrated);
   const pendingNavigation = useWizardStore((state) => state.pendingNavigation);
   const setPendingNavigation = useWizardStore(

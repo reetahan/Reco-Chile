@@ -1,25 +1,14 @@
 "use client";
 
 /**
- * `POST /recommend` for step 4.
+ * `POST /recommend` for step 4. The engine is the only place a probability is
+ * computed — this hook sends the current list and hands back the response
+ * untouched, never re-ranking or caching across students.
  *
- * The engine is the only place a probability is computed: this hook sends
- * the current list and hands back the response untouched. It never derives a
- * risk, never re-ranks, and never caches across students — the server re-runs
- * the simulation itself to obtain `current_unmatched_risk`, precisely so a
- * client-supplied risk cannot steer the ranking.
- *
- * Re-fetches when the wishes, the home point, the count slider, the student
- * identifier or the locale change, debounced by 300 ms so dragging the slider
- * from 2 to 10 issues one request instead of nine. The in-flight request is
- * aborted on every change, so a slow early answer can never overwrite a newer
- * one, and `loading` is *derived* from "the settled answer is not the one the
- * current inputs ask for" rather than being a third piece of state that could
- * disagree with the other two.
- *
- * Privacy: the RUN/IPE travels in the request body to the same-origin
- * proxy and is never logged, never put in the URL, and never attached to an
- * error — `ApiError` carries the response only.
+ * Re-fetches when the inputs change, debounced by 300ms so dragging the count
+ * slider issues one request, not nine. The in-flight request is aborted on
+ * every change; `loading` is derived from "the settled answer doesn't match
+ * the current inputs" rather than tracked as separate state.
  */
 
 import * as React from "react";

@@ -48,18 +48,10 @@ function studentIdFeedbackState(check: StudentIdCheck): StudentIdFeedbackState {
 }
 
 /**
- * The RUN/IPE field of step 1.
- *
- * The pre-check is display-only. `@/lib/validation/student-id` mirrors
- * `normalize_student_identifier` so the feedback line and the step gate can
- * react on every keystroke without a round trip, but the engine re-validates
- * the identifier on `/simulate` and the API's 422 message is what the family
- * finally sees.
- *
- * Privacy: the value lives in the store's memory-only slice — never
- * persisted, never in the URL, never logged. `autoComplete="off"` keeps the
- * browser from filling or remembering it, and `spellCheck={false}` keeps it out
- * of the spell-checker's dictionary.
+ * The RUN/IPE field of step 1. The pre-check is display-only — the engine
+ * re-validates on `/simulate`, and its 422 message is what the family finally
+ * sees. Privacy: the value is memory-only, never persisted, never in the URL,
+ * never logged.
  */
 export function StudentIdField() {
   const t = useTranslations();
@@ -98,13 +90,9 @@ export function StudentIdField() {
         aria-invalid={state === "invalid" || undefined}
         aria-describedby={state === "empty" ? undefined : FEEDBACK_ID}
       />
-      {/* Always in the DOM — `hidden` when empty rather than unmounted — so a
-          browser extension that grafts onto the input (Grammarly, a page
-          translator, a password manager) cannot desync React's reconciliation
-          of this subtree. Mounting/unmounting a sibling of the field is what
-          makes React's `insertBefore` throw once the extension has moved a
-          node it did not create. `role="status"` implies `aria-live="polite"`;
-          a hidden status region is not announced. */}
+      {/* Always in the DOM (`hidden` when empty, never unmounted): a browser
+          extension grafted onto the input (Grammarly, a password manager) can
+          desync React's reconciliation if a sibling mounts/unmounts instead. */}
       <p
         id={FEEDBACK_ID}
         role="status"
