@@ -3,22 +3,18 @@
 /**
  * `POST /geocode` for the optional home address of step 4.
  *
- * "Address is sent to `/geocode` only on explicit
- * button click, never on change." `geocode()` is therefore returned as an
- * imperative function and this module contains no effect that could fire it —
- * typing in the field must never reach the network, and Nominatim's 1 req/s
- * budget (shared by every user of the API process) depends on it.
+ * The address is sent only on explicit button click, never on change —
+ * `geocode()` is an imperative function, and no effect here could fire it.
+ * Nominatim's 1 req/s budget (shared across every user of the API process)
+ * depends on that.
  *
- * What is remembered is the *attempt*: the normalized address that was sent and
- * whatever came back, success or failure. It compares the stored
- * result's address with the field's current content to decide between showing
- * feedback and showing "Address changed. Click the button to update the
- * coordinates."; `geocodeFeedback()` below is that comparison, extracted so it
- * can be unit-tested.
+ * What is remembered is the *attempt*: the normalized address sent and
+ * whatever came back. `geocodeFeedback()` compares it against the field's
+ * current content to decide between showing that result and "Address
+ * changed."
  *
- * Only a usable result reaches the store (`setHome`): `home` is the point the
- * recommendation request may cite, so a failed lookup clears it rather than
- * leaving a stale location attached to a new address.
+ * Only a usable result reaches the store (`setHome`); a failed lookup clears
+ * it rather than leaving a stale location attached to a new address.
  */
 
 import * as React from "react";

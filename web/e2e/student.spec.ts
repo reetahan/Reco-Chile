@@ -10,10 +10,9 @@ import es from "../messages/es";
  * guard, the stepper, the locale switch). What is under test here is the step
  * itself: the live RUN/IPE pre-check, the jargon-free copy, and the disclaimer
  * flag — including that it survives a reload while the identifier does not.
- * The "do you already have your list?" question now lives on its own page,
- * after this step (`ListChoiceScreen`, covered by `e2e/wizard.spec.ts`); the
- * "about this estimate" caveat is gone from this step, and the ties switch
- * moved to step 2 (`e2e/list.spec.ts`).
+ * The "do you already have your list?" question lives on its own page, after
+ * this step (`ListChoiceScreen`, covered by `e2e/wizard.spec.ts`); the ties
+ * switch lives on step 2 (`e2e/list.spec.ts`).
  *
  * The step is only reachable through the front door, so every test
  * enters through `openStudent()` rather than deep-linking `/es/student`.

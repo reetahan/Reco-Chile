@@ -21,7 +21,7 @@ import { useMetaOptional } from "@/lib/meta";
 import { usePrograms } from "@/lib/programs";
 import { hasFreshSimulation, useWizardStore } from "@/lib/store/wizard";
 
-import { stepPath, WELCOME_PATH } from "./steps";
+import { stepPath, FRONT_DOOR_PATH } from "./steps";
 
 /**
  * The read-only takeaway reached from the result step's "Finish": the same
@@ -61,7 +61,7 @@ export function FinishScreen() {
   function startOver() {
     reset();
     // `replace` so the cleared wizard is not one Back press away.
-    router.replace(WELCOME_PATH);
+    router.replace(FRONT_DOOR_PATH);
   }
 
   return (
@@ -140,10 +140,7 @@ export function FinishScreen() {
                           <span className="text-sm font-medium">
                             {program.program_label}
                           </span>
-                          {/* Commune and region on every program listing —
-                              two schools can share a name. Built by
-                              the one helper that owns that line, so a blank or
-                              `nan` column never prints as " · ". */}
+                          {/* Commune and region: two schools can share a name. */}
                           <span className="text-xs text-muted-foreground">
                             {formatProgramLocation(
                               program.school_commune,

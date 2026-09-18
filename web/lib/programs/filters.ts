@@ -1,20 +1,12 @@
 /**
  * The program-filter vocabulary, shared by the filter panel, the program
- * combobox and the `GET /programs` query string.
+ * combobox and the `GET /programs` query string. Mirrors the Python side:
+ * `ProgramFilters` maps to query parameters `program_matches_filters` reads,
+ * and `programMatchesFilters` reproduces that same predicate client-side, but
+ * only to answer "is an already-selected program outside the current
+ * filters?" — a display-only decision; the server does all real filtering.
  *
- * Everything here is a *mirror* of the Python side and nothing else:
- *
- * - `ProgramFilters` (the store shape) → query parameters of `GET /programs`,
- * which FastAPI hands straight to `data_loading.program_matches_filters`.
- * - `programMatchesFilters` reproduces that same predicate over a
- * `ProgramSummary` so the UI can answer one question the server is never
- * asked: "is a program the family *already selected* outside the current
- * filters?" It is a display-only decision —
- * no wish is ever dropped because of it, and every list the family actually
- * sees is filtered by the server.
- *
- * Filter option *values* stay English wire codes ("With PIE", "Free"); the
- * `enums.*` catalogue owns their display strings.
+ * Filter option values stay English wire codes; `enums.*` owns display strings.
  */
 
 import type { Meta, ProgramSummary } from "@/lib/api/types";

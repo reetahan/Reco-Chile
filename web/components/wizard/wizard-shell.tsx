@@ -48,11 +48,9 @@ function WizardShellInner({ children }: { children: React.ReactNode }) {
   const { kind, slug, allowed, fallbackHref, canEnter, canContinue } =
     useWizardGating();
 
-  // `WizardNav.pending` is owned by whichever step has a request in flight; the
-  // shell only forwards it, and a step raises it through `setStepBusy` — see
-  // the contract on `stepBusy` in the store. No step sets it today (the result
-  // step's `/simulate` announces itself with its own skeleton, and // item 6 that step has no Continue), so the spinner never appears until one
-  // does.
+  // `WizardNav.pending` is owned by whichever step has a request in flight; a
+  // step raises it through `setStepBusy` (see the contract on `stepBusy` in
+  // the store) and the shell only forwards it.
   const stepBusy = useWizardStore((state) => state.stepBusy);
 
   // The completion page shares the group's layout — `/meta`, the store, the

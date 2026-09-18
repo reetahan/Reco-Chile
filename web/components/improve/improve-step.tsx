@@ -33,25 +33,10 @@ import { ToneAlert } from "./tone-alert";
 /**
  * Step 4 — improve the preference list.
  *
- * The page, in order:
- *
- * 1. how many suggestions do you want (a slider, out in the open)
- * 2. improve distance estimates (the optional home address)
- * 3. restrict the suggestions (the step-2 filter panel, shared store slice)
- * 4. the suggestions themselves
- *
- * What went: the current-unmatched-risk card, the "adding at the end costs
- * nothing" note, the "How are these programs selected?" collapsible, and the
- * "Recommendation display settings" collapsible that used to hide the slider.
- * The warnings that report a *failure* stayed — an empty result or an
- * unscoreable candidate still has to say so.
- *
- * The slider is no longer behind a disclosure because it is now the page's
- * opening question, and its default dropped from 5 to 3.
- *
- * Nothing on this page computes a number: `/recommend` returns every figure
- * raw, including `final_chance_if_appended`, which is what each card
- * shows.
+ * The page, in order: how many suggestions (slider), the optional home
+ * address, the shared filter panel, then the suggestions themselves. Nothing
+ * here computes a number — `/recommend` returns every figure raw, including
+ * `final_chance_if_appended`, which is what each card shows.
  */
 export function ImproveStep() {
   const t = useTranslations();
@@ -103,10 +88,8 @@ export function ImproveStep() {
 
   function handleAdd() {
     const existing = new Set(wishes.map((wish) => wish.programId));
-    // `selectedVisible` is already in recommendation order, which is the ranking
-    // the engine produced — a checkbox records *which* programs were chosen, not
-    // an order the family stated (preserved the same
-    // way).
+    // `selectedVisible` is already in recommendation order — a checkbox
+    // records which programs were chosen, not an order the family stated.
     const newIds = selectedVisible.filter((id) => !existing.has(id));
 
     if (newIds.length === 0) {
@@ -114,11 +97,8 @@ export function ImproveStep() {
       return;
     }
 
-    // `MAX_WISHES` is a hard server cap: a longer list is refused by
-    // `/simulate`, so the ones that do not fit are dropped here — with the same
-    // sentence step 2 shows when the family adds one program too many — instead
-    // of being appended into a list that can no longer be analysed. The store
-    // enforces the same ceiling, so this only decides what the family is *told*.
+    // `MAX_WISHES` is a hard server cap, enforced again by `/simulate`; what
+    // doesn't fit is dropped here with the same message step 2 shows.
     const room = Math.max(0, meta.max_wishes - wishes.length);
     const accepted = newIds.slice(0, room);
     if (accepted.length < newIds.length) {
@@ -126,12 +106,8 @@ export function ImproveStep() {
     }
     if (accepted.length === 0) return;
 
-    // Append, invalidate, navigate to step 2. The order matters: the
-    // append invalidates the simulation and instantly locks this step, so the
-    // guard is told where the wizard is going *before* the state that would
-    // make it redirect elsewhere. `ListStep` clears the flag when it mounts and
-    // shows the "N recommended program(s) were added…" banner — the one message
-    // for this event, which is why nothing is toasted here.
+    // Order matters: tell the guard where the wizard is going before the
+    // append invalidates the simulation and locks this step out from under it.
     setPendingNavigation(stepNumber("list"));
     appendRecommendations(accepted);
     setSelectedIds(new Set());
@@ -140,21 +116,15 @@ export function ImproveStep() {
 
   const hasResponse = data !== null;
   const showSkeleton = loading && !hasResponse;
-  // Portfolio-risk values missing: the candidates were
-  // scored, but not one of them came back with a conditional chance, which is
-  // i.e. "the portfolio-risk pass did not run". Same
-  // condition (every value blank, over a non-empty table) and the same warning.
+  // Every candidate was scored but none came back with a conditional chance —
+  // the portfolio-risk pass didn't run.
   const riskValuesMissing =
     items.length > 0 &&
     items.every((item) => !isFiniteNumber(item.chance_if_considered));
 
   return (
-    // No lead sentence: it was `improve.methodBody`, the "how are these
-    // programs selected" paragraph, and the page should not open
-    // on a block of text. The slider is the first thing now.
+    // No lead sentence: the slider is the page's opening question instead.
     <StepPage slug="improve" lead={null}>
-      {/* 1. How many suggestions? The page's opening question, so it is not
-          behind a disclosure any more. */}
       <section
         role="group"
         aria-label={t("improve.count.question")}
@@ -187,16 +157,13 @@ export function ImproveStep() {
 
       <Separator />
 
-      {/* 2. Improve distance estimates. */}
       <AddressSection
         hardDistanceFilterApplied={data?.hard_distance_filter_applied ?? null}
       />
 
       <Separator />
 
-      {/* 3. Restrict the suggestions — the same filters as step 2, sharing the
-          same store slice, so a family that narrowed the search there sees
-          narrowed recommendations here. */}
+      {/* Same filters as step 2, sharing the same store slice. */}
       <FilterPanel
         title={t("improve.filters.title")}
         intro={t("improve.filters.intro")}
@@ -275,11 +242,8 @@ export function ImproveStep() {
       <Button
         type="button"
         size="lg"
-        // The base button style is `whitespace-nowrap`, which is right for a
-        // pill and wrong for the one full-width button in the wizard: at 360 px
-        // "Agregar los programas seleccionados y revisar mi lista" is wider
-        // than the screen, and nowrap spilled it past both edges. Wrapping (and
-        // the auto height that lets it) keeps the label readable instead.
+        // The base button style is `whitespace-nowrap`; this label is long
+        // enough to overflow at 360px, so it needs to wrap instead.
         className="h-auto w-full py-2 whitespace-normal"
         disabled={selectedVisible.length === 0}
         onClick={handleAdd}

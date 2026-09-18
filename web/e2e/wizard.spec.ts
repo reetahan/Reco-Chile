@@ -294,9 +294,8 @@ test.describe("wizard shell", () => {
   });
 
   test("step 2 renders live data from /meta", async ({ page }) => {
-    // The region select only exists in the guided branch, and it is the step's
-    // one control filled straight from `/meta` (an earlier build printed
-    // the region count instead; the filter panel replaced it).
+    // The region select only exists in the guided branch, and it is the
+    // step's one control filled straight from `/meta`.
     await enterListStep(page, { answer: "no" });
 
     // Proves the whole data path: FastAPI -> fetchMeta() on the server ->

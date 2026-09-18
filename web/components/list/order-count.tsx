@@ -2,20 +2,11 @@
 
 /**
  * The equivalence-class order-count warning under the list (ties mode only).
- *
- * Only the over-cap state renders: above `/meta.max_exact_equiv_permutations`,
- * this is the *same* message the API returns as 422
- * `too_many_equivalence_orders`, shown here so the family can split a group
- * before pressing Continue instead of after (pre-checked client-side from
- * `/meta`). Within the limit, the informational
- * count ("The current equivalence classes generate N compatible strict
- * order(s)…") used to print here too, but it added detail nobody acts on
- * without also explaining the concept, so it was dropped.
- *
- * The count itself is combinatorics over the family's own grouping — a product
- * of factorials, not a probability — so computing it in the browser does not
- * breach the rule that the engine owns every number. It is re-checked
- * server-side either way.
+ * Only the over-cap state renders — the same message the API returns as 422
+ * `too_many_equivalence_orders`, checked client-side against `/meta` so the
+ * family can split a group before pressing Continue. The count is pure
+ * combinatorics over the family's own grouping, not a probability, and is
+ * re-checked server-side either way.
  */
 
 import { useFormatter, useTranslations } from "next-intl";

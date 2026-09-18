@@ -12,18 +12,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 
 /**
- * Four callout tones, shared with the recommendation risk badges:
- * success / warning / error / info.
- *
- * shadcn's `Alert` only ships `default` and `destructive`, and the theme
- * (`app/globals.css`) defines no
- * success or warning token — the palette is deliberately near-monochrome. The
- * green and amber are therefore raw Tailwind palette colours, used here and in
- * `student-step.tsx` for the same reason. Red is the theme's `--destructive`.
- *
- * The tone is *not* decided here: `risk_level` comes from the engine
- * (`_risk_color`, thresholded server-side against `/meta`), so the mapping in
- * `RISK_LEVEL_TONE` is the only place a colour name is interpreted.
+ * Four callout tones: success / warning / error / info. shadcn's `Alert` only
+ * ships `default` and `destructive`, and the theme has no success/warning
+ * token, so green and amber here are raw Tailwind colors. `risk_level` comes
+ * from the engine; `RISK_LEVEL_TONE` is the only place that color is decided.
  */
 export type AlertTone = "success" | "warning" | "destructive" | "info";
 
@@ -75,9 +67,7 @@ export function ToneAlert({
 
   return (
     <Alert
-      // The colour is the message here, so it is also exposed as data for the
-      // parity assertions ("badge colour boundaries
-      // identical") — a class-name assertion would break on a restyle.
+      // Exposed as data so tests can assert on it without depending on class names.
       data-tone={tone}
       className={cn("px-3 py-2.5", TONE_CLASS[tone], className)}
       {...props}

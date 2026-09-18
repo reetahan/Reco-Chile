@@ -11,7 +11,7 @@ import {
   STEP_LEAD_KEY,
   STEP_SLUGS,
   STEP_TITLE_KEY,
-  WELCOME_PATH,
+  FRONT_DOOR_PATH,
   forwardPath,
   isFinishPathname,
   isStepSlug,
@@ -47,7 +47,7 @@ describe("step identity", () => {
     // and the completion page ends it; neither is a `StepSlug`.
     expect(isStepSlug(FINISH_SLUG)).toBe(false);
     expect(STEP_SLUGS).not.toContain(FINISH_SLUG);
-    expect(WELCOME_PATH).toBe("/");
+    expect(FRONT_DOOR_PATH).toBe("/");
     expect(FINISH_PATH).toBe("/finish");
   });
 });

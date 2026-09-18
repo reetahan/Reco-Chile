@@ -20,36 +20,16 @@ import {
 } from "@/lib/recommendations";
 
 /**
- * One suggested program.
+ * One suggested program: the school, where it is, the program, how far away
+ * it is, and the chance of being assigned to it if appended
+ * (`final_chance_if_appended`, computed by the engine — never recomputed here).
  *
- * The card shows what a family decides on: the school, where
- * it is, the program, how far away it is, and *the one number that answers
- * "should I add this"* — the chance of actually being assigned to it if it goes
- * on the end of the list. Gone with the text: the before→after unmatched-risk
- * sentence, the conditional "chance if you reach this preference", the "why it
- * appears" line and the "View calculation details" popover (capacity,
- * applicants per seat, estimated lottery rank).
+ * The distance line only shows when measured from an actual home address
+ * (`distanceReference === "home"`); without one it's measured from the
+ * family's wishlist instead, a number with no plain-language meaning to show.
  *
- * The chance is `final_chance_if_appended` — computed by the engine as
- * `current_unmatched_risk * chance_if_considered` and put on the wire for this
- * (the frontend never multiplies two probabilities). `appended_wish_rank`
- * names the position it assumes, so the card can say *which* preference the
- * number belongs to instead of leaving the family to infer it.
- *
- * `risk_level` no longer colours an alert, but it stays on the element as a
- * data attribute: it is the engine's own banding, and dropping it from the DOM
- * would take the parity hook with it.
- *
- * The optional lines are dropped rather than dashed when their value is
- * missing. The location line is the one deliberate exception: it always
- * renders, because a school name without its commune and
- * region cannot be looked up or told apart from its namesakes.
- *
- * The distance line only shows when it was measured from an actual home
- * address (`distanceReference === "home"`). Without one, `distance_km` is
- * measured from a weighted average of the family's current wishlist instead —
- * a number with no plain-language explanation a family can act on, so it's
- * left out entirely rather than shown and misread as "distance from you".
+ * The location line always renders, even with no other data: a school name
+ * alone can't be told apart from schools sharing that name elsewhere.
  */
 export function RecommendationCard({
   item,
@@ -71,10 +51,7 @@ export function RecommendationCard({
   const t = useTranslations();
   const locale = useLocale();
 
-  // Commune *and* region, always. A suggestion is a school
-  // you have never heard of by definition, and dozens of Chilean schools share
-  // a name across communes — the card title alone cannot identify one. Built by
-  // the same helper the step-2 rows use, so both steps disambiguate alike.
+  // Commune and region, always: dozens of Chilean schools share a name.
   const location =
     formatProgramLocation(item.school_commune, item.region) ||
     t("improve.card.noInformation");

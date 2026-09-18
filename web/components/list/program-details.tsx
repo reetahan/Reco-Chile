@@ -1,25 +1,13 @@
 "use client";
 
 /**
- * The program-details list of a wish card — a port of
- * The program-details table — ten rows, in order:
- * program details, commune, region, program type, school day, PIE, PACE,
- * enrollment fee, monthly fee, religious orientation.
+ * The program-details list of a wish card — ten rows, in order: program
+ * details, commune, region, program type, school day, PIE, PACE, enrollment
+ * fee, monthly fee, religious orientation. Deliberately not everything the API
+ * returns — capacity, applicants and MTB internals belong to the result step.
  *
- * These are the characteristics families ask about before committing a
- * preference, which is why the set is deliberately *not* everything the API
- * returns: capacity, applicant counts and MTB internals belong to the result
- * step, not to a decision about whether a school suits the child.
- *
- * The component renders bare content, no chrome — the caller puts it inside a
- * `Sheet` or a `Popover` and owns the trigger. The store holds only
- * `program_id`s, so the row values are fetched here through the shared
- * program cache; a program that has vanished from the calibration data says so
- * instead of rendering ten blanks.
- *
- * Enumerated values are translated through `enums.*`; school, commune and
- * program names are shown verbatim. A blank or `nan` column reads
- * "No information", exactly like `_family_display_value`.
+ * Renders bare content, no chrome — the caller puts it inside a `Sheet` or
+ * `Popover`. A blank or `nan` column reads "No information".
  */
 
 import { useTranslations } from "next-intl";

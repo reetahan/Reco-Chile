@@ -5,32 +5,12 @@
  *
  * The guided branch ("No — help me build it") opens on two phases this step
  * owns before the rest of the page: pick 1-3 schools (`StarterPicksPanel`),
- * then review suggestions built from them (`StarterRecommendationsPanel`).
- * `starterPicksConfirmed` switches from the first phase to the second; a
- * family that already has wishes is treated as having passed the phase
- * already, so it isn't sent back through it.
+ * then review suggestions built from them (`StarterRecommendationsPanel`). A
+ * family that already has wishes is treated as having passed that phase.
  *
- * Section order once past that phase, top to bottom, with the ties toggle
- * added first: the "I have not yet decided the exact order" ties toggle lives
- * here because it governs how *this* list gets built and ordered.
- *
- * heading + one caption that depends on the mode
- * the ties toggle (`EquivalenceSwitch`)
- * "N recommended programs were added…" (returning from step 4)
- * filter panel + program search (only "No — help me build it"; grouped in a
- * bordered box once the starter-picks suggestions below exist, so the two
- * ways to add a program read as one "find more" area)
- * the starter-picks suggestions (only once confirmed)
- * the wish list itself
- * "some programs use imputed calibration" (+ "What does this mean?")
- * the over-cap order-count warning (ties mode, over the limit only)
- *
- * The step owns three things the individual components deliberately do not:
- * the `/meta.max_wishes` limit it hands to the store (so every gate — this
- * page's and the wizard nav's — uses one number), the one `usePrograms` lookup
- * over the whole list (which answers both "is any of them imputed?" and "did
- * any of them vanish?"), and the reaction to the latter — `dropMissingPrograms`
- * plus one warning toast.
+ * Owns the `/meta.max_wishes` limit (handed to the store so every gate uses
+ * one number), the one `usePrograms` lookup over the whole list (imputed
+ * calibration + vanished programs), and the toast for the latter.
  */
 
 import * as React from "react";
@@ -126,14 +106,10 @@ export function ListStep() {
     toast.warning(t("list.notices.removed", { programs: named.join(", ") }));
   }, [missingKey, dropMissingPrograms, t]);
 
-  // --- "N recommendations were added" ---------
-  // Shown once, then cleared, so the
-  // message cannot reappear on a later visit. It is mirrored into local state —
-  // adjusted during render, never in an effect — because clearing the store
-  // must not take the notice off the screen again. Step 4 appends *before* it
-  // navigates, so the count is already in the store at mount; latching any
-  // later change too costs one comparison and keeps the banner correct if a
-  // second producer ever appears.
+  // "N recommendations were added": shown once, then cleared, mirrored into
+  // local state (adjusted during render, not in an effect) so clearing the
+  // store doesn't also take the notice off screen. Step 4 appends before it
+  // navigates, so the count is already in the store at mount.
   const [addedNotice, setAddedNotice] = React.useState(recommendationsAdded);
   const [seenNotice, setSeenNotice] = React.useState(recommendationsAdded);
   if (recommendationsAdded !== seenNotice) {
@@ -211,12 +187,9 @@ export function ListStep() {
     </>
   );
 
+  // A different caption per branch: the filter intro when helping to build
+  // the list, the preference-order reminder when the family already has one.
   return (
-    // A different caption per branch: the filter intro
-    // when it is helping to build the list, the preference-order reminder when
-    // the family already has one. That is the whole reason `StepPage` takes a
-    // `lead` — this step used to duplicate the frame to say it, and then did
-    // not get the heading focus every other step has.
     <StepPage
       slug="list"
       leadTestId="list-caption"

@@ -18,14 +18,11 @@ export type StepSlug = (typeof STEP_SLUGS)[number];
 
 /**
  * The front door — `app/[locale]/page.tsx`: the "Before we continue" consent
- * screen, with one checkbox that has to be checked before the family can
- * reach step 1.
- *
- * It is not a step: it carries no stepper, no Back/Continue bar and no
- * number, and no `/meta` fetch. Locale-free like every path here —
- * `Link`/`useRouter` from `@/i18n/navigation` add the `[locale]` prefix.
+ * screen, with one checkbox required before step 1. Not a step itself: no
+ * stepper, no Back/Continue bar, no `/meta` fetch. Locale-free like every path
+ * here — `Link`/`useRouter` from `@/i18n/navigation` add the `[locale]` prefix.
  */
-export const WELCOME_PATH = "/";
+export const FRONT_DOOR_PATH = "/";
 
 /**
  * Asked after step 1 (the RUN/IPE) rather than before it, so both paths start
@@ -51,15 +48,8 @@ export function isFinishPathname(pathname: string): boolean {
   return pathname.split("/").filter(Boolean).at(-1) === FINISH_SLUG;
 }
 
-/**
- * Message ids, from `messages/{es,en}.json`.
- *
- * `steps.*` holds the short stepper labels; each step's own namespace holds its
- * page title. The lead sentence is the one line of copy that
- * orients the family on that step — deliberately reused rather than newly
-
- */
-/** Leaf ids inside the `steps` namespace. */
+// Message ids: `steps.*` holds the stepper labels, each step's own namespace
+// holds its page title and lead sentence.
 export const STEP_LABEL_KEY = {
   student: "student",
   list: "list",

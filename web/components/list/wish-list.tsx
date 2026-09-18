@@ -1,19 +1,15 @@
 "use client";
 
 /**
- * The family's preference list: one {@link WishCard} per wish, in the order the
- * store holds them.
+ * The family's preference list: one {@link WishCard} per wish.
  *
- * Strict mode offers two equivalent ways to reorder: drag-and-drop with `@dnd-kit`, plus Move up /
- * Move down buttons for keyboard and screen-reader users. `@dnd-kit`'s own
- * keyboard sensor makes the drag handle operable too (space to lift, arrows to
- * move, space to drop), with localized announcements.
+ * Strict mode offers two equivalent ways to reorder: drag-and-drop with
+ * `@dnd-kit`, plus Move up/down buttons — `@dnd-kit`'s keyboard sensor also
+ * makes the drag handle itself operable (space to lift, arrows to move).
  *
- * Ties mode has no ordering at all — a group number replaces it — so the cards
- * are rendered without a `DndContext` and are shown sorted by group, mirroring
- * `display_rows = current_non_empty.sort_values([EQUIV_GROUP, WISH_RANK])` in
- * buttons for keyboard users. That sort is display-only: the store keeps the insertion
- * order, and `/simulate` compacts the groups server-side.
+ * Ties mode has no ordering at all — a group number replaces it — so cards
+ * render without a `DndContext`, sorted by group for display only; the store
+ * keeps insertion order, and `/simulate` compacts the groups server-side.
  */
 
 import * as React from "react";

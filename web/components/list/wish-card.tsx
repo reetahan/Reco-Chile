@@ -1,29 +1,16 @@
 "use client";
 
 /**
- * One card per wish — the port of the bordered container
- * One row of the wish list.
- * preference list.
+ * One card in the wish list: rank badge (strict) or group number input
+ * (ties), the program label, a `commune · region` detail line, a
+ * program-details `Sheet`, declared priorities, Remove, and (strict mode
+ * only) Move up/down.
  *
- * Anatomy, in order: the rank badge (strict) or
- * the group number input (ties), the compact program label, the
- * `program_display_name · commune · region` detail line, the program-details
- * popover — a `Sheet` here, because the detail table is too tall for a popover
- * on a phone — the declared-priorities caption, Remove, and (strict mode only)
- * the Move up / Move down buttons.
- *
- * The commune and the region are not optional: the label
- * alone repeats across communes — "Liceo Ignacio Carrera Pinto" is a school in
- * San Vicente and a different one in Frutillar — so the location is always
- * rendered, with or without a program display name in front of it. While the
- * program is still loading the line is a skeleton, never an empty gap that
- * later pushes the card open.
- *
- * The card holds no program data of its own: it only knows a `program_id` and
- * asks `useProgram()` for everything else, so a label rule that changes
- * server-side can never leave a stale name on screen. It
- * says so when the program has vanished from the data; dropping such a wish is
- * the step's job (`dropMissingPrograms` plus one toast), not the card's.
+ * The commune and region are always shown — school names repeat across
+ * communes, e.g. "Liceo Ignacio Carrera Pinto" exists in both San Vicente and
+ * Frutillar. The card only knows a `program_id` and asks `useProgram()` for
+ * everything else; dropping a wish whose program vanished from the data is
+ * the step's job, not the card's.
  */
 
 import * as React from "react";

@@ -35,7 +35,7 @@ docker compose up --build
 
 Full details — Python version pinning, Windows, Docker specifics — are under [Installation](#installation).
 
-## Main features
+<!-- ## Main features
 
 - Build and reorder a wish list directly in the interface.
 - Search programs by region and school characteristics.
@@ -198,7 +198,7 @@ Coordinates are resolved through the following cascade:
 
 Distances use the haversine formula and therefore represent straight-line distance, not road distance or travel time.
 
-If the user explicitly submits a home address, the app queries OpenStreetMap's Nominatim service, ranks returned locations for address quality, and warns when the result is only street-, city-, or region-level. With a valid home location, recommendations are limited to `100 km` by default.
+If the user explicitly submits a home address, the app queries OpenStreetMap's Nominatim service, ranks returned locations for address quality, and warns when the result is only street-, city-, or region-level. With a valid home location, recommendations are limited to `100 km` by default. -->
 
 ## Installation
 
@@ -349,6 +349,10 @@ The application expects a `data/` directory next to `api.py`.
 
 At startup, the app checks required columns, core numeric fields, positive lottery populations, and the internal consistency of cumulative priority shares. Programs with mean-imputed 2024 calibration values remain usable but are flagged as less reliable.
 
+## Project Workflow Diagram
+
+![Figure outlining user workflow](images/fig_for_README.png)
+
 ## Project structure
 
 ```text
@@ -385,6 +389,7 @@ Reco-Chile/
 ```
 
 `api.py` intentionally contains only HTTP adaptation. Calculation logic lives in the focused modules under `sae_app/`, which has no UI dependency of any kind — the frontend in `web/` formats and explains, and never computes a number.
+
 
 ## Privacy and external services
 

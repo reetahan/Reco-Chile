@@ -43,8 +43,6 @@ async function fetchPrograms(
 /** Front door → step 1 → "No, help me build it" → the starter-picks phase. */
 async function openStarterPicks(page: Page): Promise<void> {
   await page.goto("/es");
-  await page.getByTestId("welcome-continue").click();
-  await page.waitForURL("**/es/disclaimer");
   await page.getByTestId("disclaimer-checkbox").click();
   await page.getByTestId("disclaimer-continue").click();
   await page.waitForURL("**/es/student");

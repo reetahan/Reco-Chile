@@ -21,24 +21,16 @@ type StepperProps = {
 };
 
 /**
- * The `○────●────○────○` rail
+ * The `○────●────○────○` rail.
  *
- * Every step is a link, but only while its "can enter" condition holds. A step
- * that cannot be entered renders as inert text marked `aria-disabled`, carrying
- * `steps.locked` as its tooltip, so keyboard and screen-reader users meet the
- * same gate — and the same explanation — as the guard enforces on the route. It
- * is deliberately *not* given `role="link"`: an assistive-technology user must
- * not be offered a link that goes nowhere, and the rail's link count is what
- * `e2e/wizard.spec.ts` asserts a locked step by.
+ * Every step is a link only while its "can enter" condition holds; a locked
+ * step renders as inert text with `aria-disabled` and a `steps.locked`
+ * tooltip instead of a dead link — keyboard and screen-reader users meet the
+ * same gate the route guard enforces.
  *
- * The rail is a named `navigation` landmark (`steps.navLabel`) so it can be
- * skipped to, and separately reachable from the locale switcher's own landmark;
- * `steps.progress` rides along as screen-reader-only text because "step 2 of 4"
- * is otherwise only conveyed by the marker styling. The current step is the one
- * carrying `aria-current="step"`.
- *
- * Mobile first: four numbered markers stay on one row down to 360 px, with the
- * labels beneath them shrinking rather than wrapping the rail.
+ * A named `navigation` landmark (`steps.navLabel`); `steps.progress` is
+ * screen-reader-only text for "step 2 of 4", since that's otherwise only
+ * conveyed by marker styling. The current step carries `aria-current="step"`.
  */
 export function Stepper({ current, canEnter }: StepperProps) {
   const t = useTranslations("steps");
@@ -83,13 +75,10 @@ export function Stepper({ current, canEnter }: StepperProps) {
             </span>
           );
 
-          // A locked step used to be dimmed to `text-muted-foreground/60`,
-          // which is ~2.5:1 on white at 11px — an axe `color-contrast` failure
-          // (serious), and unreadable for exactly the readers who most need the
-          // rail. Locked and unlocked labels therefore share one legible tone;
-          // what separates them is the marker (a grey number in a plain circle
-          // versus a dark one) plus `aria-disabled` and the `steps.locked`
-          // tooltip, none of which depends on being able to see a 40 % grey.
+          // Locked and unlocked labels share one legible tone; a dimmed label
+          // fails color-contrast and is unreadable for the readers who most
+          // need the rail. The marker, `aria-disabled`, and the `steps.locked`
+          // tooltip are what mark a step locked instead.
           const text = (
             <span
               className={cn(

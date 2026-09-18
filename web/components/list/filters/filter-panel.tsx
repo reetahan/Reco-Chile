@@ -1,25 +1,15 @@
 "use client";
 
 /**
- * Step 2's program-finding filters.
+ * Step 2's program-finding filters: region select, two track checkboxes, then
+ * a collapsed "more filters" expander with nine multi-selects (specialty area
+ * only once *Specialized* is ticked). Whether to show the panel at all belongs
+ * to the caller, not here.
  *
- * The filter panel, in order: region select, the two
- * track checkboxes, then a collapsed "more filters" expander with nine
- * multi-selects — the specialty area only once *Specialized* is ticked, exactly
- * because a specialty selection is ignored for general academic
- * programs anyway (`program_matches_filters`).
- *
- * The panel is shown only when the family answered "No — help me build it";
- * that decision belongs to the page that composes step 2, not here.
- *
- * Two numbers appear underneath:
- * - how many programs match right now — `total_matched` of a `GET /programs`
- * with the same filters, so the count can never disagree with the combobox;
- * - how many already-selected programs the filters would hide. Those wishes are
- * *kept* (filters never edit the list), which is why the note exists at all.
- *
- * The caption only appears once the family actually narrowed something, again
- * i.e. a region is chosen or at least one filter is active.
+ * The caption below shows `total_matched` from `GET /programs` (so it can
+ * never disagree with the combobox) plus how many already-selected programs
+ * the filters would hide — filters never remove them from the list, only from
+ * this count.
  */
 
 import { useMemo, useState } from "react";

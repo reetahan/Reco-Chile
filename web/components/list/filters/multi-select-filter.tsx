@@ -1,18 +1,14 @@
 "use client";
 
 /**
- * One of the nine "more filters" multi-selects.
+ * One of the nine "more filters" multi-selects — a `Popover` + `Command`
+ * combobox rather than a plain checkbox list, since the payment and specialty
+ * lists are long enough to need search. The trigger always reports state in
+ * words ("Any", a value, or "n selected"), so a collapsed filter never
+ * silently restricts results without saying so.
  *
- * A `Popover` + `Command` combobox rather than a plain list of checkboxes: the
- * payment and specialty lists are long enough that a plain
- * multiselect had a search box, and this keeps that. The trigger always reports
- * the current state in words ("Any", a single value, or "n selected"), because
- * a collapsed filter that silently restricts the results is the one thing that
- * makes the matching count look wrong.
- *
- * Values are the API's English wire codes; `optionLabel` is what translates
- * them through `enums.*`. Nothing here filters anything — it only edits
- * the store, and the server does the filtering.
+ * Values are the API's English wire codes; `optionLabel` translates them
+ * through `enums.*`. This only edits the store — the server does the filtering.
  */
 
 import { useState } from "react";

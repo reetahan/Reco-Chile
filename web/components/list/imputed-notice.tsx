@@ -1,13 +1,10 @@
 "use client";
 
 /**
- * "Some selected programs use estimated historical calibration values." — the
- * The "What does this mean?" notice shown under the wish
- * list whenever a selected program carries `calibration_imputed`.
- *
- * Purely presentational: whether any selected program is imputed is decided by
- * the step, which already knows every program the cards resolved, so this
- * component never fetches and never re-counts.
+ * "Some selected programs use estimated historical calibration values" notice,
+ * shown under the wish list whenever a selected program carries
+ * `calibration_imputed`. Purely presentational — the step already knows which
+ * programs are imputed, so this never fetches or re-counts.
  */
 
 import * as React from "react";

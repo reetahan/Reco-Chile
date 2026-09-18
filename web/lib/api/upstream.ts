@@ -4,17 +4,13 @@
  * there is no CORS, the RUN/IPE stays first-party, and the Python port need
  * not be published.
  *
- * PRIVACY — do not add logging here. Request bodies carry the RUN/IPE
- * (`/simulate`, `/recommend`) and the home address (`/geocode`); they are
- * forwarded as an opaque string and never reach a log, an error message, or an
- * analytics sink.
+ * PRIVACY — do not add logging here. Request bodies carry the RUN/IPE and the
+ * home address, forwarded as an opaque string and never reach a log or an
+ * error message.
  *
- * Headers are rebuilt, not relayed: only `FORWARDED_REQUEST_HEADERS` cross over
- * (no cookies, no authorization), plus one `X-Forwarded-For` this hop derives
- * itself — see `clientAddress` and the `TRUST_PROXY` flag.
- *
- * Not the locale middleware — that is `web/proxy.ts` and does not match
- * `/api/*`.
+ * Headers are rebuilt, not relayed: only `FORWARDED_REQUEST_HEADERS` cross
+ * over (no cookies, no authorization), plus one `X-Forwarded-For` this hop
+ * derives itself — see `clientAddress` and `TRUST_PROXY`.
  */
 import { NETWORK_ERROR_KEY } from "./errors";
 
